@@ -1,0 +1,156 @@
+#userBu{
+  height: 100%;
+  .userBu{
+    height: 100%;
+    .userBuRight{
+      height: 100%;
+      padding: 0 12px 6px 6px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      .innerRight{
+        height: 100%;
+        background: #fff;
+        overflow: auto;
+        .placeSearch{
+          height: 66px;
+          background: #fff;
+          padding-left: 40px;
+          padding-top: 18px;
+          span{
+            color: #282828;
+          }
+          .input1{
+            width: 200px;
+            margin-left: 20px;
+          }
+          .searchs{
+            margin-left: 40px;
+            width: 65px;
+            height: 32px;
+            outline: 0;
+            border: 0;
+            background: #2E71FE;
+            color: #fff;
+            border-radius: 3px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: pointer;
+          }
+        }
+        .bg{
+          background: #FAFAFA;
+          height: 62px;
+          padding-top: 16px;
+          padding-right: 18px;
+          text-align: right;
+          .searchs{
+            margin-left: 40px;
+            width: 68px;
+            height: 30px;
+            outline: 0;
+            border: 0;
+            background: #2E71FE;
+            color: #fff;
+            border-radius: 3px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: pointer;
+          }
+          .deletesClass{
+            background: #F0625D;
+          }
+        }
+        .placeTable{
+          .ant-table-thead{
+            tr > th{
+              background: #fff;
+            }
+          }
+          .img2{
+            width: 50px;
+          }
+          .changes{
+            color: #2E71FE;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: pointer;
+          }
+          .deletes{
+            color: #F0625D;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: pointer;
+          }
+          .details{
+            color: #9516D1;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: pointer;
+          }
+        }
+        .placePagination{
+          text-align: right;
+          padding-top: 20px;
+        }
+      }
+    }
+    .modal1{
+      .ul1{
+        .li1{
+          overflow: hidden;
+          .div3{
+            float: left;
+            width: 50%;
+            overflow: hidden;
+            .span1{
+              float: left;
+              display: block;
+              width: 40px;
+              margin-top: 5px;
+            }
+            .img1{
+              float: left;
+              width: 60px;
+            }
+            .span2{
+              margin-top: -1px;
+            }
+            .input3{
+              float: left;
+              width: 70%;
+            }
+          }
+          .div5{
+            width: 100%;
+          }
+        }
+        .li2{
+          margin-top: 20px;
+        }
+        .li10{
+          margin-top: 10px;
+          .div10{
+            display: flex;
+            .span1{
+              width: 40px;
+            }
+            .select1{
+             flex: 1;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+import React, {Component} from 'react';
+import './bill.scss'
+
+class Bill extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+
+        }
+    }
+    render() {
+        return(
+            <div id="bill">
+                bill
+            </div>
+        )
+    }
+}
+export default Bill;

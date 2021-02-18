@@ -1,0 +1,191 @@
+import React, {Component} from 'react';
+import {withRouter} from 'react-router-dom';
+import $ from 'jquery';
+import Slider from './components/slider/slider.js';
+import Axios from 'axios';
+import './App.scss';
+import imgSrc from './common/img/logo_s.png';
+import { Menu, Dropdown, Tabs ,message} from 'antd';
+import { DownOutlined, CloseOutlined } from '@ant-design/icons';
+const { TabPane } = Tabs;
+class App extends Component {
+    constructor (props) {
+        super(props)
+        this.newTabIndex = 0;
+        const panes = [{title: '首页', key: 0}];
+        this.state = {
+            activeKey: "",
+            panes,
+            userName: ''
+        };
+    }
+    render() {
+        const menu = (
+            <Menu>
+                <Menu.Item>
+                    <a target="_blank" rel="noopener noreferrer" onClick={this.outLogin.bind(this)}>
+                        退出登录
+                    </a>
+                </Menu.Item>
+            </Menu>
+        );
+        return(
+            <div id="app">
+                <div className="header">
+                    <div className="header_left">
+                        <img src={imgSrc}/>
+                    </div>
+                    <div className="header_right">
+                        <Dropdown overlay={menu}>
+                            <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+                                {this.state.userName} <DownOutlined />
+                            </a>
+                        </Dropdown>
+                    </div>
+                </div>
+                <div className="main">
+                    <div className="main_left">
+                        <Slider giveAppData={this.handleData.bind(this)} giveSliderData={this.state.activeKey}></Slider>
+                    </div>
+                    <div className="main_right">
+                        <div className="div1">
+                            <Tabs hideAdd onChange={this.onChange.bind(this)} activeKey={this.state.activeKey} type="editable-card"
+                                onEdit={this.onEdit.bind(this)}>
+                                {this.state.panes.map(pane => (
+                                    <TabPane tab={pane.title} key={pane.key} closeIcon={<CloseOutlined />}></TabPane>
+                                ))}
+                            </Tabs>
+                        </div>
+                        <div className="div1Bottom">
+                            {this.props.children}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+    componentDidMount() {
+        this.initDomHeight();
+        this.initDom();
+        window.onresize = ()=>{
+            this.initDomHeight();
+            this.initDom();
+        }
+        this.tableName();
+    }
+    tableName() {
+        let obj = JSON.parse(sessionStorage.getItem("userInfo"));
+        if(obj) {
+            this.setState({
+                userName: obj.realname
+            })
+        }
+    }
+    // 初始化的头部下面的高度
+    initDomHeight() {
+        $('.main').css({
+            height: $('#app').height()
+        })
+    }
+    // tabs中的width
+    initDom() {
+        $('.ant-tabs-nav-wrap').css({
+            width: '500px'
+        })
+
+        $(".div1Bottom").css({
+            height: $(".main_right").height() - 66
+        })
+    }
+    outLogin() {
+        console.log("退出登录");
+        // let params = {
+        //
+        // };
+        // Axios.post('/self/erp/user/logout', params).then((res)=>{
+        //     if(res.data.success) {
+        //         message.success("退出成功, 请稍等...");
+        //         setTimeout(()=>{
+        //             this.props.history.replace('/login');
+        //         }, 1800);
+        //         sessionStorage.clear();
+        //     }else{
+        //         message.success(res.data.message);
+        //     }
+        // })
+    }
+
+    onChange = activeKey => {
+        this.setState({ activeKey });
+        switch(activeKey) {
+            case '1-1':
+                this.props.history.push('/app/procurementPlan');
+                break;
+            case '1-2':
+                this.props.history.push('/app/purchasingTask');
+                break;
+            case '1-3':
+                this.props.history.push('/app/qualityOrder');
+                break;
+            case '1-4':
+                this.props.history.push('/app/purchaseOrder');
+                break;
+            case '8-1':
+                this.props.history.push('/app/dictionary0peration');
+                break;
+            case '8-2':
+                this.props.history.push('/app/journalizing');
+                break;
+            case '8-3':
+                this.props.history.push('/app/userBu');
+                break;
+            case '8-4':
+                this.props.history.push('/app/branch');
+                break;
+            case '8-5':
+                this.props.history.push('/app/roleList');
+                break;
+        }
+    };
+
+    onEdit = (targetKey, action) => {
+        this[action](targetKey);
+    };
+    remove = targetKey => {
+        let { activeKey } = this.state;
+        let lastIndex;
+        this.state.panes.forEach((pane, i) => {
+            if (pane.key === targetKey) {
+                lastIndex = i - 1;
+            }
+        });
+        const panes = this.state.panes.filter(pane => pane.key !== targetKey);
+        if (panes.length && activeKey === targetKey) {
+            if (lastIndex >= 0) {
+                activeKey = panes[lastIndex].key;
+            } else {
+                activeKey = panes[0].key;
+            }
+        }
+        this.setState({ panes, activeKey });
+    };
+    handleData(objects) {
+        let arr = [{title: '首页', key: 0}],
+        obj = {};
+        let item = objects.items;
+        if(item && item.length) {
+            item.forEach((item)=>{
+                if(!obj[item.key]) {
+                    arr.push(item);
+                    obj[item.key] = true;
+                }
+            })
+        }
+        this.setState({
+            panes: arr,
+            activeKey: ''+objects.currentItems
+        })
+    }
+}
+
+export default withRouter(App);

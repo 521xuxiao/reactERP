@@ -1,0 +1,42 @@
+import React, {Component} from 'react';
+import $ from 'jquery';
+import Slider from './components/slider/slider.js';
+import './App.scss';
+
+class App extends Component {
+    constructor (props) {
+        super(props)
+        this.state = {
+
+        }
+    }
+    render() {
+        return(
+            <div id="app">
+                <div className="header">我是头部的东西（代做）</div>
+                <div className="main">
+                    <div className="main_left">
+                        <Slider></Slider>
+                    </div>
+                    <div className="main_right">
+                        {this.props.children}
+                    </div>
+                </div>
+            </div>
+        )
+    }
+    componentDidMount() {
+        this.initDomHeight();
+        window.onresize = ()=>{
+            this.initDomHeight();
+        }
+    }
+    // 初始化的头部下面的高度
+    initDomHeight() {
+        $('.main').css({
+            height: $('#app').height()
+        })
+    }
+}
+
+export default App;

@@ -1,0 +1,122 @@
+import React, {Component} from 'react';
+import $ from 'jquery';
+import Slider from './components/slider/slider.js';
+import './App.scss';
+import imgSrc from './common/img/logo_s.png';
+import { Menu, Dropdown, Tabs } from 'antd';
+import { DownOutlined, CloseOutlined } from '@ant-design/icons';
+const { TabPane } = Tabs;
+class App extends Component {
+    constructor (props) {
+        super(props)
+        this.newTabIndex = 0;
+        const panes = [];
+        this.state = {
+            activeKey: "",
+            panes,
+        };
+    }
+    render() {
+        const menu = (
+            <Menu>
+                <Menu.Item>
+                    <a target="_blank" rel="noopener noreferrer" onClick={this.outLogin.bind(this)}>
+                        退出登录
+                    </a>
+                </Menu.Item>
+            </Menu>
+        );
+        return(
+            <div id="app">
+                <div className="header">
+                    <div className="header_left">
+                        <img src={imgSrc}/>
+                    </div>
+                    <div className="header_right">
+                        <Dropdown overlay={menu}>
+                            <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+                                超管 <DownOutlined />
+                            </a>
+                        </Dropdown>
+                    </div>
+                </div>
+                <div className="main">
+                    <div className="main_left">
+                        <Slider></Slider>
+                    </div>
+                    <div className="main_right">
+                        <div className="div1">
+                            <Tabs hideAdd onChange={this.onChange.bind(this)} activeKey={this.state.activeKey} type="editable-card"
+                                onEdit={this.onEdit.bind(this)}>
+                                {this.state.panes.map(pane => (
+                                    <TabPane tab={pane.title} key={pane.key} closeIcon={<CloseOutlined />}></TabPane>
+                                ))}
+                            </Tabs>
+                        </div>
+                        {this.props.children}
+                    </div>
+                </div>
+            </div>
+        )
+    }
+    componentDidMount() {
+        this.initDomHeight();
+        this.initDom();
+        window.onresize = ()=>{
+            this.initDomHeight();
+            this.initDom();
+        }
+    }
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        // let panes = JSON.parse(sessionStorage.getItem("tabsArr"));
+        const { panes } = this.state;
+        const activeKey = `newTab${this.newTabIndex++}`;
+        panes.push({ title: 'New Tab', key: activeKey });
+        this.setState({ panes, activeKey });
+
+    }
+
+    // 初始化的头部下面的高度
+    initDomHeight() {
+        $('.main').css({
+            height: $('#app').height()
+        })
+    }
+    // tabs中的width
+    initDom() {
+        $('.ant-tabs-nav-wrap').css({
+            width: '1000px'
+        })
+    }
+    outLogin() {
+        console.log("退出登录");
+    }
+
+    onChange = activeKey => {
+        this.setState({ activeKey });
+    };
+
+    onEdit = (targetKey, action) => {
+        this[action](targetKey);
+    };
+    remove = targetKey => {
+        let { activeKey } = this.state;
+        let lastIndex;
+        this.state.panes.forEach((pane, i) => {
+            if (pane.key === targetKey) {
+                lastIndex = i - 1;
+            }
+        });
+        const panes = this.state.panes.filter(pane => pane.key !== targetKey);
+        if (panes.length && activeKey === targetKey) {
+            if (lastIndex >= 0) {
+                activeKey = panes[lastIndex].key;
+            } else {
+                activeKey = panes[0].key;
+            }
+        }
+        this.setState({ panes, activeKey });
+    };
+}
+
+export default App;

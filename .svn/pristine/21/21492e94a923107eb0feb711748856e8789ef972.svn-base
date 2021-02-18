@@ -1,0 +1,60 @@
+import React, {Component} from 'react';
+import { Menu } from 'element-react';
+import Axios from 'axios';
+import $ from 'jquery';
+import { withRouter } from 'react-router-dom'
+import './slider.scss';
+
+class Slider extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            defaultActive: '1-1'
+        }
+    }
+    render() {
+        return(
+            <div className="slider" id="slider">
+                <Menu defaultActive={this.state.defaultActive} onSelect={this.isSelect.bind(this)} uniqueOpened={true} className="el-menu-vertical-demo">
+                    <Menu.SubMenu index="1" title={<span><i className="el-icon-message"></i>仓库管理</span>}>
+                        <Menu.Item index="1-1">首页</Menu.Item>
+                        <Menu.Item index="1-2">index</Menu.Item>
+                        <Menu.Item index="1-3">选项3</Menu.Item>
+                    </Menu.SubMenu>
+                    <Menu.SubMenu index="2" title={<span><i className="el-icon-menu"></i>办公室管理</span>}>
+                        <Menu.Item index="2-1">师生恋</Menu.Item>
+                        <Menu.Item index="2-2">数理化</Menu.Item>
+                    </Menu.SubMenu>
+                </Menu>
+            </div>
+        )
+    }
+    componentDidMount () {
+        // 刷新回显高亮菜单栏
+        this.currentMenuItem();
+    }
+    currentMenuItem() {  // 刷新回显高亮菜单栏
+        let currentIndex = JSON.parse(sessionStorage.getItem("menuItem"));
+        if(currentIndex) {
+            this.setState({
+                defaultActive: currentIndex
+            })
+        }
+    }
+    isSelect(index) {  // 点击菜单跳转到相应的路由
+        console.log(index)
+        // 存到session里面供刷新导航栏高亮使用
+        sessionStorage.setItem("menuItem", JSON.stringify(index));
+        switch (index) {
+            case '1-1':
+                this.props.history.push('/app/home');
+                break;
+            case '1-2':
+                this.props.history.push('/app/index');
+                break;
+        }
+    }
+}
+
+
+export default withRouter(Slider);

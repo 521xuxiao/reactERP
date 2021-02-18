@@ -1,0 +1,461 @@
+import React, {Component} from 'react';
+import $ from "jquery";
+import "./home1.scss"
+import echarts from "echarts";
+class Home1 extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+
+        }
+    }
+    render() {
+        return(
+            <div id="home1">
+                <div className="home1">
+                    <ol className="home1_top">
+                        <ol className="home1_top_left">
+                            <ol className="home1_top_left_inner">
+                                <ol className="home1_top_left_inner_top">
+                                    <ol className="home1_top_left_inner_top_left">
+                                        <ol className="home1_top_left_inner_top_left_title">今日抽检车辆数</ol>
+                                        <ol className="home1_top_left_inner_top_left_content">
+                                            <ol className="home1_top_left_inner_top_left_content_a">1545</ol>
+                                            <ol className="home1_top_left_inner_top_left_content_b">辆</ol>
+                                        </ol>
+                                    </ol>
+                                    <ol className="home1_top_left_inner_top_right">
+                                        <ol className="home1_top_left_inner_top_left_title">+15%</ol>
+                                        <ol className="home1_top_left_inner_top_left_content"></ol>
+                                    </ol>
+                                </ol>
+                                <ol className="home1_top_left_inner_bottom home1_top_left_inner_top">
+                                    <ol className="home1_top_left_inner_top_left">
+                                        <ol className="home1_top_left_inner_top_left_title">今日抽检桶数量</ol>
+                                        <ol className="home1_top_left_inner_top_left_content">
+                                            <ol className="home1_top_left_inner_top_left_content_a">1545</ol>
+                                            <ol className="home1_top_left_inner_top_left_content_b">桶</ol>
+                                        </ol>
+                                    </ol>
+                                    <ol className="home1_top_left_inner_top_right">
+                                        <ol className="home1_top_left_inner_top_left_title">-15%</ol>
+                                        <ol className="home1_top_left_inner_top_left_content"></ol>
+                                    </ol>
+                                </ol>
+                            </ol>
+                        </ol>
+                        <ol className="home1_top_middle home1_top_left">
+                            <ol className="home1_top_middle_inner home1_top_left_inner">
+                                <ol className="home1_top_left_inner_top">
+                                    <ol className="home1_top_left_inner_top_left">
+                                        <ol className="home1_top_left_inner_top_left_title">今日抽检评级量</ol>
+                                        <ol className="home1_top_left_inner_top_left_content">
+                                            <ol className="home1_top_left_inner_top_left_content_a">1545</ol>
+                                            <ol className="home1_top_left_inner_top_left_content_b">吨</ol>
+                                        </ol>
+                                    </ol>
+                                    <ol className="home1_top_left_inner_top_right">
+                                        <ol className="home1_top_left_inner_top_left_title">+15%</ol>
+                                        <ol className="home1_top_left_inner_top_left_content"></ol>
+                                    </ol>
+                                </ol>
+                                <ol className="home1_top_left_inner_bottom home1_top_left_inner_top">
+                                    <ol className="home1_top_left_inner_top_left">
+                                        <ol className="home1_top_left_inner_top_left_title">今日扣称数</ol>
+                                        <ol className="home1_top_left_inner_top_left_content">
+                                            <ol className="home1_top_left_inner_top_left_content_a">1545</ol>
+                                            <ol className="home1_top_left_inner_top_left_content_b">吨</ol>
+                                        </ol>
+                                    </ol>
+                                    <ol className="home1_top_left_inner_top_right">
+                                        <ol className="home1_top_left_inner_top_left_title">-15%</ol>
+                                        <ol className="home1_top_left_inner_top_left_content"></ol>
+                                    </ol>
+                                </ol>
+                            </ol>
+                        </ol>
+                        <ol className="home1_top_right">
+                            <ol className="home1_top_right_inner">
+                                <ol className="home1_top_right_inner_left">
+                                    <ol className="home1_top_right_inner_top_left_title">供应商数量</ol>
+                                    <ol className="home1_top_left_inner_top_left_content">
+                                        <ol className="home1_top_left_inner_top_left_content_a">1234</ol>
+                                        <ol className="home1_top_left_inner_top_left_content_b">吨</ol>
+                                    </ol>
+                                </ol>
+                                <ol className="placeEcharts" id="placeEcharts"></ol>
+                            </ol>
+                        </ol>
+                    </ol>
+                    <ol className="home1_bottom">
+                        <ol className="home1_bottom_left">
+                            <ol className="home1_bottom_left_inner">
+                                <ol className="home1_bottom_left_inner_title">采购明细</ol>
+                                <ol className="home1_bottom_left_inner_left" id="home1_bottom_left_inner_left"></ol>
+                                <ol className="home1_bottom_left_inner_right" id="home1_bottom_left_inner_right"></ol>
+                            </ol>
+                        </ol>
+                        <ol className="home1_bottom_right">
+                            <ol className="home1_bottom_right_inner">
+                                <ol className="home1_bottom_right_inner_title">累计采购量排行</ol>
+                                <ol className="home1_bottom_right_inner_content">
+                                    <ol className="home1_bottom_right_inner_content_h3">
+                                        <li className="home1_bottom_right_inner_content_h3_li1">序号</li>
+                                        <li className="home1_bottom_right_inner_content_h3_li1">供应商名称</li>
+                                        <li className="home1_bottom_right_inner_content_h3_li1">采购量 (kg)</li>
+                                    </ol>
+                                    <div className="placeLi" id="scroll-message">
+                                        <ul className="ul7" id="ul7"></ul>
+                                    </div>
+                                </ol>
+                            </ol>
+                        </ol>
+                    </ol>
+                </div>
+            </div>
+        )
+    }
+    componentDidMount() {
+        this.init1();
+        this.initDom();
+        this.lastSrollTop();
+    }
+    componentWillUnmount() {
+        clearInterval(this.timer);
+    }
+    init1() {
+        let myChart1 = echarts.init(document.getElementById('placeEcharts'));
+        let option1 = {
+            tooltip: {
+                trigger: 'item',
+                show: false
+            },
+            color: ['#797AFF', '#F5AC49'],
+            series: [
+                {
+                    name: '',
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['50%', '60%'],
+                    data: [
+                        {value: 35, name: '冷库'},
+                        {value: 310, name: '代办'}
+                    ],
+                    label: {
+                        normal: {
+                            formatter: '{per|{d}%} , {c|{c}}个\n{hr|}\n{a|}',
+                            padding: [0, -10],
+                            rich: {
+                                a: {
+                                    color: '#999',
+                                    lineHeight: 20,
+                                    align: 'center'
+                                },
+                                hr: {
+                                    borderColor: 'auto',
+                                    width: '105%',
+                                    borderWidth: 0.5,
+                                    height: 0.5,
+                                },
+                                per: {
+                                    padding: [4, 0],
+                                }
+                            }
+                        }
+                    },
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+        myChart1.setOption(option1);
+
+        let myChart2 = echarts.init(document.getElementById('home1_bottom_left_inner_left'));
+
+        let data = [
+            {name: "呵呵", value: 12},
+            {name: "哈哈", value: 120},
+            {name: "嘿嘿", value: 45},
+            {name: "嘻嘻", value: 68},
+        ];
+        let colorList = ['#503EFF', '#3E82FF', '#8BF39A', '#00FCFD'];
+        let rich = {
+            name: {
+                color: "#FFF",
+                fontSize: 14,
+                padding: [10, 15, 0, 10],
+                fontWeight: '400',
+                align: 'left'
+            },
+            value: {
+                color: "#FFF",
+                fontSize: 15,
+                padding: [10, 10, 0, 15],
+                fontWeight: '500',
+                align: 'right'
+            },
+            percent: {
+                color: "#FFF",
+                align: 'right',
+                fontSize: 15,
+                fontWeight: '500',
+                //padding: [0, 5]
+            },
+            hr: {
+                width: '100%',
+                height: 0,
+            },
+            cir: {
+                fontSize: 26,
+            }
+        }
+        let option2 = {
+            tooltip: {
+                trigger: 'axis',
+                show: false
+            },
+            series: [{
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function(params) {
+                        return params.name + '：' + params.value + '册<br>占比：' + params.percent.toFixed(2) + '%'
+                    }
+                },
+                itemStyle: {
+                    normal: {
+                        borderColor: '#0A1934',
+                        borderWidth: 5,
+                        color: function(params) {
+                            return colorList[params.dataIndex]
+                        }
+                    }
+                },
+                type: 'pie',
+                radius: ['30%', '50%'],
+                center: ["50%", "50%"],
+                label: {
+                    normal: {
+                        show: false,
+                        position: 'inner',
+                        formatter: params => {
+                            return (
+                                '{percent|' + params.percent.toFixed(0) + '%}'
+                            );
+                        },
+                        rich: rich,
+                    }
+                },
+                data: data
+            }, {
+                itemStyle: {
+                    normal: {
+                        borderColor: '#0A1934',
+                        borderWidth: 5,
+                        color: function(params) {
+                            return colorList[params.dataIndex]
+                        }
+                    }
+                },
+                type: 'pie',
+                silent: true, //取消高亮
+                radius: ['30%', '50%'],
+                center: ["50%", "50%"],
+                labelLine: {
+                    normal: {
+                        length: 30,
+                        length2: 0,
+                        lineStyle: {
+                            color: 'transparent'
+                        }
+                    }
+                },
+                label: {
+                    normal: {
+
+                        formatter: params => {
+                            return '{name|' + params.name + '}{value|' + params.value + '}\n{hr|————————}';
+                        },
+                        rich: rich,
+                        padding: [-20, 25, 0, 25]
+                    }
+                },
+                data: data,
+                z: -1
+            }, {
+                itemStyle: {
+                    normal: {
+                        borderColor: '#0A1934',
+                        borderWidth: 5,
+                        color: function(params) {
+                            return colorList[params.dataIndex]
+                        }
+                    }
+                },
+                type: 'pie',
+                silent: true, //取消高亮
+                radius: ['30%', '50%'],
+                center: ["50%", "50%"],
+                labelLine: {
+                    normal: {
+                        length: 30,
+                        length2: 0,
+                        lineStyle: {
+                            color: 'transparent'
+                        }
+                    }
+                },
+                label: {
+                    normal: {
+                        formatter: params => {
+                            return '\n{cir|●}\n';
+                        },
+                        rich: rich,
+                    }
+                },
+                data: data,
+                z: -1
+            }]
+        };
+        myChart2.setOption(option2);
+
+
+        let myChart3 = echarts.init(document.getElementById('home1_bottom_left_inner_right'));
+        let option3 = {
+            tooltip: {
+                trigger: 'axis',
+                show: false
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            yAxis: [
+                {
+                    type: 'category',
+                    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    axisTick: {
+                        alignWithLabel: false
+                    },
+                    axisLabel: {
+                        margin: 20,
+                        color: '#fff',
+                        textStyle: {
+                            fontSize: 12
+                        },
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: "#0F2C4D"
+                        }
+                    }
+                }
+            ],
+            xAxis: [
+                {
+                    type: 'value',
+                    axisLabel: {
+                        margin: 20,
+                        color: '#fff',
+                        textStyle: {
+                            fontSize: 12
+                        },
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: '#0F2C4D',
+                            type: 'dashed'
+                        }
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: "#0F2C4D",
+                        }
+                    }
+                }
+            ],
+            series: [
+                {
+                    name: '直接访问',
+                    type: 'bar',
+                    barWidth: '60%',
+                    data: [10, 52, 200, 334, 390, 330, 220],
+                    itemStyle: {
+                        normal: {
+                            color: function(params) {
+                                var colorList = ['#FC8D52','#5D9CEC','#64BD3D','#EE9201','#29AAE3', '#B74AE5','#0AAF9F','#E89589','#16A085','#4A235A','#C39BD3 ','#F9E79F','#BA4A00','#ECF0F1','#616A6B','#EAF2F8','#4A235A','#3498DB' ];
+                                return colorList[params.dataIndex]
+                            }
+                        },
+                    }
+                }
+            ]
+        };
+        myChart3.setOption(option3);
+    }
+    initDom() {
+        $(".placeLi").css({
+            height: $(".home1_bottom_right").height() - ( parseInt($(".home1_bottom_right_inner_content").css("paddingTop")) + $(".home1_bottom_right_inner_content_h3").height() + 10 )
+        });
+    }
+    lastSrollTop() {
+        setTimeout(()=>{
+            let table = document.getElementById("scroll-message");
+            let str = '';
+            let tableData = [
+                {index: 1, name: '战三1', num: 88},
+                {index: 2, name: '战三2', num: 188},
+                {index: 3, name: '战三3', num: 88},
+                {index: 4, name: '战三4', num: 188},
+                {index: 5, name: '战三5', num: 88},
+                {index: 6, name: '战三6', num: 188},
+                {index: 7, name: '战三7', num: 88},
+                {index: 8, name: '战三8', num: 188},
+                {index: 9, name: '战三9', num: 88},
+                {index: 10, name: '战三10', num: 88},
+                {index: 11, name: '战三11', num: 88},
+                {index: 12, name: '战三12', num: 88},
+                {index: 13, name: '战三13', num: 88},
+                {index: 14, name: '战三13', num: 88},
+                {index: 15, name: '战三13', num: 88},
+                {index: 16, name: '战三13', num: 88},
+                {index: 17, name: '战三13', num: 88},
+                {index: 18, name: '战三13', num: 88}
+            ]
+            tableData.forEach((item, index)=>{
+                str = '<ol>'+
+                        '<li className="home1_bottom_right_inner_content_h3_li1">'+item.index+'</li>'+
+                        '<li className="home1_bottom_right_inner_content_h3_li1">'+item.name+'</li>'+
+                        '<li className="home1_bottom_right_inner_content_h3_li1">'+item.num+'</li>'+
+                    '</ol>'
+                $('#scroll-message #ul7').append(str);
+            })
+            this.timer = null;
+            table.scrollTop = 0;
+            table.innerHTML += table.innerHTML;
+            // if(table.scrollTop >= table.scrollHeight / 2) {
+            // }
+            function play() {
+                clearInterval(this.timer);
+                this.timer = setInterval(function() {
+                    table.scrollTop++;
+                    if (table.scrollTop >= table.scrollHeight / 2) {
+                        table.scrollTop = 0;
+                    }
+                }, 100);
+            }
+            setTimeout(play, 500);
+            table.onmouseover = function() {
+                clearInterval(this.timer)
+            };
+            table.onmouseout = play;
+        },0)
+    }
+}
+export default Home1;

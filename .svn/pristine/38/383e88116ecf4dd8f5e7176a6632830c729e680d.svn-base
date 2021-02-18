@@ -1,0 +1,82 @@
+import React, {Component} from 'react';
+import Axios from 'axios';
+
+import { Table, Input,Space, Button,message, Pagination , Modal, Select, InputNumber} from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import './weighingBuckles.scss';
+const {Column} = Table;
+const {Option} = Select;
+const { confirm } = Modal;
+class WeighingBuckles extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            dataSource: [],
+            currentPage: 1, pageSize: 10, pageTotal: 0
+        }
+    }
+    render() {
+        return(
+            <div id="weighingBuckles">
+                <div className="weighingBuckles">
+                    <div className="placeTable">
+                        <Table pagination={false} dataSource={this.state.dataSource}>
+                            <Column title="序号" align="center" key="index" dataIndex="index" width="100px" render={(text, record, index)=>(
+                                <span>{(this.state.currentPage-1)*this.state.pageSize+index+1}</span>
+                            )} fixed="left"/>
+                            <Column fixed="left" title="评价单名称" dataIndex="sheetName" key="sheetName" align="center"/>
+                            <Column title="抽检单名称" dataIndex="randomCheckSheetName" key="randomCheckSheetName" align="center"/>
+                            <Column title="存储编码" dataIndex="bucketCode" key="bucketCode" align="center"/>
+                            <Column title="评级扣称" dataIndex="ratingDiscountWeight" key="ratingDiscountWeight" align="center"/>
+                            <Column title="称重扣称" dataIndex="weighingDiscountWeight" key="weighingDiscountWeight" align="center"/>
+                            <Column title="制单人" dataIndex="createdName" key="createdName" align="center"/>
+                            <Column title="修改时间" dataIndex="modifiedTime" key="modifiedTime" align="center"/>
+                            {/*<Column title="操作" align="center" key="records" dataIndex="records" fixed="right"*/}
+                            {/*    render={(text, record) => (*/}
+                            {/*        <Space size="large">*/}
+                            {/*            <span key={"changes"} onClick={this.changes.bind(this, record)} className="changes">编辑</span>*/}
+                            {/*            <span key={"deletes"} onClick={this.deletes.bind(this, record)} className="deletes">删除</span>*/}
+                            {/*        </Space>*/}
+                            {/*    )}*/}
+                            {/*/>*/}
+                        </Table>
+                    </div>
+                    <div className="placePagination">
+                        <Pagination showTotal={()=>`共 ${this.state.pageTotal} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotal} />
+                    </div>
+                </div>
+            </div>
+        )
+    }
+    initData(currentPage) {
+        Axios.post('/self/erp/warehousing/queryWeighingSheet', {currentPage, pageSize: this.state.pageSize}).then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    dataSource: res.data.data.weighingSheets,
+                    pageTotal: res.data.data.num
+                })
+            }else{
+                this.setState({
+                    dataSource: [],
+                    pageTotal: 0
+                })
+            }
+        })
+    }
+    changePages(val) {
+        this.initData(val);
+        this.setState({
+            currentPage: val
+        })
+    }
+    changes(row) {
+
+    }
+    deletes(row) {
+
+    }
+    componentDidMount() {
+        this.initData(this.state.currentPage);
+    }
+}
+export default WeighingBuckles;

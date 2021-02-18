@@ -1,0 +1,18 @@
+import React, {Component} from "react"
+import './dictionary0peration.scss'
+class Dictionary0peration extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+
+        }
+    }
+    render() {
+        return(
+            <div id="dictionary0peration">
+                dictionary0peration
+            </div>
+        )
+    }
+}
+export default Dictionary0peration;

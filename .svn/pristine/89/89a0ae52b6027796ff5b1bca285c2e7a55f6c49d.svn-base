@@ -1,0 +1,168 @@
+import React, {Component} from "react";
+import titles from "../../common/img/text.png";
+import {withRouter} from "react-router-dom";
+import Home1 from "../home1/home1.js";
+import Home2 from "../home2/home2.js";
+import Home3 from "../home3/home3.js";
+import Home4 from "../home4/home4.js";
+import Home5 from "../home5/home5.js";
+import { Carousel } from 'antd';
+import './home.scss'
+class Home extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            activeIndex:2 ,
+            navList: [{name: '采购', id: 0}, {name: '仓库', id: 1}, {name: '首页', id: 2}, {name: '贸易', id: 3}, {name: '生产', id: 4}],
+            date: '',
+            time: ''
+        }
+    }
+    render(){
+        return(
+            <div id="home">
+                <div className="home">
+                    <div className="home_top">
+                        <div className="home_top_left">
+                            <span className="span1">{this.state.date}</span>
+                            <span className="span2">{this.state.time}</span>
+                            <span className="span3 span2">{this.state.week}</span>
+                        </div>
+                        <div className="home_top_middle">
+                            <img className="home_top_middle_text" src={titles} onClick={this.toItemPage.bind(this)}/>
+                        </div>
+                        <div className="home_top_right">
+                            <span className="span4">烟台</span>
+                            <span className="span5 span4">16℃</span>
+                            <span className="span6 span4">多云</span>
+                        </div>
+                    </div>
+                    <div className="home_tab">
+                        <ul className="ul1">
+                            {
+                                this.state.navList.map((item, index)=>{
+                                    return(
+                                        <li className={this.state.activeIndex==index?"li1 active":"li1"} key={item.id} onClick={this.navClick.bind(this, index)}>{item.name}</li>
+                                    )
+                                })
+                            }
+                        </ul>
+                    </div>
+                    <div className="home_children">
+                        <Carousel dots={false} ref={el => (this.slider = el)}>
+                            <div className="div1">
+                                {this.init1()}
+                            </div>
+                            <div className="div1">
+                                {this.init2()}
+                            </div>
+                            <div className="div1">
+                                {this.init3()}
+                            </div>
+                            <div className="div1">
+                                {this.init4()}
+                            </div>
+                            <div className="div1">
+                                {this.init5()}
+                            </div>
+                        </Carousel>
+
+                    </div>
+                </div>
+            </div>
+        )
+    }
+    init1() {
+        if(this.state.activeIndex == 0){
+            return(
+                <Home1 />
+            )
+        }
+    }
+    init2() {
+        if(this.state.activeIndex == 1){
+            return(
+                <Home2 />
+            )
+        }
+    }
+    init3() {
+        if(this.state.activeIndex == 2){
+            return(
+                <Home3 />
+            )
+        }
+    }
+    init4() {
+        if(this.state.activeIndex == 3){
+            return(
+                <Home4 />
+            )
+        }
+    }
+    init5() {
+        if(this.state.activeIndex == 4){
+            return(
+                <Home5 />
+            )
+        }
+    }
+    navClick(index) {
+        this.setState({activeIndex: index});
+        this.goTop(index);
+    }
+    goTop(i) {
+        this.slider && this.slider.innerSlider.slickGoTo(i);
+    }
+    componentDidMount() {
+        this.goTop(2);
+        this.initTime();
+        setInterval(()=>{
+            this.initTime();
+        }, 1000);
+    }
+    toItemPage() {
+        this.props.history.push("/app/procurementPlan");
+    }
+
+    /**
+     * 初始化左上角的时间
+     */
+    initTime() {
+        let date = new Date();
+        let year = date.getFullYear();
+        let month = date.getMonth()+1;
+        let day = date.getDate();
+        let hour = date.getHours();
+        let minute = date.getMinutes();
+        let second = date.getSeconds();
+        let week = date.getDay();
+        this.setState({
+            date: year+"-"+this.formatter(month)+"-"+this.formatter(day),
+            time: this.formatter(hour)+":"+this.formatter(minute)+":"+this.formatter(second),
+            week: this.formatterWeek(week)
+        })
+    }
+    formatter(time) {
+        return time<10?"0"+time:time;
+    }
+    formatterWeek(week) {
+        switch (week) {
+            case 0:
+                return "星期日";
+            case 1:
+                return "星期一";
+            case 2:
+                return "星期二";
+            case 3:
+                return "星期三";
+            case 4:
+                return "星期四";
+            case 5:
+                return "星期五";
+            case 6:
+                return "星期六";
+        }
+    }
+}
+export default withRouter(Home);

@@ -1,0 +1,325 @@
+#storeManagement{
+  height: 100%;
+  .storeManagement{
+    height: 100%;
+    display: flex;
+    .dictionaryLeft{
+      width: 300px;
+      //overflow: auto;
+      height: 100%;
+      padding: 0 5px 6px 12px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      .innerDiv{
+        background: #fff;
+        height: 100%;
+        .dictType{
+          font-size: 20px;
+          text-align: center;
+          padding: 10px 0 15px 0;
+          background-image: -webkit-linear-gradient(left, #3073FE, #7F7EED);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          -moz-text-fill-color: transparent;
+          text-fill-color: transparent;
+          cursor: pointer;
+          user-select: none;
+        }
+
+      }
+    }
+    .dictionaryRight{
+      flex: 1;
+      height: 100%;
+      padding: 0 12px 6px 6px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      .innerRight{
+        .btn{
+          text-align: right;
+          padding-top: 20px;
+          padding-right: 20px;
+        }
+        background: #fff;
+        height: 100%;
+        .ul1, .ol1{
+          overflow: hidden;
+          padding-top: 30px;
+          .li1{
+            float: left;
+            width: 50%;
+            overflow: hidden;
+            margin-bottom: 10px;
+            .span1{
+              display: block;
+              float: left;
+              width: 80px;
+              text-align: right;
+              padding: 5px 4px 0 0;
+            }
+            .input1{
+              float: left;
+              width: 80%;
+            }
+            .input2{
+              float: left;
+              margin: 4px 0 0 0px;
+            }
+          }
+        }
+        .ol1{
+          padding-top: 10px;
+        }
+        .div4{
+          padding-top: 60px;
+          display: flex;
+          justify-content: space-around;
+          .li4{
+
+            .btn4{
+
+            }
+          }
+        }
+      }
+    }
+    .bg{
+      background: #FAFAFA;
+      height: 62px;
+      padding-top: 16px;
+      padding-right: 18px;
+      text-align: right;
+      .searchs{
+        margin-left: 40px;
+        width: 68px;
+        height: 30px;
+        outline: 0;
+        border: 0;
+        background: #2E71FE;
+        color: #fff;
+        border-radius: 3px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+      .searchs1{
+        background: #27BA62;
+      }
+      .deletesClass{
+        background: #F0625D;
+      }
+    }
+    .placeTable{
+      .ant-table-thead{
+        tr > th{
+          background: #fff;
+        }
+      }
+      .changes{
+        color: #2E71FE;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+      .deletes{
+        color: #F0625D;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+      .check{
+        color: #27BA62;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+      .details{
+        color: #9516D1;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+    }
+    .placePagination{
+      text-align: right;
+      padding-top: 20px;
+    }
+    .modal1{
+      .div3{
+        .ul1{
+          overflow: hidden;
+          .li1{
+            float: left;
+            width: 47%;
+            display: flex;
+            margin-bottom: 10px;
+            .span1{
+              display: block;
+              width: 70px;
+              padding-top: 5px;
+            }
+            .input3{
+              flex: 1;
+            }
+          }
+          .li2{
+            margin-left: 6%;
+          }
+          .li3{
+            width: 100%;
+          }
+        }
+        .placeChangeTable{
+          .span_img{
+            display: inline-block ;
+            width: 30px;
+            height: 30px;
+            line-height: 25px;
+            border-radius: 50%;
+            text-align: center;
+            border: 1px solid #999;
+            cursor: pointer;
+            user-select: none;
+            font-size: 30px;
+            font-weight: bold;
+          }
+          .span_img1{
+            background-size: 100% 100%;
+            background: url("../../common/img/add.png") no-repeat 0 0;
+            color: #14BB12;
+            font-weight: bold;
+          }
+          .span_img2{
+            background-size: 100% 100% ;
+            background: url("../../common/img/del.png") no-repeat 0 0;
+            margin-left: 8px;
+            color: #DF0035;
+            font-weight: bold;
+          }
+        }
+      }
+      .rawMaterial{
+        padding-top: 20px;
+        .madleDeletes{
+          color: #ff4d4f;
+          text-decoration:underline;
+          cursor: pointer;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+        }
+      }
+      .sendDuplicate{
+        margin-top: 20px;
+        .span6{
+          padding-right: 10px;
+        }
+        .icons{
+          font-size: 40px;
+          cursor: pointer;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+        }
+      }
+    }
+    .modal2{
+      .switch2{
+        position: relative;
+        top: 0px;
+        left: 5px;
+      }
+    }
+    .div4{
+      padding-top: 30px;
+      display: flex;
+      justify-content: space-around;
+      .li4{
+
+        .btn4{
+
+        }
+      }
+    }
+    .modal1{
+      .div3{
+        .ul1{
+          overflow: hidden;
+          .li1{
+            float: left;
+            width: 47%;
+            display: flex;
+            .span1{
+              display: block;
+              width: 70px;
+              padding-top: 5px;
+              padding-right: 6px;
+              text-align: right;
+            }
+            .input3{
+              flex: 1;
+            }
+            input4{
+              position: relative;
+              top: 4px;
+            }
+          }
+          .li10{
+            margin-top: 30px;
+          }
+        }
+      }
+      .rawMaterial{
+        padding-top: 20px;
+        .madleDeletes{
+          color: #ff4d4f;
+          text-decoration:underline;
+          cursor: pointer;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+        }
+      }
+      .sendDuplicate{
+        margin-top: 20px;
+        .span6{
+          padding-right: 10px;
+        }
+        .icons{
+          font-size: 40px;
+          cursor: pointer;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+        }
+      }
+    }
+    .div4{
+      padding-top: 30px;
+      display: flex;
+      justify-content: space-around;
+      .li4{
+
+        .btn4{
+
+        }
+      }
+    }
+  }
+}

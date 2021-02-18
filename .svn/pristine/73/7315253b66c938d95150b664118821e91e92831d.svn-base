@@ -1,0 +1,284 @@
+import React, {Component} from 'react';
+import {Table, Space, Pagination, Input, Modal, Button, message, Tree } from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import Axios from 'axios';
+import './roleList.scss';
+const {Column} = Table;
+const { TextArea } = Input;  const { confirm } = Modal;
+class RoleList extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            dataSource: [],
+            pageTotle: 0,
+            currentPage: 1,
+            pageSize: 10,
+            name: '',
+            msg: '',
+            visible: false,
+            nameModal: '',
+            flag: 0,
+            id: '',
+            info: '',
+            visibleLimit: false,
+            treeDataTree: [],  defaultCheckedKeys: [],
+            treeSelectAll: [],  treeSelectHalf: []
+        }
+    }
+    render() {
+        return(
+            <div id={"roleList"}>
+                <div className={"roleList"}>
+                    <div className="placeSearch">
+                        <span>角色名称</span>
+                        <Input className="input1" allowClear onChange={(e)=>{this.setState({name: e.target.value})}}/>
+                        <button className="searchs" onClick={this.searchMethods.bind(this)}>查询</button>
+                    </div>
+                    <div className="bg">
+                        <button className="searchs" onClick={this.add.bind(this)}>新增</button>
+                    </div>
+                    <div className="placeTable">
+                        <Table pagination={false} dataSource={this.state.dataSource}>
+                            <Column title="序号" align="center" key="index" dataIndex="index" width="100px" render={(text, record, index)=>(
+                                <span>{index+1}</span>
+                            )}/>
+                            <Column title="角色名称" dataIndex="name" key="name" align="center"/>
+                            <Column title="操作" align="center" key="records" dataIndex="records"
+                                render={(text, record) => (
+                                    <Space size="large">
+                                        <span key={"changes"} onClick={this.changes.bind(this, record)} className="changes">编辑</span>
+                                        <span key={"deletes"} onClick={this.deletes.bind(this, record)} className="deletes">删除</span>
+                                        <span key={"rolelist"} onClick={this.jurisdic.bind(this, record)} className="jurisdiction">权限</span>
+                                    </Space>
+                                )}
+                            />
+                        </Table>
+                    </div>
+                    <div className="placePagination">
+                        <Pagination showTotal={()=>`共 ${this.state.pageTotle} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotle} />
+                    </div>
+                    <Modal title={this.state.msg} footer={null} getContainer={false} closable={false}  visible={this.state.visible} centered={true}>
+                        <div className="modal1">
+                            <div className={"div3"}>
+                                <span className={"span1"}>*角色名称</span>
+                                <Input allowClear onChange={(e)=>{this.setState({nameModal: e.target.value})}} value={this.state.nameModal} className={"input3"}/>
+                            </div>
+                            <div className={"div3 div4"}>
+                                <span className={"span1"}>角色介绍</span>
+                                <TextArea allowClear onChange={(e)=>{this.setState({info: e.target.value})}} value={this.state.info} className={"input3"}/>
+                            </div>
+                        </div>
+                        <div style={{textAlign: "center", paddingTop: '20px'}}>
+                            <Button type="danger" style={{marginRight: '10%'}} onClick={()=>{this.setState({visible: false})}}>取消</Button>
+                            <Button type="primary" style={{marginLeft: '10%'}} onClick={this.handleOk.bind(this)}>确定</Button>
+                        </div>
+                    </Modal>
+                    {/*权限*/}
+                    <Modal title="权限配置" footer={null} getContainer={false} closable={false}  visible={this.state.visibleLimit} centered={true}>
+                        <div className="modal2">
+                            {
+                                this.state.treeDataTree && this.state.treeDataTree.length ? (
+                                    <div>
+                                        <Tree
+                                            checkable
+                                            defaultCheckedKeys={this.state.defaultCheckedKeys}
+                                            onCheck={this.onCheckTree.bind(this)}
+                                            treeData={this.state.treeDataTree}
+                                        />
+                                    </div>
+                                ):(
+                                    <div></div>
+                                )
+                            }
+
+                        </div>
+                        <div style={{textAlign: "center", paddingTop: '20px'}}>
+                            <Button type="danger" style={{marginRight: '10%'}} onClick={()=>{this.setState({visibleLimit: false,defaultCheckedKeys: [],
+                                treeDataTree: []})}}>取消</Button>
+                            <Button type="primary" style={{marginLeft: '10%'}} onClick={this.handleOkLimited.bind(this)}>确定</Button>
+                        </div>
+                    </Modal>
+                </div>
+            </div>
+        )
+    }
+    initData(currentPage) {
+        let params = {
+            pageSize: this.state.pageSize,
+            currentPage
+        };
+        Axios.post('/self/erp/role/queryRoles', params).then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    dataSource: res.data.data.roleList,
+                    pageTotle: res.data.data.roleList.length
+                })
+            }else{
+                this.setState({
+                    dataSource: []
+                })
+            }
+        })
+    }
+    searchMethods() {
+        this.initData(1);
+        this.setState({
+            currentPage: 1
+        })
+    }
+    add() {
+        this.setState({
+            visible: true,
+            msg: '新增',
+            nameModal: '',  info: '',
+            flag: 1
+        })
+    }
+    changes(row) {
+        this.setState({
+            visible: true,
+            msg: '修改',
+            nameModal: row.name,
+            info: row.intro,
+            flag: 0,
+            id: row.id
+        })
+    }
+    deletes(row) {
+        let that = this;
+        confirm({
+            title: '你确定要删除吗?',
+            icon: <ExclamationCircleOutlined />,
+            content: '',
+            onOk() {
+                let params = {
+                    roleId: row.id
+                };
+                Axios.post('/self/erp/role/deleteRole', params).then((res)=>{
+                    if(res.data.success) {
+                        message.success("删除成功");
+                        that.initData(that.state.currentPage);
+                    }else{
+                        message.warning(res.data.message);
+                    }
+                })
+            },
+            onCancel() {},
+        });
+    }
+    jurisdic(row) {
+        this.setState({
+            visibleLimit: true,
+            roleID: row.id
+        });
+        this.initSelectTree(row.id);
+    }
+    changePages(val) {
+        this.initData(val);
+        this.setState({
+            currentPage: val
+        })
+    }
+    handleOk() {
+        if(!this.state.nameModal) {
+            message.warning("数据填写不完整");
+            return false;
+        }
+        let params = {
+            name: this.state.nameModal,
+            intro: this.state.info
+        };
+        if(this.state.flag == 1) {   // 新增
+            Axios.post('/self/erp/role/addRole', params).then((res)=>{
+                if(res.data.success) {
+                    message.success("添加成功");
+                    this.initData(this.state.currentPage);
+                    this.setState({
+                        visible: false
+                    })
+                }else{
+                    message.warning(res.data.message);
+                }
+            })
+        }else{  // 修改
+            params.id = this.state.id;
+            Axios.post('/self/erp/role/updateRole', params).then((res)=>{
+                if(res.data.success) {
+                    message.success("修改成功");
+                    this.initData(this.state.currentPage);
+                    this.setState({
+                        visible: false
+                    })
+                }else{
+                    message.warning(res.data.message);
+                }
+            })
+        }
+    }
+    initTree() {
+        Axios.post('/self/erp/authority/queryMenu').then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                this.setState({
+                    treeDataTree: res.data.data.menuList
+                })
+            }else{
+                this.setState({
+                    treeDataTree: []
+                })
+            }
+        })
+    }
+    initSelectTree(roleId) {
+        let params = {
+            roleId
+        };
+        Axios.post('/self/erp/authority/queryRoleAuthority', params).then((res)=>{
+            if(res.data.success) {
+                let defaultCheckedKeys = [];
+                if(res.data.data.roleAuthorityList && res.data.data.roleAuthorityList.length) {
+                    res.data.data.roleAuthorityList.forEach((item)=>{
+                        defaultCheckedKeys.push(item.key);
+                    })
+                }
+                this.setState({
+                    defaultCheckedKeys
+                })
+                this.initTree();
+            }else{
+                this.setState({
+                    defaultCheckedKeys: []
+                })
+            }
+        });
+    }
+    handleOkLimited() {
+        let params = {
+            roleId: this.state.roleID,
+            allCheck: this.state.treeSelectAll,
+            halfCheck: this.state.treeSelectHalf,
+        };
+        Axios.post('/self/erp/authority/addRoleAuthority', params).then(res=>{
+            if(res.data.success) {
+                message.success("成功");
+                this.setState({
+                    visibleLimit: false,
+                    defaultCheckedKeys: [],
+                    treeDataTree: []
+                })
+            }else{
+                message.warning(res.data.message);
+            }
+        })
+    }
+    onCheckTree(checkedKeys, info) {
+        this.setState({
+            treeSelectAll: checkedKeys,
+            treeSelectHalf: info.halfCheckedKeys
+        })
+    }
+    componentWillMount() {
+        this.initData(this.state.currentPage);
+    }
+}
+export default RoleList;

@@ -1,0 +1,126 @@
+.messageLists{
+    .placeSearch{
+        height: 66px;
+        background: #fff;
+        padding-left: 40px;
+        padding-top: 18px;
+        span{
+            color: #282828;
+        }
+        .span2{
+            margin-left: 30px;
+        }
+        .input1{
+            width: 200px;
+            margin-left: 10px;
+        }
+        .inputDatePicker{
+            width: 360px;
+        }
+        .searchs{
+            margin-left: 40px;
+            width: 65px;
+            height: 32px;
+            outline: 0;
+            border: 0;
+            background: #2E71FE;
+            color: #fff;
+            border-radius: 3px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: pointer;
+        }
+    }
+    .bg{
+        background: #FAFAFA;
+        height: 62px;
+        padding-top: 16px;
+        padding-right: 18px;
+        text-align: right;
+        .searchs{
+            margin-left: 40px;
+            width: 68px;
+            height: 30px;
+            outline: 0;
+            border: 0;
+            background: #2E71FE;
+            color: #fff;
+            border-radius: 3px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: pointer;
+        }
+        .searchs1{
+            background: #27BA62;
+        }
+        .deletesClass{
+            background: #F0625D;
+        }
+    }
+    .placeTable{
+        .ant-table-thead{
+            tr > th{
+                background: #fff;
+            }
+        }
+        .changes{
+            color: #2E71FE;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: pointer;
+        }
+        .deletes{
+            color: #F0625D;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: pointer;
+        }
+        .check{
+            color: #27BA62;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: pointer;
+        }
+        .details{
+            color: #9516D1;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: pointer;
+        }
+    }
+    .placePagination{
+        text-align: right;
+        padding-top: 20px;
+    }
+    .modal1{
+        .div3{
+            .h4{
+                text-align: center;
+            }
+            .h5{
+                text-align: center;
+                margin-top: 10px;
+            }
+            .p1{
+
+            }
+            .img111{
+                width: 33%;
+                margin-right: 3%;
+                display: inline-block;
+            }
+        }
+    }
+}

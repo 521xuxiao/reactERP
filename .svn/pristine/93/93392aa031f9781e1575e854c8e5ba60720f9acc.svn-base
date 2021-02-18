@@ -1,0 +1,169 @@
+import React, {Component} from "react"
+import { Table, Tag, Spac, Button, Pagination, Space, Input, Modal, Form} from 'antd';
+import $ from 'jquery';
+import './dictionary0peration.scss'
+const {Column} =  Table;
+class Dictionary0peration extends Component{
+    inputValue;
+    constructor(props) {
+        super(props);
+        this.msg = "";
+        this.changesSlect = "";
+        this.state = {
+            treeList: [{name: "计量单位", key: 1}, {name: '原料等级', key: 2}, {name: '原料规格', key: 3}],
+            currentIndex: 0,
+            dataSource : [
+                {
+                    key: '1',
+                    selects: '斤'
+                },
+                {
+                    key: '2',
+                    selects: '桶'
+                }
+            ],
+            currentPage: 1,
+            pageTotle: 0,
+            visible: false,
+            inpValu: '',  selectValue: '',
+            // changesSlect: ''
+        }
+    }
+    render() {
+        const inputValue = "";
+        return(
+            <div id="dictionary0peration">
+                <div className="dictionary0peration">
+                    <div className="dictionaryLeft">
+                        <div className="innerDiv">
+                            <ul className="ul1">
+                                {
+                                    this.state.treeList.map((item, index)=>{
+                                        return(
+                                            <li className={index==this.state.currentIndex?'active li1':'li1'} key={index} onClick={this.handleClick.bind(this, index)}>{item.name}</li>
+                                        )
+                                    })
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div className="dictionaryRight">
+                        <div className="innerRight">
+                            <div className="placeSearch">
+                                <span>选项</span>
+                                <Input className="input1" ref="xxx" allowClear onChange={this.handelChange.bind(this)}/>
+                                <button className="searchs" onClick={this.searchMethods.bind(this)}>查询</button>
+                            </div>
+                            <div className="bg">
+                                <button className="searchs" onClick={this.add.bind(this, '')}>新增</button>
+                                <button className="searchs deletesClass">删除</button>
+                            </div>
+                            <div className="placeTable">
+                                <Table pagination={false} dataSource={this.state.dataSource} rowSelection={{
+                                    type: "checkbox",
+                                    onChange: this.changeTableSelstor.bind(this),
+                                }}>
+                                    <Column title="序号" dataIndex="key" key="key" align="center" width="100px"/>
+                                    <Column title="选项" dataIndex="selects" key="selects" align="center"/>
+                                    <Column title="操作" key="action" align="center"
+                                            render={(text, record, index) => (
+                                                <Space size="large">
+                                                    <span onClick={this.changes.bind(this, record)} className="changes">编辑</span>
+                                                    <span onClick={this.deletes.bind(this, record)} className="deletes">删除</span>
+                                                </Space>
+                                            )}
+                                    />
+                                </Table>
+                            </div>
+                            <div className="placePagination">
+                                <Pagination defaultCurrent={this.state.currentPage} total={this.state.pageTotle} showSizeChanger onShowSizeChange={this.onShowSizeChange.bind(this)}
+                                            showTotal={this.showTotal.bind(this)} onChange={this.onChange.bind(this)}/>
+                            </div>
+                        </div>
+                    </div>
+                    <Modal title={this.msg} footer={null} closable={false}  visible={this.state.visible} centered={true}>
+                        <div className="modal1">
+                            <span>选项</span>
+                            <Input allowClear id="input" onChange={this.modalChange.bind(this)} style={{width: '80%',marginLeft: '20px'}}/>
+                        </div>
+                        <div style={{textAlign: "center", paddingTop: '20px'}}>
+                            <Button type="danger" style={{marginRight: '10%'}} onClick={this.handleCancel.bind(this)}>取消</Button>
+                            <Button type="primary" style={{marginLeft: '10%'}} onClick={this.handleOk.bind(this)}>确定</Button>
+                        </div>
+                    </Modal>
+                </div>
+            </div>
+        )
+    }
+    componentDidMount() {
+
+    }
+    handleClick(index) {
+        this.setState({
+            currentIndex: index
+        })
+    };
+
+    searchMethods() {  // 查询
+        console.log(this.state.inpValu);
+    }
+
+    change(item) {
+        console.log(item);
+    };
+    handelChange(e){
+        this.setState({
+            inpValu:e.target.value
+        })
+    }
+    modalChange(e) {
+        this.setState({
+            selectValue: e.target.value
+        })
+    }
+
+    onShowSizeChange(item) {
+        console.log(item);
+    }
+
+    showTotal(totle) {
+        return "共"+totle+"条";
+    }
+    onChange(item) {
+        console.log(item);
+    }
+
+    deletes(row) {
+        console.log(row);
+    }
+    changes(row) {   // 修改
+        this.setState({
+            visible: true,
+            selectValue: row.selects
+        });
+        this.msg = "修改";
+    };
+
+    add(row) {
+        this.msg = "新增";
+        this.setState({
+            visible: true
+        })
+    };
+
+
+    changeTableSelstor(selectedRowKeys, selectedRows) { 
+        console.log(selectedRows);
+    }
+
+    handleOk() {
+        console.log(this.state.selectValue);
+    }
+
+    handleCancel() {
+        this.setState({
+            visible: false
+        })
+    }
+}
+export default Dictionary0peration;

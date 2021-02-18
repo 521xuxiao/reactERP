@@ -1,0 +1,56 @@
+import React, {Component} from 'react'
+import {Button, Input, message} from 'antd';
+import Axios from 'axios';
+import './login.scss'
+class Login extends Component{
+    constructor(props) {
+        super(props)
+        this.state = {
+            username: '',
+            password: ''
+        }
+    }
+    render() {
+        return(
+            <div id="login">
+                login
+                <div>
+                    <span>username</span>
+                    <Input onChange={this.userName.bind(this)}/>
+                </div>
+                <div>
+                    <span>password</span>
+                    <Input onChange={this.passWord.bind(this)}/>
+                </div>
+                <Button type="primary" onClick={this.handleClick.bind(this)}>登录</Button>
+            </div>
+        )
+    }
+    handleClick() {
+        let params = {
+            account: this.state.username,
+            password: this.state.password
+        };
+        Axios.post('/self/erp/user/login', params).then((res)=>{
+            console.log(res);
+            if(res.data.success) {
+                message.success("登录成功");
+                sessionStorage.setItem("userInfo", JSON.stringify(res.data.data.userInfo));
+                this.props.history.replace('/app/procurementPlan');
+            }else{
+                message.warning(res.data.message);
+            }
+        })
+    }
+    userName(e) {
+        this.setState({
+            username: e.target.value
+        })
+    }
+    passWord(e) {
+        this.setState({
+            password: e.target.value
+        })
+    }
+}
+export default Login;

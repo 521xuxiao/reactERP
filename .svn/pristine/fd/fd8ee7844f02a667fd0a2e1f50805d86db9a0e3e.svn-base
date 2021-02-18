@@ -1,0 +1,88 @@
+#billboard{
+  .billboard{
+    .bg{
+      background: #FAFAFA;
+      height: 62px;
+      padding-top: 16px;
+      padding-right: 18px;
+      text-align: right;
+      .searchs{
+        margin-left: 40px;
+        width: 68px;
+        height: 30px;
+        outline: 0;
+        border: 0;
+        background: #2E71FE;
+        color: #fff;
+        border-radius: 3px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+      .searchs1{
+        background: #27BA62;
+      }
+      .deletesClass{
+        background: #F0625D;
+      }
+    }
+    .placeTable{
+      .ant-table-thead{
+        tr > th{
+          background: #fff;
+        }
+      }
+      .changes{
+        color: #2E71FE;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+      .deletes{
+        color: #F0625D;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+      .check{
+        color: #27BA62;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+    }
+    .placePagination{
+      text-align: right;
+      padding-top: 20px;
+    }
+    .modal1{
+      display: flex;
+      .span1{
+        width: 60px;
+        padding-top: 4px;
+      }
+      .input{
+        flex: 1;
+      }
+    }
+    .div4{
+      padding-top: 30px;
+      display: flex;
+      justify-content: space-around;
+      .li4{
+
+        .btn4{
+
+        }
+      }
+    }
+  }
+}

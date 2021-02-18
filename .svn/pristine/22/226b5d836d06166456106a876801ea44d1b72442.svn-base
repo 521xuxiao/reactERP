@@ -1,0 +1,413 @@
+#home3{
+    height: 100%;
+    .home3{
+        height: 100%;
+        padding: 0 1rem;
+        box-sizing: border-box;
+        .home3_top{
+            height: 50%;
+            margin-bottom: 0;
+            overflow: hidden;
+            .home3_top_left{
+                width: 25%;
+                float: left;
+                height: 100%;
+                padding-right: 0.5rem;
+                box-sizing: border-box;
+                .home3_top_left_inner{
+                    height: 90%;
+                    background: url("../../common/img/kuang1.png") no-repeat 0 0.2rem;
+                    background-size: 100% 100%;
+                    box-sizing: border-box;
+                    .home3_top_left_inner-top{
+                        height: 50%;
+                        box-sizing: border-box;
+                        padding: 0 2rem 0;
+                        .ul1{
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            height: 90%;
+                            .li1{
+                                background: url("../../common/img/juxing.png") no-repeat 0 0;
+                                background-size: 100% 100%;
+                                width: 4.8rem;
+                                height: 6.3rem;
+                                line-height: 6.3rem;
+                                text-align: center;
+                                font-size: 3rem;
+                                color: #fff;
+                                font-weight: bold;
+                                font-family: UniDreamLED;
+                            }
+                        }
+                    }
+                    .home3_top_left_inner-bottom{
+                        height: 50%;
+                        overflow: hidden;
+                        .home3_top_left_inner-bottom-left{
+                            float: left;
+                            width: 50%;
+                            .reals{
+                                width: 96%;
+                                margin: 0 auto;
+                                color: #fff;
+                                .h1{
+                                    font-weight: normal;
+                                    color: #fff;
+                                    text-align: center;
+                                }
+                                .h2{
+                                    background: url("../../common/img/hengxian.png") no-repeat 0 0;
+                                    background-size: 100% 100%;
+                                    width: 100%;
+                                    height: 0.2rem;
+                                }
+                                .h3{
+                                    font-weight: normal;
+                                    text-align: center;
+                                    .p1{
+                                        display: inline-block;
+                                        font-size: 4rem;
+                                        font-family: UniDreamLED;
+                                        background: linear-gradient(to bottom, #0BAAD5, #00EAFF);
+                                        -webkit-background-clip: text;
+                                        color: transparent;
+                                        -webkit-text-fill-color: transparent;
+                                        text-fill-color: transparent;
+                                    }
+                                    .p2{
+                                        background: linear-gradient(to bottom, #F4F22C, #E5B522);
+                                        -webkit-background-clip: text;
+                                        color: transparent;
+                                        -webkit-text-fill-color: transparent;
+                                        text-fill-color: transparent;
+                                    }
+                                    .a1{
+                                        display: inline-block;
+                                        color: #fff;
+                                        font-size: 1.2rem;
+                                        margin-left: .3rem;
+                                        font-family: UniDreamLED;
+                                    }
+                                }
+                            }
+                        }
+                        .home3_top_left_inner-bottom-right{
+                            float: left;
+                            width: 50%;
+                        }
+                    }
+                }
+                .home3_top_left_inner:before{
+                    display: block;
+                    content: "实时库存量 (吨)";
+                    color: #fff;
+                    text-align: center;
+                    font-size: 2rem;
+                }
+            }
+            .home3_top_center{
+                width: 52%;
+                float: left;
+                height: 100%;
+                padding: 0 0.5rem;
+                box-sizing: border-box;
+                .home3_top_center_inner{
+                    height: 100%;
+                }
+            }
+            .home3_top_right{
+                width: 23%;
+                float: left;
+                height: 100%;
+                padding-left: 0.5rem;
+                box-sizing: border-box;
+                .home3_top_right_inner{
+                    height: 90%;
+                    background: url("../../common/img/kuang1.png") no-repeat 0 0.2rem;
+                    background-size: 100% 100%;
+                    &:before{
+                        content: "交易数据";
+                        display: block;
+                        color: #fff;
+                        text-align: center;
+                        font-size: 2rem;
+                    }
+                    .home3_top_right_inner_top{
+                        height: 50%;
+                        overflow: hidden;
+                        .home3_top_right_inner_top_left{
+                            float: left;
+                            width: 50%;
+                            padding: 3rem 1rem 2rem 2.8rem;
+                            box-sizing: border-box;
+                            .home3_top_right_inner_top_left_inner{
+                                background: url("../../common/img/kuangkuang.png") no-repeat 0 0;
+                                background-size: 100% 100%;
+                                .home3_top_right_inner_top_left_inner_p4{
+                                    height: 50%;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    margin-bottom: 0;
+                                    font-size: 3.4rem;
+                                    background: linear-gradient(to bottom, #0BAAD5, #00EAFF);
+                                    -webkit-background-clip: text;
+                                    color: transparent;
+                                    -webkit-text-fill-color: transparent;
+                                    text-fill-color: transparent;
+                                    padding-top: 2rem;
+                                    box-sizing: border-box;
+                                }
+                                .home3_top_right_inner_top_left_inner_p41{
+                                    background: linear-gradient(to bottom, #7EE036, #76EA7F);
+                                    -webkit-background-clip: text;
+                                    color: transparent;
+                                    -webkit-text-fill-color: transparent;
+                                    text-fill-color: transparent;
+                                }
+                                .home3_top_right_inner_top_left_inner_p5{
+                                    height: 50%;
+                                    margin-bottom: 0;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    font-size: 1.6rem;
+                                    background: linear-gradient(to bottom, #0BAAD5, #00EAFF);
+                                    -webkit-background-clip: text;
+                                    color: transparent;
+                                    -webkit-text-fill-color: transparent;
+                                    text-fill-color: transparent;
+                                    padding-bottom: 2rem;
+                                    box-sizing: border-box;
+                                }
+                            }
+                        }
+                        .home3_top_right_inner_top_right{
+                            float: left;
+                            width: 50%;
+                            padding: 3rem 2.8rem 2rem 1rem;
+                            box-sizing: border-box;
+                            .home3_top_right_inner_top_right_inner{
+                                background: url("../../common/img/kuangkuang.png") no-repeat 0 0;
+                                background-size: 100% 100%;
+                                .home3_top_right_inner_top_left_inner_p4{
+                                    height: 50%;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    margin-bottom: 0;
+                                    font-size: 3.4rem;
+                                    background: linear-gradient(to bottom, #0BAAD5, #00EAFF);
+                                    -webkit-background-clip: text;
+                                    color: transparent;
+                                    -webkit-text-fill-color: transparent;
+                                    text-fill-color: transparent;
+                                    padding-top: 2rem;
+                                    box-sizing: border-box;
+                                }
+                                .home3_top_right_inner_top_left_inner_p42{
+                                    background: linear-gradient(to bottom, #F4F22C, #E5B522);
+                                    -webkit-background-clip: text;
+                                    color: transparent;
+                                    -webkit-text-fill-color: transparent;
+                                    text-fill-color: transparent;
+                                }
+                                .home3_top_right_inner_top_left_inner_p43{
+                                    background: linear-gradient(to bottom, #F87474, #F08787);
+                                    -webkit-background-clip: text;
+                                    color: transparent;
+                                    -webkit-text-fill-color: transparent;
+                                    text-fill-color: transparent;
+                                }
+                                .home3_top_right_inner_top_left_inner_p5{
+                                    height: 50%;
+                                    margin-bottom: 0;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    font-size: 1.6rem;
+                                    background: linear-gradient(to bottom, #0BAAD5, #00EAFF);
+                                    -webkit-background-clip: text;
+                                    color: transparent;
+                                    -webkit-text-fill-color: transparent;
+                                    text-fill-color: transparent;
+                                    padding-bottom: 2rem;
+                                    box-sizing: border-box;
+                                }
+                            }
+                        }
+                        .home3_top_right_inner_top_left1{
+                            padding-bottom: 5rem;
+                            padding-top: 0rem;
+                        }
+                    }
+                    .home3_top_right_inner_bottom{
+                        height: 50%;
+                    }
+                }
+            }
+        }
+        .home3_bottom{
+            height: 50%;
+            overflow: hidden;
+            padding-bottom: 1rem;
+            box-sizing: border-box;
+            .home3_bottom_left{
+                float: left;
+                width: 50%;
+                height: 100%;
+                padding-right: 1rem;
+                box-sizing: border-box;
+                .home3_bottom_left_inner{
+                    height: 100%;
+                    background: url("../../common/img/jianjie.png") no-repeat 0 0;
+                    background-size: 100% 100%;
+                    position: relative;
+                    &::before{
+                        content: "公司简介";
+                        display: block;
+                        color: #fff;
+                        font-size: 2rem;
+                        position: absolute;
+                        left: 27%;
+                        top: 0;
+                    }
+                    .home3_bottom_left_inner_content{
+                        margin-bottom: 0;
+                        color: #fff;
+                        line-height: 4.8rem;
+                        padding: 3.5rem;
+                        text-indent:2em
+                    }
+                    .home3_bottom_left_inner_three{
+                        display: flex;
+                        justify-content: space-around;
+                        .home3_bottom_left_inner_three_li4{
+                            .home3_bottom_left_inner_three_li4_a1{
+                                font-size: 3.6rem;
+                                background: linear-gradient(to bottom, #0BAAD5, #00EAFF);
+                                -webkit-background-clip: text;
+                                color: transparent;
+                                -webkit-text-fill-color: transparent;
+                                text-fill-color: transparent;
+                                line-height: 1;
+                                .a1{
+                                    font-size: 1.8rem;
+                                    color: #fff;
+                                }
+                            }
+                            .home3_bottom_left_inner_three_li4_a11{
+                                background: linear-gradient(to bottom, #60D50B, #76EA7F);
+                                -webkit-background-clip: text;
+                                color: transparent;
+                                -webkit-text-fill-color: transparent;
+                                text-fill-color: transparent;
+                                .a1{
+                                    font-size: 1.8rem;
+                                    color: #fff;
+                                }
+                            }
+                            .home3_bottom_left_inner_three_li4_a111{
+                                background: linear-gradient(to bottom, #F4F22C, #E5B522);
+                                -webkit-background-clip: text;
+                                color: transparent;
+                                -webkit-text-fill-color: transparent;
+                                text-fill-color: transparent;
+                                .a1{
+                                    font-size: 1.8rem;
+                                    color: #fff;
+                                }
+                            }
+                            .home3_bottom_left_inner_three_li4_a2{
+                                display: block;
+                                font-size: 1.8rem;
+                                color: #fff;
+                            }
+                        }
+                    }
+                }
+            }
+            .home3_bottom_right{
+                float: left;
+                width: 50%;
+                height: 100%;
+                padding-left: 1rem;
+                box-sizing: border-box;
+                .home3_bottom_right_inner{
+                    height: 100%;
+                    background: url("../../common/img/jianjie.png") no-repeat 0 0;
+                    background-size: 100% 100%;
+                    position: relative;
+                    overflow: hidden;
+                    &:before{
+                        display: block;
+                        content: "苹果实时行情";
+                        color: #fff;
+                        font-size: 2rem;
+                        position: absolute;
+                        top: 0;
+                        left: 25%;
+                    }
+                    .home3_bottom_right_inner_left{
+                        float: left;
+                        width: 60%;
+                        height: 100%;
+                        padding: 4rem 3rem 3rem 3rem;
+                        box-sizing: border-box;
+                        .home3_bottom_right_inner_left_echarts{
+                            height: 100%;
+                        }
+                    }
+                    .home3_bottom_right_inner_right{
+                        float: left;
+                        width: 40%;
+                        height: 100%;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        .home3_bottom_right_inner_right_b0{
+                            display: inline;
+                            width: 9rem;
+                            text-align: center;
+                            height: 3rem;
+                            line-height: 3rem;
+                            background: linear-gradient(to right, #0072FF, #00EAFF, #01AAFF);
+                            -webkit-background-clip: text;
+                            color: transparent;
+                            -webkit-text-fill-color: transparent;
+                            text-fill-color: transparent;
+                            border: 1px solid #244767;
+                            border-radius: 1.5rem;
+                            box-shadow: 0px 0px 6px #eee;
+                        }
+                        .home3_bottom_right_inner_right_b1{
+                            font-size: 1.6rem;
+                            color: #fff;
+                            display: inline;
+                        }
+                        .home3_bottom_right_inner_right_b2{
+                            margin-top: 1rem;
+                        }
+                        .home3_bottom_right_inner_right_b3{
+                            margin-top: 1rem;
+                        }
+                        .home3_bottom_right_inner_right_b4{
+                            margin-top: 2.8rem;
+                        }
+                        .home3_bottom_right_inner_right_b5{
+                            margin-top: 1rem;
+                        }
+                        .home3_bottom_right_inner_right_b6{
+                            margin-top: 1rem;
+                        }
+                        .home3_bottom_right_inner_right_b7{
+                            margin-top: 1rem;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

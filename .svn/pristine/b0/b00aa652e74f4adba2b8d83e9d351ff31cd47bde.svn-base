@@ -1,0 +1,136 @@
+import React, {Component} from 'react';
+import {Tree, Input,Button,message} from 'antd';
+import Axios from 'axios';
+import { DownOutlined } from '@ant-design/icons';
+import './menuConfig.scss';
+class MenuConfig extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            treeData: [],
+            path: '',
+            component: '',
+            fuIndex: '',
+            selfIndex: '',   icon: '', name: '',
+            id: ''
+        }
+    }
+    render() {
+        return(
+            <div id="menuConfig">
+                <div className="menuConfig">
+                    <div className="placeTree">
+                        <div className="innerLeft">
+                            <Tree
+                                switcherIcon={<DownOutlined />}
+                                onSelect={this.onSelect.bind(this)}
+                                treeData={this.state.treeData}
+                            />
+                        </div>
+                        <div className="innerRight">
+                            <ul className="ul1">
+                                <li className="li1">
+                                    <span className="span1">path</span>
+                                    <Input className="input1" value={this.state.path} onChange={(e)=>{this.setState({path:e.target.value})}}/>
+                                </li>
+                                <li className="li1">
+                                    <span className="span1">component</span>
+                                    <Input className="input1" value={this.state.component} onChange={(e)=>{this.setState({component:e.target.value})}}/>
+                                </li>
+                            </ul>
+                            <ul className="ul1">
+                                <li className="li1">
+                                    <span className="span1">父索引</span>
+                                    <Input className="input1" value={this.state.fuIndex} onChange={(e)=>{this.setState({fuIndex:e.target.value})}}/>
+                                </li>
+                                <li className="li1">
+                                    <span className="span1">自身的索引</span>
+                                    <Input className="input1" value={this.state.selfIndex} onChange={(e)=>{this.setState({selfIndex:e.target.value})}}/>
+                                </li>
+                                <li className="li1">
+                                    <span className="span1">icon</span>
+                                    <Input className="input1" value={this.state.icon} onChange={(e)=>{this.setState({icon:e.target.value})}}/>
+                                </li>
+                                <li className="li1">
+                                    <span className="span1">名字</span>
+                                    <Input className="input1" value={this.state.name} onChange={(e)=>{this.setState({name:e.target.value})}}/>
+                                </li>
+                            </ul>
+                            <div className="placeBtn">
+                                <Button onClick={this.add.bind(this)}>新增</Button>
+                                <Button onClick={this.deletes.bind(this)}>删除</Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+    initData() {
+    	Axios.post('/self/erp/menu/queryMenu').then((res)=>{
+//  		console.log(res.data);
+    		if(res.data.success) {
+    			this.recursion(res.data.data.menuList);
+    		}else{
+    			message.warning(res.data.message);
+    		}
+    	})
+    }
+    recursion(array) {  // 递归处理数据
+    	if(array && array.length) {
+    		array.forEach((item)=>{
+    			if(item.children && item.children.length) {
+    				item.title = item.name;
+    				item.key = item.id;
+    				this.recursion(item.children);
+    			}else{
+    				item.title = item.name;
+    				item.key = item.id;
+    			}
+    		})
+    	}
+    	this.setState({
+    		treeData: array
+    	})
+    }
+    onSelect(selectedKeys) {
+        if(selectedKeys.length>0) {
+        	this.setState({
+        		id: selectedKeys[0]
+        	})
+        }
+    }
+    add() {
+        let params = {
+            path: this.state.path,
+            component: this.state.component,
+            fatherIndex: this.state.fuIndex,
+            localIndex: this.state.selfIndex,
+            menuName: this.state.name,
+            icon: this.state.icon,
+            permission: ''
+        };
+        Axios.post('/self/erp/menu/addMenu', params).then((res)=>{
+        	if(res.data.success) {
+        		message.success("成功");
+        		this.initData();
+        	}else{
+        		message.warning(res.data.message);
+        	}
+        })
+    }
+    deletes() {
+		Axios.post('/self/erp/menu/deleteMenuAndButton', {id: this.state.id}).then((res)=>{
+			if(res.data.success) {
+				message.success("成功");
+				this.initData();
+			}else{
+				message.warning(res.data.message);
+			}
+		})
+    }
+    componentDidMount() {
+    	this.initData();
+    }
+}
+export default MenuConfig;

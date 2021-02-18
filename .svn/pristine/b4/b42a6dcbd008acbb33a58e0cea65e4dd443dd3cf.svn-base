@@ -1,0 +1,298 @@
+import React, {Component} from 'react'
+import {Input, Table, Space, Pagination, Modal, Select, Button, InputNumber, message} from 'antd';
+import Axios from 'axios';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import './qualityOrder.scss'
+const {Column} = Table;
+const {Option} = Select;
+const {confirm} = Modal;
+class QualityOrder extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            code: '',
+            dataSource: [],
+            currentPage: 1,
+            pageSize: 10,
+            pageTotle: 0,
+            visible: false,
+            specification: '',
+            specificationList: [],
+            levelId: '',
+            levelIdList: [],
+            barrelsMaterial: '',  barrelsMaterialList: [],
+            distributor: '',   distributorList: [],
+            gardenId: '',  gardenIdList: [],
+            weight: null,
+            id: ''
+        }
+    }
+    render() {
+        return(
+            <div id="qualityOrder">
+                <div className="qualityOrder">
+                    <div className="placeSearch">
+                        <span className="span1">质检单编码</span>
+                        <Input className="input1" allowClear onChange={(e)=>{this.setState({code: e.target.value})}}/>
+                        <button className="searchs" onClick={this.searchMethods.bind(this)}>查询</button>
+                    </div>
+                    <div className="bg">
+                        <button className="searchs searchs1" onClick={this.downLoad.bind(this)}>导出</button>
+                    </div>
+                    <div className="placeTable">
+                        <Table pagination={false} dataSource={this.state.dataSource}>
+                            <Column title="序号" align="center" key="index" dataIndex="index" width="60px" render={(text, record, index)=>(
+                                <span>{(this.state.currentPage-1)*this.state.pageSize+index+1}</span>
+                            )}/>
+                            <Column title="质检单编码" dataIndex="sheetCode" key="sheetCode" align="center"/>
+                            <Column title="存储编码" dataIndex="bucketCode" key="bucketCode" align="center"/>
+                            <Column title="代办人" dataIndex="supplierName" key="supplierName" align="center"/>
+                            <Column title="原料规格" dataIndex="standard" key="standard" align="center"/>
+                            <Column title="原料等级" dataIndex="level" key="level" align="center"/>
+                            <Column title="注册果园" dataIndex="orchardName" key="orchardName" align="center"/>
+                            <Column title="存储材质" dataIndex="bucketMaterial" key="bucketMaterial" align="center"/>
+                            <Column title="折扣重量" dataIndex="discountWeight" key="discountWeight" align="center"/>
+                            <Column title="制单人" dataIndex="createdName" key="createdName" align="center"/>
+                            <Column title="修改时间" dataIndex="modifiedTime" key="modifiedTime" align="center"/>
+                            <Column title="操作" align="center" key="records" dataIndex="records" width="200px"
+                                    render={(text, record) => (
+                                        <Space size="large">
+                                            <span key={"changes"} onClick={this.changes.bind(this, record)} className="changes">编辑</span>
+                                            <span key={"deletes"} onClick={this.deletes.bind(this, record)} className="deletes">删除</span>
+                                        </Space>
+                                    )}
+                            />
+                        </Table>
+                    </div>
+                    <div className="placePagination">
+                        <Pagination showTotal={()=>`共 ${this.state.pageTotle} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotle} />
+                    </div>
+                    <Modal title="修改" width="60%" footer={null} getContainer={false} closable={false}  visible={this.state.visible} centered={true}>
+                        <div className="modal1">
+                            <div className="div3">
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">*原料规格</span>
+                                        <Select  className={"input3"} allowClear onChange={(e)=>{this.setState({specification: e})}} value={this.state.specification}>
+                                            {
+                                                this.state.specificationList.map((item, index)=>{
+                                                    return(
+                                                        <Option value={item.value} key={index}>{item.value}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">*原料等级</span>
+                                        <Select  className={"input3"} allowClear onChange={(e)=>{this.setState({levelId: e})}} value={this.state.levelId}>
+                                            {
+                                                this.state.levelIdList.map((item, index)=>{
+                                                    return(
+                                                        <Option value={item.value} key={index}>{item.value}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </li>
+                                </ul>
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">*桶材质</span>
+                                        <Select  className={"input3"} allowClear onChange={(e)=>{this.setState({barrelsMaterial: e})}} value={this.state.barrelsMaterial}>
+                                            {
+                                                this.state.barrelsMaterialList.map((item, index)=>{
+                                                    return(
+                                                        <Option value={item.value} key={index}>{item.value}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">*供应商</span>
+                                        <Select  className={"input3"} allowClear onChange={(e)=>{this.setState({distributor: e})}} value={this.state.distributor}>
+                                            {
+                                                this.state.distributorList.map((item, index)=>{
+                                                    return(
+                                                        <Option value={item.id} key={index}>{item.supplierName}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </li>
+                                </ul>
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">*果园</span>
+                                        <Select className={"input3"} allowClear onChange={(e)=>{this.setState({gardenId: e})}} value={this.state.gardenId}>
+                                            {
+                                                this.state.gardenIdList.map((item, index)=>{
+                                                    return(
+                                                        <Option value={item.id} key={index}>{item.orchardName}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">*折扣重量</span>
+                                        <InputNumber allowClear min={0} onChange={(e)=>{this.setState({weight: e})}} value={this.state.weight} className={"input3"}/>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div className="div4">
+                            <li className="li4">
+                                <Button className="btn4" type="danger" onClick={()=>{this.setState({visible: false})}}>取消</Button>
+                            </li>
+                            <li className="li4">
+                                <Button className="btn4" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
+                            </li>
+                        </div>
+                    </Modal>
+                </div>
+            </div>
+        )
+    }
+    initData(currentPage) {
+        let params =  {
+            pageSize: this.state.pageSize,
+            currentPage,
+            sheetCode: this.state.code
+        };
+        Axios.post('/self/erp/qualityCheck/queryCheckSheet', params).then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                this.setState({
+                    dataSource: res.data.data.checkSheets,
+                    pageTotle: res.data.data.num
+                })
+            }else{
+                this.setState({
+                    dataSource: [],
+                    pageTotle: 0
+                })
+            }
+        })
+    }
+    searchMethods() {
+        this.initData(1);
+        this.setState({
+            currentPage:1
+        })
+    }
+    // 查询原料规格等级桶材质下拉框,   查询供应商,  果园列表
+    specificationListMethods() {
+        Axios.post('/self/erp/qualityCheck/queryDictTypeAndValue').then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                this.setState({
+                    specificationList: res.data.data.standard,
+                    levelIdList: res.data.data.level,
+                    barrelsMaterialList: res.data.data.bucketMaterial
+                })
+            }else{
+                this.setState({
+                    specificationList: [],
+                    levelIdList: [],
+                    barrelsMaterialList: []
+                })
+            }
+        })
+        Axios.post('/self/erp/qualityCheck/querySupplier').then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                this.setState({
+                    distributorList: res.data.data.suppliers
+                })
+            }else{
+                this.setState({
+                    distributorList: []
+                })
+            }
+        })
+        Axios.post('/self/erp/qualityCheck/queryOrchard').then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    gardenIdList: res.data.data.orchards
+                })
+            }else{
+                this.setState({
+                    gardenIdList: []
+                })
+            }
+        })
+    }
+    changes(row) {
+        this.specificationListMethods();
+        this.setState({
+            visible: true,
+            id: row.id,
+            specification: row.standard,
+            levelId: row.level,
+            barrelsMaterial: row.bucketMaterial,
+            distributor: row.supplierId,
+            gardenId: Number(row.orchardId),
+            weight: row.discountWeight
+        })
+    }
+    deletes(row) {
+        let that = this;
+        confirm({
+            title: '你确定要删除吗?',
+            icon: <ExclamationCircleOutlined />,
+            content: '',
+            onOk() {
+                let params = {
+                    id: row.id
+                };
+                Axios.post('/self/erp/qualityCheck/deleteCheckSheet', params).then((res)=>{
+                    if(res.data.success) {
+                        message.success("删除成功");
+                        that.initData(that.state.currentPage);
+                    }else{
+                        message.warning(res.data.message);
+                    }
+                })
+            },
+            onCancel() {},
+        });
+    }
+    changePages(val) {
+        this.initData(val);
+        this.setState({
+            currentPage: val
+        })
+    }
+    downLoad() {
+
+    }
+    handleOk() {
+        let params = {
+            id: this.state.id,
+            standard: this.state.specification,
+            level: this.state.levelId,
+            bucketMaterial: this.state.barrelsMaterial,
+            supplierId: this.state.distributor,
+            orchardId: this.state.gardenId,
+            discountWeight: this.state.weight
+        };
+        Axios.post('/self/erp/qualityCheck/updateCheckSheet', params).then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                this.initData(this.state.currentPage);
+                this.setState({
+                    visible: false
+                })
+                message.success('成功');
+            }else{
+                message.warning(res.data.message);
+            }
+        })
+    }
+    componentDidMount() {
+        this.initData(this.state.currentPage);
+    }
+}
+export default QualityOrder;

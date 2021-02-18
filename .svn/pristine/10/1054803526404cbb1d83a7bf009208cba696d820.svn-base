@@ -1,0 +1,351 @@
+import React, {Component} from 'react';
+import {Input, Table, Space, Pagination, Modal, Select, Button, InputNumber, message} from 'antd';
+import Axios from 'axios';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import './client.scss';
+const {Column} = Table;
+const {Option} = Select;
+const {confirm} = Modal;
+class Client extends Component{
+    constructor(props) {
+        super(props);
+        this.addBtn = "";   this.changeBtn = "";  this.deleteBtn = "";
+        this.treeId= '';
+        this.state = {
+            treeList: [],
+            currentIndex: 0,
+            clientName: '',
+            currentPage: 1,
+            pageSize: 10,
+            pageTotle: 0,
+            dataSource: [],
+            msg: '',    visible: false,
+            clientname: '',   // 客户名称
+            clientType: '',    clientTypeList: [{label: '大客户', value: '1'}, {label: '批发商', value: '2'}, {label: '小商户', value: '3'}],   // 客户类型
+            clientPhone: null,  // 联系方式
+            clientMonet: '',    clientMonetList: [{label: '现金', value: '1'}, {label: '转账', value: '2'}],    // 支付类型
+            clientCode: '',   clientCodeList: [],    // 客户工号
+            clientAddress: '',  // 客户住址
+            id: ''
+        }
+    }
+    render() {
+        return(
+            <div id="client">
+                <div className="client">
+                    <div className="dictionaryLeft">
+                        <div className="innerDiv">
+                            <div className="dictType">客户分组</div>
+                            <ul className="ul1">
+                                {
+                                    this.state.treeList.map((item, index)=>{
+                                        return(   //
+                                            <li className={index==this.state.currentIndex?'active li1':'li1'} key={item.id} onClick={this.handleClick.bind(this, index, item)}>{item.groupName}</li>
+                                        )
+                                    })
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div className="dictionaryRight">
+                        <div className="innerRight">
+                            <div className="placeSearch">
+                                <span>客户名称</span>
+                                <Input className="input1" allowClear onChange={(e)=>{this.setState({clientName: e.target.value})}}/>
+                                <button className="searchs" onClick={this.searchMethods.bind(this)}>查询</button>
+                            </div>
+                            <div className="bg">
+                                <button className="searchs" onClick={this.add.bind(this)}
+                                    style={this.addBtn == 1 ? {display: 'inlineBlock'} : {display: "none"}}
+                                >新增</button>
+                            </div>
+                            <div className="placeTable">
+                                <Table pagination={false} dataSource={this.state.dataSource}>
+                                    <Column title="序号" align="center" key="index" dataIndex="index" width="100px" render={(text, record, index)=>(
+                                        <span>{(this.state.currentPage-1)*this.state.pageSize + index+1}</span>
+                                    )}/>
+                                    <Column title="客户名称" dataIndex="clientName" key="clientName" align="center"/>
+                                    <Column title="客户类型" dataIndex="clientType" key="clientType" align="center"/>
+                                    <Column title="支付类型" dataIndex="payType" key="payType" align="center" render={(text)=>(
+                                        <span>{text==1?"现金":"转账"}</span>
+                                    )}/>
+                                    <Column title="联系方式" dataIndex="clientPhone" key="clientPhone" align="center"/>
+                                    <Column title="地址" dataIndex="address" key="address" align="center"/>
+                                    <Column title="工号" dataIndex="empno" key="empno" align="center"/>
+                                    <Column title="操作" align="center" key="records" dataIndex="records"
+                                        render={(text, record) => (
+                                            <Space size="large">
+                                                <span key={"changes"} onClick={this.changes.bind(this, record)} className="changes"
+                                                      style={this.changeBtn == 1 ? {display: 'inlineBlock'} : {display: "none"}}
+                                                >编辑</span>
+                                                <span key={"deletes"} onClick={this.deletes.bind(this, record)} className="deletes"
+                                                      style={this.deleteBtn == 1 ? {display: 'inlineBlock'} : {display: "none"}}
+                                                >删除</span>
+                                            </Space>
+                                        )}
+                                    />
+                                </Table>
+                            </div>
+                            <div className="placePagination">
+                                <Pagination showTotal={()=>`共 ${this.state.pageTotle} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotle} />
+                            </div>
+
+                            <Modal title={this.state.msg} width="60%" footer={null} getContainer={false} closable={false}  visible={this.state.visible} centered={true}>
+                                <div className="modal1">
+                                    <div className="div3">
+                                        <ul className="ul1">
+                                            <li className="li1">
+                                                <span className="span1">*客户名称</span>
+                                                <Input allowClear onChange={(e)=>{this.setState({clientname: e.target.value})}} value={this.state.clientname} className={"input3"}/>
+                                            </li>
+                                            <li className="li1 li2">
+                                                <span className="span1">*客户类型</span>
+                                                <Select  className={"input3"} allowClear onChange={(e)=>{this.setState({clientType: e})}} value={this.state.clientType}>
+                                                    {
+                                                        this.state.clientTypeList.map((item, index)=>{
+                                                            return(
+                                                                <Option value={item.value} key={index}>{item.label}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            </li>
+                                        </ul>
+                                        <ul className="ul1">
+                                            <li className="li1">
+                                                <span className="span1">*联系方式</span>
+                                                <InputNumber allowClear onChange={(e)=>{this.setState({clientPhone: e})}} value={this.state.clientPhone} className={"input3"}/>
+                                            </li>
+                                            <li className="li1 li2">
+                                                <span className="span1">*支付类型</span>
+                                                <Select  className={"input3"} allowClear onChange={(e)=>{this.setState({clientMonet: e})}} value={this.state.clientMonet}>
+                                                    {
+                                                        this.state.clientMonetList.map((item, index)=>{
+                                                            return(
+                                                                <Option value={item.value} key={index}>{item.label}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            </li>
+                                        </ul>
+                                        <ul className="ul1">
+                                            <li className="li1">
+                                                <span className="span1">*业务员工号</span>
+                                                <Select  className={"input3"} allowClear onChange={(e)=>{this.setState({clientCode: e})}} value={this.state.clientCode}>
+                                                    {
+                                                        this.state.clientCodeList.map((item, index)=>{
+                                                            return(
+                                                                <Option value={item.empno} key={index}>{item.realname}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            </li>
+                                            <li className="li1 li2">
+                                                <span className="span1">*客户地址</span>
+                                                <Input allowClear onChange={(e)=>{this.setState({clientAddress: e.target.value})}} value={this.state.clientAddress} className={"input3"}/>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div className="div4">
+                                    <li className="li4">
+                                        <Button className="btn4" type="danger" onClick={()=>{this.setState({visible: false})}}>取消</Button>
+                                    </li>
+                                    <li className="li4">
+                                        <Button className="btn4" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
+                                    </li>
+                                </div>
+                            </Modal>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+    componentWillMount() {
+        let buttonList = JSON.parse(sessionStorage.getItem("buttonList"));
+        // console.log(buttonList);
+        if(buttonList && buttonList.length) {
+            buttonList.forEach((item)=>{
+                if(item.localIndex == "2-7-1") {
+                    this.addBtn = item.flag;
+                }
+                if(item.localIndex == "2-7-2") {
+                    this.changeBtn = item.flag;
+                }
+                if(item.localIndex == "2-7-3") {
+                    this.deleteBtn = item.flag;
+                }
+            })
+        }
+    }
+
+    // 左面树的数据
+    getTreeList() {
+        Axios.post('/self/erp/baseinfo/queryClientGroup', {currentPage:1, pageSize: 1000}).then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    treeList: res.data.data.clientGroups
+                });
+                this.treeId = res.data.data.clientGroups[0].id;
+                this.initData(this.state.currentPage);
+            }else{
+                this.treeId = '';
+                this.setState({
+                    treeList: []
+                })
+            }
+        })
+    }
+    handleClick(i, items) {
+        this.treeId = items.id;
+        this.setState({
+            currentIndex: i
+        });
+        this.initData(this.state.currentPage);
+    }
+    initData(currentPage) {
+        let params = {
+            currentPage,
+            pageSize: this.state.pageSize,
+            clientGroupId: this.treeId,
+            clientName: this.state.clientName
+        };
+        Axios.post('/self/erp/baseinfo/queryClient', params).then((res)=>{
+            // console.log(res.data.data);
+            if(res.data.success) {
+                res.data.data.clients.forEach((item)=>{
+                    item.key = item.id;
+                });
+                this.setState({
+                    dataSource: res.data.data.clients,
+                    pageTotle: res.data.data.num
+                });
+            }else{
+                this.setState({
+                    dataSource: [],
+                    pageTotle: 0
+                });
+            }
+        })
+    }
+    searchMethods() {
+        this.initData(1);
+        this.setState({
+            currentPage: 1
+        })
+    }
+    changePages(val) {
+        this.initData(val);
+        this.setState({
+            currentPage: val
+        })
+    }
+    add() {
+        this.setState({
+            visible: true,
+            flag: 1,
+            msg: '新增',
+            clientname: '',
+            clientType: '',
+            clientMonet: '',
+            clientPhone: '',
+            clientAddress: '',
+            clientCode: ''
+        })
+    }
+    changes(row) {
+        this.setState({
+            visible: true,
+            flag: 0,
+            msg: '修改',
+            id: row.id,
+            clientname: row.clientName,
+            clientType: ''+row.clientType,
+            clientMonet: ''+row.payType,
+            clientPhone: row.clientPhone,
+            clientAddress: row.address,
+            clientCode: ''+row.empno
+        })
+    }
+    deletes(row) {
+        let that = this;
+        confirm({
+            title: '你确定要删除吗?',
+            icon: <ExclamationCircleOutlined />,
+            content: '',
+            onOk() {
+                let params = {
+                    id: row.id
+                };
+                Axios.post('/self/erp/baseinfo/deleteClient', params).then((res)=>{
+                    if(res.data.success) {
+                        message.success("删除成功");
+                        that.initData(that.state.currentPage);
+                    }else{
+                        message.warning(res.data.message);
+                    }
+                })
+            },
+            onCancel() {},
+        });
+    }
+    handleOk() {
+        let params = {
+            clientGroupId: this.treeId,
+            clientName: this.state.clientname,
+            clientType: this.state.clientType,
+            payType: this.state.clientMonet,
+            clientPhone: this.state.clientPhone,
+            address: this.state.clientAddress,
+            empno: this.state.clientCode
+        };
+        if(this.state.flag == 1) {
+            Axios.post('/self/erp/baseinfo/addClient', params).then((res)=>{
+                if(res.data.success) {
+                    message.success("新增成功");
+                    this.setState({
+                        visible: false
+                    });
+                    this.initData(this.state.currentPage);
+                }else{
+                    message.warning(res.data.message);
+                }
+            })
+        }else{
+            params.id = this.state.id;
+            Axios.post('/self/erp/baseinfo/updateClient', params).then((res)=>{
+                if(res.data.success) {
+                    message.success("修改成功");
+                    this.setState({
+                        visible: false
+                    });
+                    this.initData(this.state.currentPage);
+                }else{
+                    message.warning(res.data.message);
+                }
+            })
+        }
+    }
+    // 业务员工号下拉框
+    clientCide() {
+        Axios.post('self/erp/baseinfo/queryUser').then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    clientCodeList: res.data.data.users
+                })
+            }else{
+                this.setState({
+                    clientCodeList: []
+                })
+            }
+        })
+    }
+    componentDidMount() {
+        this.getTreeList();
+        this.clientCide();
+    }
+}
+export default Client;

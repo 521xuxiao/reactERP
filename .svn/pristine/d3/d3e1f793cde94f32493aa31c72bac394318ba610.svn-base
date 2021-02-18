@@ -1,0 +1,249 @@
+import React, {Component} from "react"
+import { Table, Spac, Button, Space, Input, Modal, message} from 'antd';
+import Axios from 'axios';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import './dictionary0peration.scss'
+const {Column} =  Table;  const { confirm } = Modal;
+class Dictionary0peration extends Component{
+    constructor(props) {
+        super(props);
+        this.msg = "";  this.flag = 0;
+        this.typeId= '';
+        this.id = "";
+        this.state = {
+            treeList: [],
+            currentIndex: 0,
+            dataSource : [],
+            visible: false,
+            inpValu: '',  selectValue: ''
+        }
+    }
+    render() {
+        return(
+            <div id="dictionary0peration">
+                <div className="dictionary0peration">
+                    <div className="dictionaryLeft">
+                        <div className="innerDiv">
+                            <div className="dictType">字典项类型</div>
+                            <ul className="ul1">
+                                {
+                                    this.state.treeList.map((item, index)=>{
+                                        return(
+                                            <li className={index==this.state.currentIndex?'active li1':'li1'} key={item.key} onClick={this.handleClick.bind(this, index, item)}>{item.name}</li>
+                                        )
+                                    })
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div className="dictionaryRight">
+                        <div className="innerRight">
+                            <div className="placeSearch">
+                                <span>选项</span>
+                                <Input className="input1" allowClear onChange={this.handelChange.bind(this)}/>
+                                <button className="searchs" onClick={this.searchMethods.bind(this)}>查询</button>
+                            </div>
+                            <div className="bg">
+                                <button className="searchs" onClick={this.add.bind(this)}>新增</button>
+                                {/*<button className="searchs deletesClass">删除</button>*/}
+                            </div>
+                            <div className="placeTable">
+                                <Table pagination={false} dataSource={this.state.dataSource}
+                                       // rowSelection={{
+                                       //      type: "checkbox",
+                                       //      onChange: this.changeTableSelstor.bind(this),
+                                       // }}
+                                >
+                                    <Column title="序号" align="center" width="100px" render={(text, record, index)=>(
+                                        <span>{index+1}</span>
+                                    )}/>
+                                    <Column title="选项" dataIndex="value" key="value" align="center"/>
+                                    <Column title="操作" align="center"
+                                            render={(text, record, index) => (
+                                                <Space size="large">
+                                                    <span onClick={this.changes.bind(this, record)} className="changes">编辑</span>
+                                                    <span onClick={this.deletes.bind(this, record)} className="deletes">删除</span>
+                                                </Space>
+                                            )}
+                                    />
+                                </Table>
+                            </div>
+                        </div>
+                    </div>
+                    <Modal title={this.msg} footer={null} closable={false}  visible={this.state.visible} centered={true}>
+                        <div className="modal1">
+                            <span>选项</span>
+                            <Input allowClear id="input" onChange={this.modalChange.bind(this)} value={this.state.selectValue} style={{width: '80%',marginLeft: '20px'}}/>
+                        </div>
+                        <div style={{textAlign: "center", paddingTop: '20px'}}>
+                            <Button type="danger" style={{marginRight: '10%'}} onClick={this.handleCancel.bind(this)}>取消</Button>
+                            <Button type="primary" style={{marginLeft: '10%'}} onClick={this.handleOk.bind(this)}>确定</Button>
+                        </div>
+                    </Modal>
+                </div>
+            </div>
+        )
+    }
+    componentDidMount() {
+        this.initData();
+    }
+    initData() {
+        Axios.post('/self/erp/system/queryDictionaryType').then((res)=>{
+            // console.log(res);
+            if(res.data.success) {
+                this.setState({
+                    treeList: []
+                });
+                let newArr = [];
+                if(res.data.data.dictTypeMap && res.data.data.dictTypeMap.length) {
+                    res.data.data.dictTypeMap.forEach((item)=>{
+                        newArr.push({name: item.dictType, key: item.typeId});
+                    })
+                }
+                this.setState({
+                    treeList: newArr
+                });
+                this.tableData(res.data.data.dictTypeMap[0].typeId);
+                this.typeId = res.data.data.dictTypeMap[0].typeId;
+            }else{
+                this.setState({
+                    treeList: []
+                });
+            }
+        })
+    }
+    handleClick(index, item) {
+        this.setState({
+            currentIndex: index
+        });
+        this.tableData(item.key);
+        this.typeId= item.key;
+    };
+    tableData(typeId) {
+        let params = {
+            typeId
+        };
+        Axios.post('/self/erp/system/queryDictionaryValue', params).then((res)=>{
+            if(res.data.success) {
+                res.data.data.dictValueMap.forEach((item)=>{
+                    item.key = item.valueId;
+                });
+                this.setState({
+                    dataSource: res.data.data.dictValueMap
+                })
+            }else{
+                this.setState({
+                    dataSource: []
+                })
+            }
+        })
+    }
+
+    searchMethods() {  // 查询
+        this.tableData(this.typeId);
+    }
+
+    change(item) {
+        console.log(item);
+    };
+    handelChange(e){
+        this.setState({
+            inpValu:e.target.value
+        })
+    }
+    modalChange(e) {
+        this.setState({
+            selectValue: e.target.value
+        })
+    }
+
+    deletes(row) {
+        let that = this;
+        confirm({
+            title: '你确定要删除吗?',
+            icon: <ExclamationCircleOutlined />,
+            content: '',
+            onOk() {
+                let params = {
+                    valueId: row.valueId
+                };
+                Axios.post('/self/erp/system/deleteDictionaryValue', params).then((res)=>{
+                    if(res.data.success) {
+                        message.success("删除成功");
+                        that.tableData(that.typeId);
+                    }else{
+                        message.warning(res.data.message);
+                    }
+                })
+            },
+            onCancel() {},
+        });
+    }
+    changes(row) {   // 修改
+        this.setState({
+            visible: true,
+            selectValue: row.value
+        });
+        this.msg = "修改";
+        this.flag = 1;
+        this.id = row.valueId;
+    };
+
+    add() {
+        this.msg = "新增";
+        this.flag = 0;
+        this.setState({
+            visible: true,
+            selectValue: ''
+        })
+    };
+
+
+    changeTableSelstor(selectedRowKeys, selectedRows) {
+        console.log(selectedRows);
+    }
+
+    handleOk() {
+        if(!this.state.selectValue) {
+            message.warning("请填写数据再提交！");
+            return false;
+        }
+        let params = {
+            typeId: this.typeId,
+            value: this.state.selectValue
+        };
+        if(this.flag == 0) {   // 新增
+            Axios.post('/self/erp/system/addDictionaryValue', params).then((res)=>{
+                if(res.data.success) {
+                    message.success("新增成功");
+                    this.tableData(this.typeId);
+                    this.setState({
+                        visible: false
+                    })
+                }else{
+                    message.warning(res.data.message);
+                }
+            })
+        }else{   // 修改
+            params.valueId = this.id;
+            Axios.post('/self/erp/system/updateDictionaryValue', params).then((res)=>{
+                if(res.data.success) {
+                    message.success("修改成功");
+                    this.tableData(this.typeId);
+                    this.setState({
+                        visible: false
+                    })
+                }else{
+                    message.warning(res.data.message);
+                }
+            })
+        }
+    }
+
+    handleCancel() {
+        this.setState({
+            visible: false
+        })
+    }
+}
+export default Dictionary0peration;

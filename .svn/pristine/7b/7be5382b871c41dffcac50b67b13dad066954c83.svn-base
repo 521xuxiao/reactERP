@@ -1,0 +1,115 @@
+#branch{
+  height: 100%;
+  .Branch{
+    height: 100%;
+    display: flex;
+    .dictionaryLeft{
+      width: 160px;
+      //overflow: auto;
+      height: 100%;
+      padding: 0 5px 6px 12px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      .innerDiv{
+        background: #fff;
+        height: 100%;
+        .dictType{
+          font-size: 20px;
+          text-align: center;
+          padding: 10px 0 15px 0;
+          background-image: -webkit-linear-gradient(left, #3073FE, #7F7EED);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          -moz-text-fill-color: transparent;
+          text-fill-color: transparent;
+        }
+
+      }
+    }
+    .dictionaryRight{
+      flex: 1;
+      height: 100%;
+      padding: 0 12px 6px 6px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      .innerRight{
+        .btn{
+          text-align: right;
+          padding-top: 20px;
+          padding-right: 20px;
+        }
+        background: #fff;
+        height: 100%;
+        .ul1, .ol1{
+          overflow: hidden;
+          padding-top: 30px;
+          .li1{
+            float: left;
+            width: 50%;
+            overflow: hidden;
+            margin-bottom: 10px;
+            .span1{
+              display: block;
+              float: left;
+              width: 80px;
+              text-align: right;
+              padding: 5px 4px 0 0;
+            }
+            .input1{
+              float: left;
+              width: 80%;
+            }
+            .input2{
+              float: left;
+              margin: 4px 0 0 0px;
+            }
+          }
+        }
+        .ol1{
+          padding-top: 10px;
+        }
+        .div4{
+          padding-top: 60px;
+          display: flex;
+          justify-content: space-around;
+          .li4{
+
+            .btn4{
+
+            }
+          }
+        }
+      }
+    }
+    .div4{
+      padding-top: 30px;
+      display: flex;
+      justify-content: space-around;
+      .li4{
+
+        .btn4{
+
+        }
+      }
+    }
+    .modal1{
+      .div3{
+        .ul1{
+          .li1{
+            display: flex;
+            width: 100%;
+            .span1{
+              width: 80px;
+              padding-top: 4px;
+            }
+            .input3{
+              flex: 1;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+#branch{
+  .Branch{
+    .placeTable{
+      .ant-table-thead{
+        tr > th{
+          background: #fff;
+        }
+      }
+      .changes{
+        color: #2E71FE;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+      .deletes{
+        color: #F0625D;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+    }
+    .modal1{
+      display: flex;
+      .span1{
+        width: 60px;
+        padding-top: 4px;
+      }
+      .input{
+        flex: 1;
+      }
+    }
+  }
+}

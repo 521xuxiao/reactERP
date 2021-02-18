@@ -1,0 +1,321 @@
+#home4{
+    height: 100%;
+    .home4{
+        height: 100%;
+        .home4_top{
+            height: 40%;
+            margin-bottom: 0;
+            padding: 0 1rem 1rem 1rem;
+            box-sizing: border-box;
+            overflow: hidden;
+            .home4_top_left{
+                float: left;
+                width: 30%;
+                height: 100%;
+                padding-right: .5rem;
+                box-sizing: border-box;
+                .home4_top_left_inner{
+                    height: 100%;
+                    background: url("../../common/img/caigou.png") no-repeat 0 0;
+                    background-size: 100% 100%;
+                    .home4_top_left_inner_top{
+                        height: 50%;
+                        overflow: hidden;
+                        .home4_top_left_inner_top_left{
+                            float: left;
+                            width: 50%;
+                            height: 100%;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;align-items: center;
+                            .home4_top_left_inner_top_left_title{
+                                font-size: 1.8rem;
+                                color: #fff;
+                            }
+                            .home4_top_left_inner_top_left_content{
+                                .home4_top_left_inner_top_left_content_left{
+                                    display: inline-block;
+                                    font-size: 3.6rem;
+                                    color: #FFE535;
+                                    font-family: UniDreamLed;
+                                }
+                                .home4_top_left_inner_top_left_content_right{
+                                    display: inline-block;
+                                    margin-left: 1rem;
+                                    color: #fff;
+                                    font-size: 1.6rem;
+                                }
+                            }
+                        }
+                        .home4_top_left_inner_top_right{
+                            float: left;
+                            width: 50%;
+                            height: 100%;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            .home4_top_left_inner_top_right_left{
+                                color: #F03F3F;
+                                font-size: 2.8rem;
+                            }
+                            .home4_top_left_inner_top_right_right{
+                                background-size: 100% 100%;
+                                background: url("../../common/img/xiangshang.png") no-repeat 0 0;
+                                width: 3.5rem;
+                                height: 4.4rem;
+                                margin-left: 1.8rem;
+                            }
+                        }
+                    }
+                    .home4_top_left_inner_bottom{
+                        height: 50%;
+                        overflow: hidden;
+                        .home4_top_left_inner_bottom_left{
+                            float: left;
+                            width: 50%;
+                            height: 100%;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                            align-items: center;
+                            .home4_top_left_inner_bottom_left_top{
+                                font-size: 1.8rem;
+                                color: #fff;
+                            }
+                            .home4_top_left_inner_bottom_left_content{
+                                .home4_top_left_inner_bottom_left_content_text{
+                                    display: inline-block;
+                                    font-size: 3.6rem;
+                                    font-family: UniDreamLed;
+                                    color: #3BF1FC;
+                                }
+                                .home4_top_left_inner_bottom_left_content_tun{
+                                    display: inline-block;
+                                    margin-left: 1.6rem;
+                                    color: #fff;
+                                }
+                            }
+                        }
+                        .home4_top_left_inner_bottom_right{
+                            float: left;
+                            width: 50%;
+                            height: 100%;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            .home4_top_left_inner_bottom_right_left{
+                                font-size: 2.8rem;
+                                color: #F03F3F;
+                            }
+                            .home4_top_left_inner_bottom_right_right{
+                                background-size: 100% 100%;
+                                background: url("../../common/img/xiangshang.png") no-repeat 0 0;
+                                width: 3.5rem;
+                                height: 4.4rem;
+                                margin-left: 1.8rem;
+                            }
+                        }
+                    }
+                }
+            }
+            .home4_top_center{
+                float: left;
+                width: 40%;
+                height: 100%;
+                padding: 0 .5rem;
+                box-sizing: border-box;
+                .home4_top_center_inner{
+                    height: 100%;
+                    background: url("../../common/img/caigou.png") no-repeat 0 0;
+                    background-size: 100% 100%;
+                    .home4_top_center_inner_title{
+                        display: flex;
+                        justify-content: center;
+                        padding-top: 2rem;
+                        .home4_top_center_inner_title_left{
+                            background: url("../../common/img/lefts.png") no-repeat 0 0;
+                            background-size: 100% 100%;
+                            width: 1.1rem;
+                            height: 1.1rem;
+                            position: relative;
+                            top: .7rem;
+                        }
+                        .home4_top_center_inner_title_middle{
+                            font-size: 1.6rem;
+                            color: #fff;
+                            margin: 0 2rem;
+                        }
+                        .home4_top_center_inner_title_right{
+                            background: url("../../common/img/rights.png") no-repeat 0 0;
+                            background-size: 100% 100%;
+                            width: 1.1rem;
+                            height: 1.1rem;
+                            position: relative;
+                            top: .7rem;
+                        }
+                    }
+                }
+            }
+            .home4_top_right{
+                float: left;
+                width: 30%;
+                height: 100%;
+                padding-left: .5rem;
+                box-sizing: border-box;
+                .home4_top_right_inner{
+                    height: 100%;
+                    background: url("../../common/img/caigou.png") no-repeat 0 0;
+                    background-size: 100% 100%;
+                }
+            }
+        }
+        .home4_bottom{
+            height: 60%;
+            padding: 0 1rem 1rem 1rem;
+            box-sizing: border-box;
+            overflow: hidden;
+            .home4_bottom_left{
+                float: left;
+                width: 40%;
+                height: 100%;
+                padding-right: .5rem;
+                box-sizing: border-box;
+                .home4_bottom_left_inner{
+                    height: 100%;
+                    background: url("../../common/img/bigBg.png") no-repeat 0 0;
+                    background-size: 100% 100%;
+                    .home4_bottom_left_inner_title{
+                        display: flex;
+                        justify-content: center;
+                        padding-top: 2rem;
+                        .home4_bottom_left_inner_title_left{
+                            background: url("../../common/img/lefts.png") no-repeat 0 0;
+                            background-size: 100% 100%;
+                            width: 1.1rem;
+                            height: 1.1rem;
+                            position: relative;
+                            top: .8rem;
+                        }
+                        .home4_bottom_left_inner_title_middle{
+                            font-size: 1.6rem;
+                            color: #fff;
+                            margin: 0 2rem;
+                        }
+                        .home4_bottom_left_inner_title_right{
+                            background: url("../../common/img/rights.png") no-repeat 0 0;
+                            background-size: 100% 100%;
+                            width: 1.1rem;
+                            height: 1.1rem;
+                            position: relative;
+                            top: .8rem;
+                        }
+                    }
+                }
+            }
+            .home4_bottom_right{
+                float: left;
+                width: 60%;
+                height: 100%;
+                padding-left: .5rem;
+                box-sizing: border-box;
+                .home4_bottom_right_inner{
+                    height: 100%;
+                    background: url("../../common/img/bigBg.png") no-repeat 0 0;
+                    background-size: 100% 100%;
+                    overflow: hidden;
+                    .home4_bottom_right_inner_left{
+                        float: left;
+                        width: 40%;
+                        height: 100%;
+                        .home4_bottom_right_inner_left_title{
+                            padding-top: 2rem;
+                            display: flex;
+                            justify-content: center;
+                            .home4_bottom_right_inner_left_title_left{
+                                background: url("../../common/img/lefts.png") no-repeat 0 0;
+                                background-size: 100% 100%;
+                                width: 1.1rem;
+                                height: 1.1rem;
+                                position: relative;
+                                top: .8rem;
+                            }
+                            .home4_bottom_right_inner_left_title_middle{
+                                color: #fff;
+                                font-size: 1.6rem;
+                                margin: 0 2rem;
+                            }
+                            .home4_bottom_right_inner_left_title_right{
+                                background: url("../../common/img/rights.png") no-repeat 0 0;
+                                background-size: 100% 100%;
+                                width: 1.1rem;
+                                height: 1.1rem;
+                                position: relative;
+                                top: .8rem;
+                            }
+                        }
+                    }
+                    .home4_bottom_right_inner_right{
+                        float: left;
+                        width: 60%;
+                        height: 100%;
+                        .home4_bottom_right_inner_right_top{
+                            display: flex;
+                            justify-content: center;
+                            padding-top: 2rem;
+                            .home4_bottom_right_inner_right_top_left{
+                                background: url("../../common/img/lefts.png") no-repeat 0 0;
+                                background-size: 100% 100%;
+                                width: 1.1rem;
+                                height: 1.1rem;
+                                position: relative;
+                                top: .8rem;
+                            }
+                            .home4_bottom_right_inner_right_top_middle{
+                                margin: 0 2rem;
+                                color: #fff;
+                                font-size: 1.6rem;
+                            }
+                            .home4_bottom_right_inner_right_top_right{
+                                background: url("../../common/img/rights.png") no-repeat 0 0;
+                                background-size: 100% 100%;
+                                width: 1.1rem;
+                                height: 1.1rem;
+                                position: relative;
+                                top: .8rem;
+                            }
+                        }
+                        .home4_bottom_right_inner_right_text{
+                            .home4_bottom_right_inner_right_text_ul1{
+                                overflow: hidden;
+                                padding-top: 2rem;
+                                .home4_bottom_right_inner_right_text_ul1_li1{
+                                    float: left;
+                                    width: 25%;
+                                    text-align: center;
+                                    color: #3BF1FC;
+                                    font-size: 1.6rem;
+                                }
+                            }
+
+                        }
+                        .placeLi{
+                            overflow: hidden;
+                            .ul7{
+                                .ol111{
+                                    overflow: hidden;
+                                    .home1_bottom_right_inner_content_h3_li1{
+                                        float: left;
+                                        width: 25%;
+                                        text-align: center;
+                                        color: #fff;
+                                        font-size: 1.4rem;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

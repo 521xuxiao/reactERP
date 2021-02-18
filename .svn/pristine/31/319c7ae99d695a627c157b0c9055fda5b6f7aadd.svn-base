@@ -1,0 +1,25 @@
+import React, {Component} from 'react';
+import "./home2.scss"
+class Home2 extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+
+        }
+    }
+    render() {
+        return(
+            <div id="home2">
+                <div className="home2">
+                    库存
+                </div>
+            </div>
+        )
+    }
+    componentDidMount() {
+        setTimeout(()=>{
+            this.props.parent.giveParentData();
+        }, 100);
+    }
+}
+export default Home2;

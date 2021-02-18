@@ -1,0 +1,73 @@
+#finishedProductsStorage{
+  .finishedProductsStorage{
+    .placeSearch{
+      overflow: hidden;
+      background: #fff;
+      padding: 18px 0px;
+      .left1{
+        float: left;
+        width: 20%;
+        display: flex;
+        .span1{
+          display: block;
+          width: 80px;
+          text-align: right;
+          padding-top: 6px;
+          padding-right: 4px;
+        }
+        .input1{
+          flex: 1;
+        }
+      }
+      .left2{
+        width: 30%;
+      }
+      .btn{
+        float: right;
+        padding-right: 10px;
+        .searchs{
+          width: 65px;
+          height: 32px;
+          outline: 0;
+          border: 0;
+          background: #2E71FE;
+          color: #fff;
+          border-radius: 3px;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          cursor: pointer;
+        }
+      }
+    }
+    .placeTable{
+      margin-top: 20px;
+      .ant-table-thead{
+        tr > th{
+          background: #fff;
+        }
+      }
+      .changes{
+        color: #2E71FE;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+      .deletes{
+        color: #F0625D;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+    }
+    .placePagination{
+      text-align: right;
+      padding-top: 16px;
+    }
+  }
+}

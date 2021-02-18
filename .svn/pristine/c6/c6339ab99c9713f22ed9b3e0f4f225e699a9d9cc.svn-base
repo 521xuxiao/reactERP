@@ -1,0 +1,92 @@
+import Axios from 'axios';
+import React ,{Component} from "react";
+import {withRouter} from 'react-router-dom';
+import "./materiel.scss"
+import MaterielLeft from "../materielLeft/materielLeft.js";
+class Materiel extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            treeList: [],
+            currentIndex: 0,
+            liList: [{id: '0', name: "包装箱管理"}, {id: '1', name: '购销记录'}],
+            tabCurrentIndex: 0,
+            valueId: ''
+        }
+    }
+    render() {
+        return(
+            <div id="materiel">
+                <div className="materiel">
+                    <div className="dictionaryLeft">
+                        <div className="innerDiv">
+                            <div className="dictType">物料类型</div>
+                            <ul className="ul1">
+                                {
+                                    this.state.treeList.map((item, index)=>{
+                                        return(   //
+                                            <li className={index==this.state.currentIndex?'active li1':'li1'} key={item.valueId} onClick={this.handleClick.bind(this, index, item)}>{item.value}</li>
+                                        )
+                                    })
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div className="dictionaryRight">
+                        <div className="innerRight">
+                            <ul className="materiel_ul1">
+                                {
+                                    this.state.liList.map((item, index)=>{
+                                        return(
+                                            <li key={item.id} onClick={this.tabClick.bind(this, index)} className={this.state.tabCurrentIndex==index?"active materiel_li1":"materiel_li1"}>{item.name}</li>
+                                        )
+                                    })
+                                }
+                            </ul>
+                            {this.isShowChildren()}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+    isShowChildren() {
+        if(this.state.valueId) {
+            return(
+                <MaterielLeft valueId={this.state.valueId}></MaterielLeft>
+            )
+        }
+    }
+    leftSlider() {
+        Axios.post("/self/erp/baseinfo/queryAccessoriesType", {}).then((res)=>{
+            // console.log(res.data.data)
+            if(res.data.success) {
+                this.setState({
+                    treeList: res.data.data.accessoriesType,
+                    valueId: res.data.data.accessoriesType[0].valueId
+                })
+            }else{
+                this.setState({
+                    treeList: []
+                })
+            }
+        })
+    }
+    handleClick(i, item) {
+        this.setState({
+            currentIndex: i
+        });
+        this.setState({
+            valueId: item.valueId
+        })
+    }
+    tabClick(i) {
+        this.setState({
+            tabCurrentIndex: i
+        })
+    }
+    componentDidMount() {
+        this.leftSlider();
+    }
+}
+export default withRouter(Materiel);

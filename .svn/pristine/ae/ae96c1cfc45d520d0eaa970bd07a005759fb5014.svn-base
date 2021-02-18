@@ -1,0 +1,94 @@
+import React, {Component} from 'react'
+import {Button, Input, InputNumber, Modal, Pagination, Select, Space, Table} from "antd";
+import Axios from "axios";
+import "./materielLeft.scss"
+const Column = {Table};
+class MaterielLeft extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            queName: '',
+            dataSource: [],
+            currentPage: 1,
+            pageSize: 10,
+            pageTotal: 0
+        }
+    }
+    render() {
+        this.initData(this.state.currentPage, this.props.valueId);
+        return(
+            <div id="materielLeft">
+                <div className="materielLeft">
+                    <div className="placeSearch">
+                        <span>箱子名称</span>
+                        <Input className="input1" allowClear onChange={(e)=>{this.setState({queName: e.target.value})}}/>
+                        <button className="searchs" onClick={this.searchMethods.bind(this)}>查询</button>
+                    </div>
+                    <div className="bg">
+                        <button className="searchs" onClick={this.add.bind(this)}>新增</button>
+                    </div>
+                    {/*<div className="placeTable">*/}
+                    {/*    <Table pagination={false} dataSource={this.state.dataSource} locale={{emptyText: "暂无数据"}}>*/}
+                    {/*        <Column title="序号" align="center" key="index" dataIndex="index" width="100px" render={(text, record, index)=>(*/}
+                    {/*            <span>{(this.state.currentPage-1)*this.state.pageSize + index+1}</span>*/}
+                    {/*        )}/>*/}
+                    {/*        <Column title="客户类型" dataIndex="clientType" key="clientType" align="center"/>*/}
+                    {/*        <Column title="支付类型" dataIndex="payType" key="payType" align="center" render={(text)=>(*/}
+                    {/*            <span>{text==1?"现金":"转账"}</span>*/}
+                    {/*        )}/>*/}
+                    {/*        <Column title="联系方式" dataIndex="clientPhone" key="clientPhone" align="center"/>*/}
+                    {/*        <Column title="地址" dataIndex="address" key="address" align="center"/>*/}
+                    {/*        <Column title="工号" dataIndex="empno" key="empno" align="center"/>*/}
+                    {/*        <Column title="操作" align="center" key="records" dataIndex="records"*/}
+                    {/*            render={(text, record) => (*/}
+                    {/*                <Space size="large">*/}
+                    {/*                    <span key={"changes"} onClick={this.changes.bind(this, record)} className="changes">编辑</span>*/}
+                    {/*                    <span key={"deletes"} onClick={this.deletes.bind(this, record)} className="deletes">删除</span>*/}
+                    {/*                    <span key={"details"} onClick={this.details.bind(this, record)} className="details span11">详情</span>*/}
+                    {/*                </Space>*/}
+                    {/*            )}*/}
+                    {/*        />*/}
+                    {/*    </Table>*/}
+                    {/*</div>*/}
+                    <div className="placePagination">
+                        <Pagination showTotal={()=>`共 ${this.state.pageTotal} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotal} showSizeChanger={false}/>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+    initData(currentPage, accessoriesTypeId) {
+        let params = {
+            currentPage,
+            pageSize: this.state.pageSize,
+            accessoriesTypeId
+        }
+        Axios.post("/self/erp/baseinfo/queryAccessories", params).then((res)=>{
+            console.log(res.data.data)
+            if(res.data.success) {
+
+            }else{
+
+            }
+        })
+    }
+    searchMethods() {
+
+    }
+    add() {
+
+    }
+    changes(row) {
+
+    }
+    deletes(row) {
+
+    }
+    details(row) {
+
+    }
+    changePages(val) {
+
+    }
+}
+export default MaterielLeft;

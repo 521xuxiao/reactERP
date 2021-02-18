@@ -1,0 +1,187 @@
+import loadable from './loadable.js'
+const ProcurementPlan = loadable(()=>import('../components/procurementPlan/procurementPlan.js'));
+const PurchasingTask = loadable(()=>import('../components/purchasingTask/purchasingTask.js'));
+const QualityOrder = loadable(()=>import('../components/qualityOrder/qualityOrder.js'));
+const PurchaseOrder = loadable(()=>import('../components/purchaseOrder/purchaseOrder.js'));
+const Dictionary0peration = loadable(()=>import('../components/dictionary0peration/dictionary0peration.js'));
+const Journalizing = loadable(()=>import('../components/journalizing/journalizing.js'));
+const UserBu = loadable(()=>import('../components/userBu/userBu.js'));
+const Branch = loadable(()=>import('../components/branch/branch.js'));
+const Provider = loadable(()=>import('../components/provider/provider.js'));
+const RoleList = loadable(()=>import('../components/roleList/roleList.js'));
+const StoreManagement = loadable(()=>import('../components/storeManagement/storeManagement.js'));
+const Distributor = loadable(()=>import('../components/distributor/distributor.js'));
+const InList = loadable(()=>import('../components/inList/inList.js'));
+const ProductManagement = loadable(()=>import('../components/productManagement/productManagement.js'));
+const ShopManagement = loadable(()=>import('../components/shopManagement/shopManagement.js'));
+const CustomerGroups = loadable(()=>import('../components/customerGroups/customerGroups.js'));
+const Client = loadable(()=>import('../components/client/client.js'));
+const OutboundDeliveryOrder = loadable(()=>import('../components/outboundDeliveryOrder/outboundDeliveryOrder.js'));
+const SalesOrder = loadable(()=>import('../components/salesOrder/salesOrder.js'));
+const Production = loadable(()=>import('../components/production/production.js'));
+const MaterialInventory = loadable(()=>import('../components/materialInventory/materialInventory.js'));
+const SalesInvoice = loadable(()=>import('../components/salesInvoice/salesInvoice.js'));
+const MaterialManagement = loadable(()=>import('../components/materialManagement/materialManagement.js'));
+const Billboard = loadable(()=>import('../components/billboard/billboard.js'));
+const ProductionManagement = loadable(()=>import('../components/productionManagement/productionManagement.js'));
+
+
+const MenuConfig = loadable(()=>import('../components/menuConfig/menuConfig.js'));
+export default [
+	{
+	    name: "采购计划",
+	    path: "/app/procurementPlan",
+	    component: ProcurementPlan,
+	    id: "1-1"
+	},
+	{
+	    name: "采购任务",
+	    path: "/app/purchasingTask",
+	    component: PurchasingTask,
+	    id: "1-2"
+	},
+	{
+	    name: "采购质检单",
+	    path: "/app/qualityOrder",
+	    component: QualityOrder,
+	    id: "1-3"
+	},
+	{
+	    name: "采购订单",
+	    path: "/app/purchaseOrder",
+	    component: PurchaseOrder,
+	    id: "1-4"
+	},
+	{
+	    name: "字典管理",
+	    path: "/app/dictionary0peration",
+	    component: Dictionary0peration,
+	    id: "8-1"
+	},
+	{
+	    name: "日志操作",
+	    path: "/app/journalizing",
+	    component: Journalizing,
+	    id: "8-2"
+	},
+	{
+	    name: "用户设置",
+	    path: "/app/userBu",
+	    component: UserBu,
+	    id: "8-4"
+	},
+	{
+	    name: "部门设置",
+	    path: "/app/branch",
+	    component: Branch,
+	    id: "8-3"
+	},
+	{
+	    name: "供应商管理",
+	    path: "/app/provider",
+	    component: Provider,
+	    id: "2-1"
+	},
+	{
+	    name: "角色设置",
+	    path: "/app/roleList",
+	    component: RoleList,
+	    id: "8-5"
+	},
+	{
+	    name: "仓库管理",
+	    path: "/app/storeManagement",
+	    component: StoreManagement,
+	    id: "2-3"
+	},
+	{
+	    name: "果园管理",
+	    path: "/app/distributor",
+	    component: Distributor,
+	    id: "2-2"
+	},
+	{
+	    name: "入库单",
+	    path: "/app/inList",
+	    component: InList,
+	    id: "3-1"
+	},
+	{
+	    name: "产品资料管理",
+	    path: "/app/productManagement",
+	    component: ProductManagement,
+	    id: "2-4"
+	},
+	{
+	    name: "车间管理",
+	    path: "/app/shopManagement",
+	    component: ShopManagement,
+	    id: "2-5"
+	},
+	{
+	    name: "客户分组",
+	    path: "/app/customerGroups",
+	    component: CustomerGroups,
+	    id: "2-6"
+	},
+	{
+	    name: "客户管理",
+	    path: "/app/client",
+	    component: Client,
+	    id: "2-7"
+	},
+	{
+	    name: "出库单",
+	    path: "/app/outboundDeliveryOrder",
+	    component: OutboundDeliveryOrder,
+	    id: "3-2"
+	},
+	{
+		name: "原料库存",
+		path: "/app/materialInventory",
+		component: MaterialInventory,
+		id: "3-3"
+	},
+	{
+	    name: "销售发货单",
+	    path: "/app/salesInvoice",
+	    component: SalesInvoice,
+	    id: "4-2"
+	},
+	{
+		name: "销售订单",
+		path: "/app/salesOrder",
+		component: SalesOrder,
+		id: "4-1"
+	},
+	{
+	    name: "生产任务",
+	    path: "/app/production",
+	    component: Production,
+	    id: "5-1"
+	},
+	{
+		name: "用料管理",
+		path: "/app/materialManagement",
+		component: MaterialManagement,
+		id: "5-2"
+	},
+	{
+		name: "生产管理",
+		path: "/app/productionManagement",
+		component: ProductionManagement,
+		id: "5-4"
+	},
+	{
+		name: "生产看板",
+		path: "/app/billboard",
+		component: Billboard,
+		id: "5-3"
+	},
+	{
+	    name: "页面配置",
+	    path: "/app/menuConfig",
+	    component: MenuConfig,
+	    id: "21"
+	}
+]

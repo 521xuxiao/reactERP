@@ -1,0 +1,756 @@
+import React ,{Component} from "react";
+import Axios from 'axios';
+import "./materiel.scss";
+import {Button, Input, InputNumber, Modal, Pagination, Select, Space, Table, message, DatePicker, Tree,Radio } from "antd";
+import {ExclamationCircleOutlined} from "@ant-design/icons";
+import moment from "moment";
+import locale from "antd/es/date-picker/locale/zh_CN";
+const {confirm} = Modal;
+const {TextArea} = Input;
+const Column = {Table};
+const {Option} = Select;
+class Materiel extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            treeList: [],
+            currentIndex: 0,
+            tabCurrentIndex: 0,
+            valueId: '',
+
+            queName: '',
+            dataSource: [],
+            currentPage: 1,
+            pageSize: 10,
+            pageTotal: 0,
+
+            msg: "",
+            visible: false,
+            materialCode  : "", capacity:"",  weight:"",
+            id: '',
+
+            names: '',
+            dataSource2: [],
+            currentPage2: 1,
+            pageSize2: 10,
+            pageTotal2: 0,
+            visible2: false,   xiangName2: '',   numbers: null,    price: null ,   mark: '', msg2: '', flag2: 0, dateTime: '',
+
+            expandedKeys: [],
+            treeData: [],
+            columns: [
+                {title: '编码', dataIndex: 'materialCode', key: 'materialCode', align: 'center'},
+                {title: '名称', dataIndex: 'materialName', key: 'materialName', align: 'center'},
+                {title: '类型', dataIndex: 'type', key: 'type', align: 'center'},
+                {title: '参考价格', dataIndex: 'purchasePrice', key: 'purchasePrice',align: 'center', render: (text)=>(
+                        <>
+                            <span>{text / 100}</span>
+                        </>
+                    )},
+                {title: '税率', dataIndex: 'taxRate', key: 'taxRate', align: 'center'},
+                {title: '状态', dataIndex: 'isValid', key: 'isValid', align: 'center'},
+                // {title: '操作', dataIndex: 'name', key: 'name', align: 'center', render: (text, record)=>(
+                //     <Space>
+                //         <span key={"changes"} onClick={this.changes.bind(this, record)} className="changes span11"
+                //               style={this.changeBtn == 1 && (record.auditStatus==0||record.auditStatus==1) ? {display: 'inlineBlock'} : {display: "none"}}
+                //         >编辑</span>
+                //         <span key={"deletes"} onClick={this.deletes.bind(this, record)} className="deletes span11"
+                //               style={this.deleteBtn == 1 ? {display: 'inlineBlock'} : {display: "none"}}
+                //         >停用</span>
+                //         <span key={"details"} onClick={this.details.bind(this, record)} className="details span11">查看</span>
+                //     </Space>
+                // )}
+            ],
+            liList: [{label: '财务核算', id: 0}, {label: '基本信息', id:1}],
+            radioValue: 1,
+            zuMaterialName: '',
+            zuMaterialCode: '',
+            allName: '',
+            zuTaxRate: '',
+
+            parentCode: '',
+            materialName: '',
+            measurementList: [],   measurement: '',
+            purchasePrice: '',
+            sellPrice: '',
+            inventoryAccountCodeIdList: [],   inventoryAccountCodeId: '',
+            salesInputAccountCodeId: '',   salesInputAccountCodeIdList: [],
+            salesCostsAccountCodeId: '',   salesCostsAccountCodeIdList: [],
+            isShow: 1,
+            materialVariety: '',      materialVarietyList: [],
+            materialStandard: '',     materialStandardList: [],
+            materialLevel: '',        materialLevelList: [],
+            productStandard: '',      productStandardList: [],
+            productVariety: '',       productVarietyList: [],
+            productLevel: '',         productLevelList: [],
+            parentId: '',
+            isGroup: true,     isRoot: false
+        }
+    }
+    render() {
+        return(
+            <div id="materiel">
+                <div className="materiel">
+                    <div className="dictionaryLeft">
+                        <div className="innerDiv">
+                            <div className="dictType" onClick={this.addFuGroup.bind(this)}>物料类型 (点击新增组)</div>
+                            <div className="ul1">
+                                <Tree className="draggable-tree" defaultExpandedKeys={this.state.expandedKeys} blockNode
+                                     treeData={this.state.treeData} onSelect={this.selected.bind(this)} showLine/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="dictionaryRight">
+                        <div className="innerRight">
+                            <div className="placeAddBtn">
+                                <Button type="primary" onClick={this.addGroup.bind(this)} danger className="groupBtn">组新增</Button>
+                                <Button type="primary" onClick={this.add.bind(this)}>物料新增</Button>
+                            </div>
+                            <div className="placeTable">
+                                <Table pagination={false} dataSource={this.state.dataSource} locale={{emptyText: '暂无数据'}} columns={this.state.columns}></Table>
+                            </div>
+                        </div>
+                    </div>
+                    <Modal title={this.state.msg} width="60%" footer={null} getContainer={false} closable={false}  visible={this.state.visible} centered={true}>
+                        <div className="modal1">
+                            <div className="div3">
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1" style={{width: '120px',textAlign:'right'}}>*物料编码</span>
+                                        <Input allowClear onChange={(e)=>{this.setState({materialCode: e.target.value})}} value={this.state.materialCode} className={"input3"}
+                                               disabled={this.state.flag==3?true:false}/>
+                                    </li>
+                                    <li className="li1 li2" >
+                                        <span className="span1" style={{width: '120px',textAlign:'right'}}>*物料名称</span>
+                                        <Input allowClear onChange={(e)=>{this.setState({materialName: e.target.value})}} value={this.state.materialName} className={"input3"}
+                                                     disabled={this.state.flag==3?true:false}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1" style={{width: '120px',textAlign:'right'}}>*税率</span>
+                                        <InputNumber allowClear onChange={(e)=>{this.setState({taxRate: e})}} value={this.state.taxRate} className={"input3"}
+                                                     disabled={this.state.flag==3?true:false}/>%
+                                    </li>
+                                </ul>
+                                <div style={!this.state.isGroup?{display: 'block'}:{display: "none"}}>
+                                    <div style={{overflow: 'hidden',width: '80%',margin: '0 auto'}}>
+                                        {this.state.liList.map((item, index)=>{
+                                            return(
+                                                <div
+                                                style={this.state.currentIndex==index?{background: '#eee',float: 'left', width: '50%',border: '1px solid #eee',textAlign: 'center',
+                                                    padding: '6px 0',userSelect: 'none', cursor: "pointer"}:{float: 'left', width: '50%',border: '1px solid #eee',textAlign: 'center',
+                                                    padding: '6px 0',userSelect: 'none', cursor: "pointer"}} onClick={this.handleClick.bind(this, index)}>{item.label}</div>
+                                            )
+                                        })}
+                                    </div>
+                                    <div style={this.state.currentIndex==0?{display: 'block'}:{display: 'none'}}>
+                                        <ul className="ul1" style={{marginTop: '30px'}}>
+                                            <li className="li1">
+                                                <span className="span1" style={{width: '120px',textAlign:'right'}}>*采购价格</span>
+                                                <InputNumber allowClear onChange={(e)=>{this.setState({purchasePrice: e})}} value={this.state.purchasePrice} className={"input3"}
+                                                       disabled={this.state.flag==3?true:false}/>
+                                            </li>
+                                            <li className="li1 li2">
+                                                <span className="span1" style={{width: '120px',textAlign:'right'}}>*销售价格</span>
+                                                <InputNumber allowClear onChange={(e)=>{this.setState({sellPrice: e})}} value={this.state.sellPrice} className={"input3"}
+                                                             disabled={this.state.flag==3?true:false}/>
+                                            </li>
+                                        </ul>
+                                        <ul className="ul1">
+                                            <li className="li1">
+                                                <span className="span1" style={{width: '120px',textAlign:'right'}}>*存货科目代码</span>
+                                                <Select value={this.state.inventoryAccountCodeId} className="input3" style={{width: '60%'}} onChange={(e)=>{
+                                                    this.setState({inventoryAccountCodeId: e});
+                                                } } disabled={this.state.flag==1?false: true}>
+                                                    {
+                                                        this.state.inventoryAccountCodeIdList.map((item, index)=>{
+                                                            return(    //subjectName     subjectCode     id
+                                                                <Option value={item.id} key={index}>{item.subjectCode+":"+item.subjectName}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            </li>
+                                            <li className="li1 li2">
+                                                <span className="span1" style={{width: '120px',textAlign:'right'}}>*销售输入科目代码</span>
+                                                <Select value={this.state.salesInputAccountCodeId} className="input3" style={{width: '60%'}} onChange={(e)=>{
+                                                    this.setState({salesInputAccountCodeId: e});
+                                                } } disabled={this.state.flag==1?false: true}>
+                                                    {
+                                                        this.state.salesInputAccountCodeIdList.map((item, index)=>{
+                                                            return(
+                                                                <Option value={item.id} key={index}>{item.subjectCode+":"+item.subjectName}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            </li>
+                                        </ul>
+                                        <ul className="ul1">
+                                            <li className="li1">
+                                                <span className="span1" style={{width: '120px',textAlign:'right'}}>*销售成本科目代码</span>
+                                                <Select value={this.state.salesCostsAccountCodeId} className="input3" style={{width: '60%'}} onChange={(e)=>{
+                                                    this.setState({salesCostsAccountCodeId: e});
+                                                } } disabled={this.state.flag==1?false: true}>
+                                                    {
+                                                        this.state.salesCostsAccountCodeIdList.map((item, index)=>{
+                                                            return(
+                                                                <Option value={item.id} key={index}>{item.subjectCode+":"+item.subjectName}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            </li>
+                                            <li className="li1 li2">
+                                                <span className="span1" style={{width: '120px',textAlign:'right'}}>*计量单位</span>
+                                                <Select value={this.state.measurement} className="input3" style={{width: '60%'}} onChange={(e)=>{
+                                                    this.setState({measurement: e});
+                                                } }>
+                                                    {
+                                                        this.state.measurementList.map((item, index)=>{
+                                                            return(
+                                                                <Option value={item.valueId} key={item.valueId}>{item.value}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div style={this.state.currentIndex==0?{display: 'none', marginTop: '30px'}:{display: 'block',marginTop: '30px'}}>
+                                    <div>
+                                        <Radio.Group onChange={this.radioChange.bind(this)} value={this.state.radioValue} style={{display:'flex',marginBottom: '30px'}}>
+                                            <Radio value={1} style={{flex: 1, textAlign: 'center'}}>原料</Radio>
+                                            <Radio value={2} style={{flex: 1, textAlign: 'center'}}>辅料</Radio>
+                                            <Radio value={3} style={{flex: 1, textAlign: 'center'}}>产品</Radio>
+                                        </Radio.Group>
+                                    </div>
+                                    <div style={this.state.isShow==1?{display: 'block'}:{display: "none"}}>
+                                        <ul className="ul1">
+                                            <li className="li1" >
+                                                <span className="span1" style={{width: '120px',textAlign:'right'}}>*品种</span>
+                                                <Select value={this.state.materialVariety} className="input3" style={{width: '60%'}} onChange={(e)=>{
+                                                    this.setState({materialVariety: e});
+                                                } } disabled={this.state.flag==1?false: true}>
+                                                    {
+                                                        this.state.materialVarietyList.map((item, index)=>{
+                                                            return(
+                                                                <Option value={item.valueId} key={index}>{item.value}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            </li>
+                                            <li className="li1 li2">
+                                                <span className="span1" style={{width: '120px',textAlign:'right'}}>*规格</span>
+                                                <Select value={this.state.materialStandard} className="input3" style={{width: '60%'}} onChange={(e)=>{
+                                                    this.setState({materialStandard: e});
+                                                } } disabled={this.state.flag==1?false: true}>
+                                                    {
+                                                        this.state.materialStandardList.map((item, index)=>{
+                                                            return(
+                                                                <Option value={item.valueId} key={index}>{item.value}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            </li>
+                                        </ul>
+                                        <ul className="ul1">
+                                            <li className="li1" >
+                                                <span className="span1" style={{width: '120px',textAlign:'right'}}>*等级</span>
+                                                <Select value={this.state.materialLevel} className="input3" style={{width: '60%'}} onChange={(e)=>{
+                                                    this.setState({materialLevel: e});
+                                                } } disabled={this.state.flag==1?false: true}>
+                                                    {
+                                                        this.state.materialLevelList.map((item, index)=>{
+                                                            return(
+                                                                <Option value={item.valueId} key={index}>{item.value}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div style={this.state.isShow==2?{display: 'block'}:{display: "none"}}>
+                                        <ul className="ul1">
+                                            <li className="li1" >
+                                                <span className="span1" style={{width: '120px',textAlign:'right'}}>*规格</span>
+                                                <Input allowClear onChange={(e)=>{this.setState({accessoriesStandard: e.target.value})}} value={this.state.accessoriesStandard} className={"input3"}
+                                                             disabled={this.state.flag==3?true:false}/>
+                                            </li>
+                                            <li className="li1 li2">
+                                                <span className="span1" style={{width: '120px',textAlign:'right'}}>*重量</span>
+                                                <InputNumber allowClear onChange={(e)=>{this.setState({accessoriesWeight: e})}} value={this.state.accessoriesWeight} className={"input3"}
+                                                             disabled={this.state.flag==3?true:false}/>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div style={this.state.isShow==3?{display: 'block'}:{display: "none"}}>
+                                        <ul className="ul1">
+                                            <li className="li1" >
+                                                <span className="span1" style={{width: '120px',textAlign:'right'}}>*品种</span>
+                                                <Select value={this.state.productVariety} className="input3" style={{width: '60%'}} onChange={(e)=>{
+                                                    this.setState({productVariety: e});
+                                                } } disabled={this.state.flag==1?false: true}>
+                                                    {
+                                                        this.state.productVarietyList.map((item, index)=>{
+                                                            return(
+                                                                <Option value={item.valueId} key={index}>{item.value}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            </li>
+                                            <li className="li1 li2">
+                                                <span className="span1" style={{width: '120px',textAlign:'right'}}>*规格</span>
+                                                <Select value={this.state.productStandard} className="input3" style={{width: '60%'}} onChange={(e)=>{
+                                                    this.setState({productStandard: e});
+                                                } } disabled={this.state.flag==1?false: true}>
+                                                    {
+                                                        this.state.productStandardList.map((item, index)=>{
+                                                            return(
+                                                                <Option value={item.valueId} key={index}>{item.value}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            </li>
+                                        </ul>
+                                        <ul className="ul1">
+                                            <li className="li1" >
+                                                <span className="span1" style={{width: '120px',textAlign:'right'}}>*等级</span>
+                                                <Select value={this.state.productLevel} className="input3" style={{width: '60%'}} onChange={(e)=>{
+                                                    this.setState({productLevel: e});
+                                                } } disabled={this.state.flag==1?false: true}>
+                                                    {
+                                                        this.state.productLevelList.map((item, index)=>{
+                                                            return(
+                                                                <Option value={item.valueId} key={index}>{item.value}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="div4">
+                            <li className="li4">
+                                <Button className="btn4" type="danger" onClick={()=>{this.setState({visible: false})}}>取消</Button>
+                            </li>
+                            <li className="li4" style={this.state.flag==3?{display: 'none'}:{display: 'block'}}>
+                                <Button className="btn4" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
+                            </li>
+                        </div>
+                    </Modal>
+                </div>
+            </div>
+        )
+    }
+
+    /**
+     * 查询物料分组
+     * @param currentPage
+     * @param accessoriesTypeId
+     */
+    treeList() {
+        Axios.post("self/erp/baseinfo/queryMaterialGroup", {}).then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                this.recursionFun(res.data.data.materialGroups);
+            }
+        })
+    }
+
+    /**
+     * 点击tree触发的方法
+     * @param array
+     */
+    selected(selectedKeys, e) {
+        this.initData(e.selectedNodes[0].id);
+        this.setState({
+            parentCode: e.selectedNodes[0].materialCode,
+            parentId: e.selectedNodes[0].id
+        })
+    }
+
+    recursionFun(array) {
+        if(array != null || array != undefined) {
+            array.forEach((item)=>{
+                item.title = item.materialName;
+                item.key = item.materialCode;
+                this.recursionFun(item.children);
+            })
+        }
+        this.setState({treeData: array});
+    }
+
+    radioChange(e) {
+        this.setState({
+            radioValue: e.target.value
+        })
+        // console.log(e.target.value)
+        if(e.target.value == 1) {
+            this.setState({
+                isShow: 1
+            })
+        }else if (e.target.value == 2) {
+            this.setState({
+                isShow: 2
+            })
+        }else{
+            this.setState({
+                isShow: 3
+            })
+        }
+    }
+
+    /**
+     * 新增组的根部
+     */
+    addFuGroup() {
+        this.setState({
+            msg: '新增物料组',
+            visible: true,
+            isGroup: true,
+            materialCode: null,
+            materialName: null,
+            measurement: null,
+            taxRate: null,
+            isRoot: true
+        })
+    }
+
+
+    /**
+     * 组新增
+     */
+    addGroup() {
+        if(!this.state.parentCode) {
+            message.warning("请先选择物料组");
+            return false;
+        }
+        this.setState({
+            msg: '新增组物料',
+            visible: true,
+            isGroup: true,
+            materialCode: this.state.parentCode + ".",
+            materialName: null,
+            measurement: null,
+            taxRate: null,
+            isRoot: false
+        })
+        this.baseInfer();
+    }
+
+    /**
+     * 表格数据
+     * @param currentPage
+     * @param accessoriesTypeId
+     */
+    initData(id) {
+        let params = {
+            id,
+            currentPage: 1,
+            pageSize: 3000
+        }
+        Axios.post("/self/erp/baseinfo/queryMaterialInfoByParentId", params).then((res)=>{
+            // console.log(res.data.data.materialInfos)
+            if(res.data.success) {
+                res.data.data.materialInfos.forEach((item)=>{
+                    item.key = item.id;
+                })
+                this.setState({
+                    dataSource: res.data.data.materialInfos
+                })
+            }else{
+                this.setState({
+                    dataSource: []
+                })
+            }
+        })
+    }
+
+    handleClick(index) {
+        if(index != this.state.currentIndex) {
+            this.setState({
+                currentIndex: index
+            })
+        }
+    }
+
+    add() {
+        if(!this.state.parentCode) {
+            message.warning("请先选择物料组");
+            return false;
+        }
+        this.setState({
+            visible: true,
+            flag: 1,
+            msg: "新增",
+            materialCode: this.state.parentCode + ".",
+            materialName: null,
+            measurement: null,
+            purchasePrice: null,
+            sellPrice: null,
+            inventoryAccountCodeId: null,
+            salesInputAccountCodeId: null,
+            salesCostsAccountCodeId: null,
+            taxRate: null,
+            radioValue: null,
+            materialVariety: null,
+            materialStandard: null,
+            materialLevel: null,
+            accessoriesStandard: null,
+            accessoriesWeight: null,
+            productVariety: null,
+            productStandard: null,
+            productLevel: null,
+            isGroup: false,
+            isRoot: false
+        })
+        this.baseInfer();
+    }
+    changes(row) {
+        this.setState({
+            visible: true,
+            flag: 2,
+            msg: "修改",
+            id: row.id,
+            // materialCode: row.accessoriesName,  capacity: row.capacity,  weight: row.weight
+        })
+    }
+    deletes(row) {
+        let that = this;
+        confirm({
+            title: '你确定要删除吗?',
+            icon: <ExclamationCircleOutlined />,
+            content: '',
+            onOk() {
+                let params = {
+                    id: row.id
+                };
+                Axios.post('/self/erp/baseinfo/deleteAccessories', params).then((res)=>{
+                    if(res.data.success) {
+                        message.success("删除成功");
+                        that.initData(that.state.parentId);
+                    }else{
+                        message.warning(res.data.message);
+                    }
+                })
+            },
+            onCancel() {},
+        });
+    }
+    details(row) {
+        this.setState({
+            visible: true,
+            flag: 3,
+            msg: "详情",
+            materialCode: row.accessoriesName,  capacity: row.capacity,  weight: row.weight
+        })
+    }
+    handleOk() {
+        if(!this.state.isRoot) {
+            if (!this.state.isGroup) {
+                let params = {
+                    id: this.state.parentId,
+                    materialCode: this.state.materialCode,
+                    materialName: this.state.materialName,
+                    type: 'item',
+                    measurementId: this.state.measurement,
+                    baseInfoType: this.state.radioValue == 1 ? "material" : this.state.radioValue == 2 ? "accessories" : "product",
+                    materialStandardId: this.state.materialStandard,
+                    materialLevelId: this.state.materialLevel,
+                    materialVarietyId: this.state.materialVariety,
+                    productStandardId: this.state.productStandard,
+                    productLevelId: this.state.productLevel,
+                    productVarietyId: this.state.productVariety,
+                    accessoriesWeight: this.state.accessoriesWeight,
+                    accessoriesStandard: this.state.accessoriesStandard,
+                    sellPrice: Number(this.state.sellPrice) * 100,
+                    purchasePrice: Number(this.state.purchasePrice) * 100,
+                    taxRate: this.state.taxRate,
+                    salesInputAccountCodeId: this.state.salesInputAccountCodeId,
+                    inventoryAccountCodeId: this.state.inventoryAccountCodeId,
+                    salesCostsAccountCodeId: this.state.salesCostsAccountCodeId
+                }
+                if (this.state.flag == 1) {
+                    Axios.post("/self/erp/baseinfo/addMaterialInfo", params).then((res) => {
+                        if (res.data.success) {
+                            message.success("新增成功");
+                            this.initData(this.state.parentId);
+                            this.setState({
+                                visible: false
+                            })
+                        } else {
+                            message.warning(res.data.message);
+                        }
+                    })
+                } else {
+                    // params.id = this.state.id;
+                    // Axios.post("/self/erp/baseinfo/updateAccessories", params).then((res)=>{
+                    //     if(res.data.success) {
+                    //         message.success("修改成功");
+                    //         // this.initData(this.state.currentPage, this.valueIds);
+                    //         this.setState({
+                    //             visible: false
+                    //         })
+                    //     }else{
+                    //         message.warning(res.data.message);
+                    //     }
+                    // })
+                }
+            } else {
+                let params = {
+                    id: this.state.parentId,
+                    materialCode: this.state.materialCode,
+                    materialName: this.state.materialName,
+                    type: 'group',
+                    taxRate: this.state.taxRate
+                }
+                this.common(params);
+            }
+        }else{
+            let params = {
+                id: 0,
+                materialCode: this.state.materialCode,
+                materialName: this.state.materialName,
+                type: 'group',
+                taxRate: this.state.taxRate
+            }
+            this.common(params);
+        }
+    }
+
+    common(params) {
+        Axios.post("/self/erp/baseinfo/addMaterialInfo", params).then((res)=>{
+            if (res.data.success) {
+                message.success("新增成功");
+                this.initData(this.state.parentId);
+                this.treeList();
+                this.setState({
+                    visible: false
+                })
+            } else {
+                message.warning(res.data.message);
+            }
+        })
+    }
+
+    /**
+     * 查询计量单位下拉框
+     */
+    baseInfer() {
+        Axios.post("/self/erp/baseinfo/queryDictTypeAndValue").then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    measurementList: res.data.data.measurement,
+                    materialVarietyList: res.data.data.rawMaterialVariety,
+                    materialStandardList: res.data.data.rawMaterialStandard,
+                    materialLevelList: res.data.data.rawMaterialLevel,
+                    productVarietyList: res.data.data.productVariety,
+                    productStandardList: res.data.data.productStandard,
+                    productLevelList: res.data.data.productLevel
+                })
+            }else{
+                this.setState({
+                    measurementList: [],
+                    materialVarietyList: [],
+                    materialStandardList: [],
+                    materialLevelList: [],
+                    productVarietyList: [],
+                    productStandardList: [],
+                    productLevelList: []
+                })
+            }
+        });
+        Axios.post("/self/erp/baseinfo/querySubjectCode", {}).then((res)=>{
+            // console.log(res.data)
+            if(res.data.success) {
+                // res.data.data.subjects
+                this.setState({
+                    inventoryAccountCodeIdList: res.data.data.subjects,
+                    salesInputAccountCodeIdList: res.data.data.subjects,
+                    salesCostsAccountCodeIdList: res.data.data.subjects
+                })
+            }else{
+                this.setState({
+                    inventoryAccountCodeIdList: [],
+                    salesInputAccountCodeIdList: [],
+                    salesCostsAccountCodeIdList: []
+                })
+            }
+        })
+    }
+
+
+    componentDidMount() {
+        this.treeList();
+    }
+    orderTime(dates, pickys) {
+        if(pickys) {
+            this.setState({
+                dateTime: pickys
+            })
+        }else{
+            this.setState({
+                dateTime: ""
+            })
+        }
+    }
+    initData2(currentPage, accessoriesTypeId) {
+        let params = {
+            currentPage,
+            pageSize: this.state.pageSize,
+            accessoriesTypeId
+        }
+        Axios.post("/self/erp/baseinfo/queryAccessoriesBuyUseRecords", params).then((res)=>{
+            console.log(res.data.data)
+            if(res.data.success) {
+                res.data.data.accessoriesBuyUseRecords.forEach((item)=>{
+                    item.key = item.id;
+                })
+                this.setState({
+                    dataSource2: res.data.data.accessoriesBuyUseRecords,
+                    pageTotal2: res.data.data.num,
+                })
+            }else{
+                this.setState({
+                    dataSource2: [],
+                    pageTotal2: 0
+                })
+            }
+        })
+    }
+    handleOk2() {
+        // if(this.state.flag2 == 1) {
+        //     let params = {
+        //         accessoriesTypeId: this.valueIds,
+        //         accessoriesId: this.state.xiangName2,
+        //         number: this.state.numbers,
+        //         unitPrice: this.state.price * 100,
+        //         note: this.state.mark,
+        //         buyDate: this.state.dateTime
+        //     }
+        //     Axios.post("/self/erp/baseinfo/addAccessoriesBuyUseRecord", params).then((res)=>{
+        //         if(res.data.success) {
+        //             message.success("新增成功");
+        //             this.initData2(this.state.currentPage2, this.valueIds);
+        //             this.setState({
+        //                 visible2: false
+        //             })
+        //         }else{
+        //             message.warning(res.data.message);
+        //         }
+        //     })
+        // }
+    }
+}
+export default Materiel;

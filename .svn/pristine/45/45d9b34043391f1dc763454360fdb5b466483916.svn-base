@@ -1,0 +1,700 @@
+import React, {Component} from 'react';
+import {Input, Table, Space, Pagination, Modal, Select, Button, InputNumber, message} from 'antd';
+import Axios from 'axios';
+import './procurementSampling.scss';
+const {Column} = Table;
+const {Option} = Select;
+const {confirm} = Modal;
+const {TextArea} = Input;
+class ProcurementSampling extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            dataSource: [],
+            currentPage: 1, pageSize: 10, pageTotal: 0,
+            msg: '', flag: 1, visible: false,
+
+            code: '', name: '',  person: '',   carNum: '',  pinl: '',   breedList: [],   breedId: '',  standerdList: [], standerd: '',  place: '', soldier: '',
+            conclusion: '',   personIdList: [], personId: '',    info: '',
+            singleAmount: '', vag: '',  gitTotalNum: '',  totalNum: '',   totalLv: '',   noPass: '',
+
+            modalSource: [],
+
+            totalBruiseNum :'', totalBruiseRate:'',  totalBumpNum :'',  totalBumpRate:'',
+            totalSugarBackNum :'',  totalSugarBackRate:'',   totalDiseaseFruitNum:'',    totalDiseaseFruitRate:'',
+            totalWormFruitNum:'',   totalWormFruitRate:'',   totalColorDifferenceNum:'',   totalColorDifferenceRate:'',
+            totalStandardMixNum  :'', totalStandardMixRate:'',   totalSunburnNum:'',   totalSunburnRate:'',
+            totalHailInjuryNum  :'',  totalHailInjuryRate:'',   totalFruitRustNum:'',   totalFruitRustRate:'',
+            totalBranchInjuryNum :'',  totalBranchInjuryRate:'',   totalDeformityNum:'',   totalDeformityRate:'',
+            totalDrugHarmNum :'',  totalDrugHarmRate:'',   totalDehydrationNum:'',   totalDehydrationRate:'',
+            totalWaterCrackNum :'',  totalWaterCrackRate:'',   totalCrackedFruitNum:'',    totalCrackedFruitRate:'',
+            totalRotNum :'',  totalRotRate:''
+        }
+    }
+    render() {
+        const columns = [
+            {
+                title: '序号',
+                align: 'center',
+                width: 80,
+                render: (text, record, index)=>(
+                    <span>{(this.state.currentPage - 1)*this.state.pageSize+index+1}</span>
+                ),
+                fixed: 'left'
+            },
+            {
+                title: '抽检单名称',
+                dataIndex: 'sheetName',
+                key: 'sheetName',
+                align: 'center',
+                width: 300
+            },
+            {
+                title: '车号',
+                dataIndex: 'carNo',
+                key: 'carNo',
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '产地',
+                dataIndex: 'productionPlace',
+                key: 'productionPlace',
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '采单号',
+                dataIndex: 'sheetCode',
+                key: 'sheetCode',
+                align: 'center',
+                width: 200
+            },
+            {
+                title: '结论',
+                dataIndex: 'conclusion',
+                key: 'conclusion',
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '制单人',
+                dataIndex: 'createdName',
+                key: 'createdName',
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '修改时间',
+                dataIndex: 'modifiedTime',
+                key: 'modifiedTime',
+                width: 160,
+                align: 'center'
+            },
+            {
+                title: '操作',
+                dataIndex: 'address',
+                key: 'address',
+                align: 'center',
+                width: 100,
+                fixed: "right",
+                render: (text, record)=>(
+                    <Space size="large">
+                        {/*<span key={"changes"} onClick={this.changes.bind(this, record)} className="changes">修改</span>*/}
+                        <span key={"deletes"} onClick={this.details.bind(this, record)} className="deletes">详情</span>
+                    </Space>
+                )
+            }
+        ];
+        const modalColumn = [
+            {
+                title: '序号',
+                align: 'center',
+                width: 80,
+                render: (text, record, index)=>(
+                    <span>{"NO"+(index+1)}</span>
+                )
+            },
+            {
+                title: '碰伤',
+                dataIndex: 'bruiseNum',
+                key: 'bruiseNum',
+                align: 'center',
+                width: 200
+            },
+            {
+                title: '破皮',
+                dataIndex: 'bumpNum',
+                key: 'bumpNum',
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '病果',
+                dataIndex: 'diseaseFruitNum',
+                key: 'diseaseFruitNum',
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '虫果',
+                dataIndex: 'wormFruitNum',
+                key: 'wormFruitNum',
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '色差',
+                dataIndex: 'colorDifferenceNum',
+                key: 'colorDifferenceNum',
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '串规格',
+                dataIndex: 'standardMixNum',
+                key: 'standardMixNum',
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '日灼',
+                dataIndex: 'sunburnNum',
+                key: 'sunburnNum',
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '雹伤',
+                dataIndex: 'hailInjuryNum',
+                key: 'hailInjuryNum',
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '果锈',
+                dataIndex: 'fruitRustNum',
+                key: 'fruitRustNum',
+                align: 'center',
+                width: 200
+            },
+            {
+                title: '枝磨',
+                dataIndex: 'branchInjuryNum',
+                key: 'branchInjuryNum',
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '畸形',
+                dataIndex: 'deformityNum',
+                key: 'deformityNum',
+                align: 'center',
+                width: 200
+            },
+            {
+                title: '药害',
+                dataIndex: 'drugHarmNum',
+                key: 'drugHarmNum',
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '脱水',
+                dataIndex: 'dehydrationNum',
+                key: 'dehydrationNum',
+                width: 160,
+                align: 'center'
+            },
+            {
+                title: '水皱纹',
+                dataIndex: 'waterCrackNum',
+                key: 'waterCrackNum',
+                width: 160,
+                align: 'center'
+            },
+            {
+                title: '裂果',
+                dataIndex: 'crackedFruitNum',
+                key: 'crackedFruitNum',
+                width: 160,
+                align: 'center'
+            },
+            {
+                title: '腐烂',
+                dataIndex: 'rotNum',
+                key: 'rotNum',
+                width: 160,
+                align: 'center'
+            },
+            {
+                title: '返糖',
+                dataIndex: 'sugarBackNum',
+                key: 'sugarBackNum',
+                width: 160,
+                align: 'center'
+            }
+        ];
+        return(
+            <div id="procurementSampling">
+                <div className="procurementSampling">
+                    <div className="placeTable">
+                        <Table pagination={false} dataSource={this.state.dataSource} locale={{emptyText: "暂无数据"}} columns={columns}></Table>
+                    </div>
+                    <div className="placePagination">
+                        <Pagination showTotal={()=>`共 ${this.state.pageTotal} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotal} />
+                    </div>
+
+                    <Modal title={this.state.msg} width="60%" footer={null} getContainer={false} closable={false}  visible={this.state.visible} centered={true}>
+                        <div className="modal1">
+                            <div className="div3">
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">抽检编码</span>
+                                        <Input allowClear disabled value={this.state.code} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">抽检名称</span>
+                                        <Input allowClear disabled value={this.state.name} className={"input3"}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">供应商</span>
+                                        <Input allowClear min={0} disabled value={this.state.person} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">车号</span>
+                                        <Input allowClear min={0} disabled={this.state.flag} value={this.state.carNum} className={"input3"} onChange={(e)=>{this.setState({carNum:e.target.value})}}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">件数</span>
+                                        <Input allowClear disabled={this.state.flag} value={this.state.pinl} className={"input3"} onChange={(e)=>{this.setState({pinl:e.target.value})}}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">品种</span>
+                                        <Select  className={"input3"} disabled={this.state.flag} allowClear onChange={(e)=>{this.setState({breedId: e})}} value={this.state.breedId}>
+                                            {
+                                                this.state.breedList.map((item, index)=>{
+                                                    return(
+                                                        <Option value={item.valueId} key={index}>{item.value}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </li>
+                                </ul>
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">规格</span>
+                                        <Select  className={"input3"} disabled={this.state.flag} allowClear onChange={(e)=>{this.setState({standerd: e})}} value={this.state.standerd}>
+                                            {
+                                                this.state.standerdList.map((item, index)=>{
+                                                    return(
+                                                        <Option value={item.valueId} key={index}>{item.value}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">产地</span>
+                                        <Input allowClear disabled={this.state.flag} value={this.state.place} className={"input3"} onChange={(e)=>{this.setState({place:e.target.value})}}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">采号单</span>
+                                        <Input allowClear disabled={this.state.flag} value={this.state.soldier} className={"input3"} onChange={(e)=>{this.setState({soldier:e.target.value})}}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">结论</span>
+                                        <Input allowClear disabled={this.state.flag} value={this.state.conclusion} className={"input3"} onChange={(e)=>{this.setState({conclusion:e.target.value})}}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">抽检人</span>
+                                        <Select  className={"input3"} disabled={this.state.flag} allowClear onChange={(e)=>{this.setState({personId: e})}} value={this.state.personId}>
+                                            {
+                                                this.state.personIdList.map((item, index)=>{
+                                                    return(
+                                                        <Option value={item.empno} key={index}>{item.realname}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </li>
+                                </ul>
+                                <ul className="ul1">
+                                    <li className="li1 li11">
+                                        <span className="span1">备注</span>
+                                        <TextArea rows={4} disabled={this.state.flag} value={this.state.info} onChange={(e)=>{
+                                            this.setState({
+                                                info: e.target.value
+                                            })
+                                        }}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">最低单件量</span>
+                                        <Input allowClear disabled value={this.state.singleAmount} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">平均单件量</span>
+                                        <Input allowClear disabled value={this.state.vag} className={"input3"}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">总个数</span>
+                                        <Input allowClear disabled value={this.state.totalNum} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">合格总个数</span>
+                                        <Input allowClear disabled value={this.state.gitTotalNum} className={"input3"}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">不合格总个数</span>
+                                        <Input allowClear disabled value={this.state.noPass} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">总不合格率</span>
+                                        <Input allowClear disabled value={this.state.totalLv} className={"input3"}/>
+                                    </li>
+                                </ul>
+
+                                <div className="placeTable">
+                                    <Table pagination={false} dataSource={this.state.modalSource} locale={{emptyText: "暂无数据"}} columns={modalColumn} scroll={{ x: 2500 }}></Table>
+                                </div>
+
+                                <ul className="ul3">
+                                    <li className="li1">
+                                        <span className="span1">总碰伤数</span>
+                                        <Input allowClear disabled value={this.state.totalBruiseNum} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">总碰伤率</span>
+                                        <Input allowClear disabled value={this.state.totalBruiseRate} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">总碰皮数</span>
+                                        <Input allowClear disabled value={this.state.totalBumpNum} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">总碰皮率</span>
+                                        <Input allowClear disabled value={this.state.totalBumpRate} className={"input3"}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul3">
+                                    <li className="li1">
+                                        <span className="span1">总返糖数</span>
+                                        <Input allowClear disabled value={this.state.totalSugarBackNum} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">总返糖率</span>
+                                        <Input allowClear disabled value={this.state.totalSugarBackRate} className={"input3"}/>
+                                    </li>
+                                    <li className="li1">
+                                        <span className="span1">总病果数</span>
+                                        <Input allowClear disabled value={this.state.totalDiseaseFruitNum} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">总病果率</span>
+                                        <Input allowClear disabled value={this.state.totalDiseaseFruitRate} className={"input3"}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul3">
+                                    <li className="li1">
+                                        <span className="span1">总虫果数</span>
+                                        <Input allowClear disabled value={this.state.totalWormFruitNum} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">总虫果率</span>
+                                        <Input allowClear disabled value={this.state.totalWormFruitRate} className={"input3"}/>
+                                    </li>
+                                    <li className="li1">
+                                        <span className="span1">总色差数</span>
+                                        <Input allowClear disabled value={this.state.totalColorDifferenceNum} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">总色差率</span>
+                                        <Input allowClear disabled value={this.state.totalColorDifferenceRate} className={"input3"}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul3">
+                                    <li className="li1">
+                                        <span className="span1">总串规格数</span>
+                                        <Input allowClear disabled value={this.state.totalStandardMixNum} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">总串规格率</span>
+                                        <Input allowClear disabled value={this.state.totalStandardMixRate} className={"input3"}/>
+                                    </li>
+                                    <li className="li1">
+                                        <span className="span1">总日灼数</span>
+                                        <Input allowClear disabled value={this.state.totalSunburnNum} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">总日灼率</span>
+                                        <Input allowClear disabled value={this.state.totalSunburnRate} className={"input3"}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul3">
+                                    <li className="li1">
+                                        <span className="span1">总雹伤数</span>
+                                        <Input allowClear disabled value={this.state.totalHailInjuryNum} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">总雹伤率</span>
+                                        <Input allowClear disabled value={this.state.totalHailInjuryRate} className={"input3"}/>
+                                    </li>
+                                    <li className="li1">
+                                        <span className="span1">总果锈数</span>
+                                        <Input allowClear disabled value={this.state.totalFruitRustNum} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">总果锈率</span>
+                                        <Input allowClear disabled value={this.state.totalFruitRustRate} className={"input3"}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul3">
+                                    <li className="li1">
+                                        <span className="span1">总枝磨数</span>
+                                        <Input allowClear disabled value={this.state.totalBranchInjuryNum} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">总枝磨率</span>
+                                        <Input allowClear disabled value={this.state.totalBranchInjuryRate} className={"input3"}/>
+                                    </li>
+                                    <li className="li1">
+                                        <span className="span1">总畸形数</span>
+                                        <Input allowClear disabled value={this.state.totalDeformityNum} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">总畸形率</span>
+                                        <Input allowClear disabled value={this.state.totalDeformityRate} className={"input3"}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul3">
+                                    <li className="li1">
+                                        <span className="span1">总药害数</span>
+                                        <Input allowClear disabled value={this.state.totalDrugHarmNum} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">总药害率</span>
+                                        <Input allowClear disabled value={this.state.totalDrugHarmRate} className={"input3"}/>
+                                    </li>
+                                    <li className="li1">
+                                        <span className="span1">总脱水数</span>
+                                        <Input allowClear disabled value={this.state.totalDehydrationNum} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">总脱水率</span>
+                                        <Input allowClear disabled value={this.state.totalDehydrationRate} className={"input3"}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul3">
+                                    <li className="li1">
+                                        <span className="span1">总水裂数</span>
+                                        <Input allowClear disabled value={this.state.totalWaterCrackNum} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">总水裂率</span>
+                                        <Input allowClear disabled value={this.state.totalWaterCrackRate} className={"input3"}/>
+                                    </li>
+                                    <li className="li1">
+                                        <span className="span1">总裂果数</span>
+                                        <Input allowClear disabled value={this.state.totalCrackedFruitNum} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">总裂果率</span>
+                                        <Input allowClear disabled value={this.state.totalCrackedFruitRate} className={"input3"}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1 ol1">
+                                    <li className="li1">
+                                        <span className="span1">总腐烂数</span>
+                                        <Input allowClear disabled value={this.state.totalRotNum} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">总腐烂率</span>
+                                        <Input allowClear disabled value={this.state.totalRotRate} className={"input3"}/>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div className="div4">
+                            <li className="li4">
+                                <Button className="btn4" type="danger" onClick={()=>{this.setState({visible: false})}}>取消</Button>
+                            </li>
+                            {/*<li className="li4">*/}
+                            {/*    <Button className="btn4" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>*/}
+                            {/*</li>*/}
+                        </div>
+                    </Modal>
+                </div>
+            </div>
+        )
+    }
+    initData(currentPage){
+        let params = {
+            currentPage,
+            pageSize: this.state.pageSize
+        };
+        Axios.post('/self/erp/randomCheck/queryRandomCheckSheet', params).then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    dataSource: res.data.data.randomCheckSheets,
+                    pageTotal: res.data.data.num
+                })
+            }else{
+                this.setState({
+                    dataSource: [],
+                    pageTotal: 0
+                })
+            }
+        })
+    }
+    /**
+     * 列表根据id查详情的数据
+     *
+     * */
+    detailData(id) {
+        Axios.post('/self/erp/randomCheck/queryRandomCheckSheetById', {id}).then((res)=>{
+            if(res.data.success) {
+                console.log(res.data.data.randomCheckSheet);
+                let obj = res.data.data.randomCheckSheet;
+                this.setState({
+                    code: obj.sheetCode,
+                    name: obj.sheetName,
+                    person: obj.supplierName,
+                    carNum: obj.carNo,
+                    pinl: obj.number,
+                    breedId: obj.varietyId,
+                    standerd: obj.standardId,
+                    place: obj.productionPlace,
+                    soldier: obj.sheetCode,
+                    conclusion: obj.conclusion,
+                    personId: obj.checkLeader,
+                    info: obj.note,
+                    singleAmount: obj.minUnitWeight,
+                    vag: obj.aveUnitWeight,
+                    totalNum: obj.totalNum,
+                    gitTotalNum: obj.totalQualifiedNum,
+                    noPass: obj.totalUnqualifiedNum,
+                    totalLv: obj.totalUnqualifiedRate,
+                    modalSource: obj.singleBucketRandomCheckSheets,
+
+                    totalBruiseNum :obj.totalBruiseNum, totalBruiseRate:obj.totalBruiseRate+"%",  totalBumpNum :obj.totalBumpNum,  totalBumpRate:obj.totalBumpRate+'%',
+                    totalSugarBackNum :obj.totalSugarBackNum,  totalSugarBackRate:obj.totalSugarBackRate+'%',   totalDiseaseFruitNum:obj.totalDiseaseFruitNum,    totalDiseaseFruitRate:obj.totalDiseaseFruitRate+'%',
+                    totalWormFruitNum:obj.totalWormFruitNum,   totalWormFruitRate:obj.totalWormFruitRate+'%',   totalColorDifferenceNum:obj.totalColorDifferenceNum,   totalColorDifferenceRate:obj.totalColorDifferenceRate+'%',
+                    totalStandardMixNum  :obj.totalStandardMixNum, totalStandardMixRate:obj.totalStandardMixRate+'%',   totalSunburnNum:obj.totalSunburnNum,   totalSunburnRate:obj.totalSunburnRate+'%',
+                    totalHailInjuryNum  :obj.totalHailInjuryNum,  totalHailInjuryRate:obj.totalHailInjuryRate+'%',   totalFruitRustNum:obj.totalFruitRustNum,   totalFruitRustRate:obj.totalFruitRustRate+'%',
+                    totalBranchInjuryNum :obj.totalBranchInjuryNum,  totalBranchInjuryRate:obj.totalBranchInjuryRate+'%',   totalDeformityNum:obj.totalDeformityNum,   totalDeformityRate:obj.totalDeformityRate+'%',
+                    totalDrugHarmNum :obj.totalDrugHarmNum,  totalDrugHarmRate:obj.totalDrugHarmRate+'%',   totalDehydrationNum:obj.totalDehydrationNum,   totalDehydrationRate:obj.totalDehydrationRate+'%',
+                    totalWaterCrackNum :obj.totalWaterCrackNum,  totalWaterCrackRate:obj.totalWaterCrackRate+'%',   totalCrackedFruitNum:obj.totalCrackedFruitNum,    totalCrackedFruitRate:obj.totalCrackedFruitRate+'%',
+                    totalRotNum :obj.totalRotNum,  totalRotRate:obj.totalRotRate+'%'
+                })
+            }else{
+                this.setState({
+                    code: "",
+                    name: "",
+                    person: '',
+                    carNum: '',
+                    pinl: '',
+                    breedId: '',
+                    standerd: '',
+                    place: '',
+                    soldier: '',
+                    conclusion: '',
+                    personId: '',
+                    info: '',
+                    singleAmount:'',
+                    vag: '',
+                    totalNum: '',
+                    gitTotalNum: '',
+                    noPass: '',
+                    totalLv: '',
+                    modalSource: [],
+
+                    totalBruiseNum :'', totalBruiseRate:'',  totalBumpNum :'',  totalBumpRate:'',
+                    totalSugarBackNum :'',  totalSugarBackRate:'',   totalDiseaseFruitNum:'',    totalDiseaseFruitRate:'',
+                    totalWormFruitNum:'',   totalWormFruitRate:'',   totalColorDifferenceNum:'',   totalColorDifferenceRate:'',
+                    totalStandardMixNum  :'', totalStandardMixRate:'',   totalSunburnNum:'',   totalSunburnRate:'',
+                    totalHailInjuryNum  :'',  totalHailInjuryRate:'',   totalFruitRustNum:'',   totalFruitRustRate:'',
+                    totalBranchInjuryNum :'',  totalBranchInjuryRate:'',   totalDeformityNum:'',   totalDeformityRate:'',
+                    totalDrugHarmNum :'',  totalDrugHarmRate:'',   totalDehydrationNum:'',   totalDehydrationRate:'',
+                    totalWaterCrackNum :'',  totalWaterCrackRate:'',   totalCrackedFruitNum:'',    totalCrackedFruitRate:'',
+                    totalRotNum :'',  totalRotRate:''
+                })
+            }
+        })
+    }
+    changePages(val) {
+        this.initData(val);
+        this.setState({
+            currentPage: val
+        })
+    }
+    details(row) {
+        this.detailData(row.id);
+        this.setState({
+            flag: 1,
+            visible: true,
+            msg: '详情'
+        })
+    }
+    changes(row) {
+        this.detailData(row.id);
+        this.setState({
+            flag: 0,
+            visible: true,
+            msg: '修改'
+        })
+    }
+    handleOk() {
+
+    }
+    componentDidMount() {
+        this.initData(this.state.currentPage);
+        this.initSelect();
+    }
+    /**
+     * 品种,规格,抽检人的下拉框
+     *
+     * */
+    initSelect() {
+        Axios.post('/self/erp/baseinfo/queryDictTypeAndValue').then((res)=>{
+            console.log(res.data.data);
+            if(res.data.success) {
+                this.setState({
+                    breedList: res.data.data.rawMaterialVariety,
+                    standerdList: res.data.data.rawMaterialStandard,
+                })
+            }else{
+                this.setState({
+                    breedList: [],
+                    standerdList: [],
+                })
+            }
+        });
+        Axios.post('/self/erp/baseinfo/queryUser').then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    personIdList: res.data.data.users
+                })
+            }else{
+                this.setState({
+                    personIdList: res.data.data.users
+                })
+            }
+        })
+    }
+}
+export default ProcurementSampling;

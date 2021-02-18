@@ -1,0 +1,553 @@
+import React, {Component} from 'react';
+import $ from "jquery";
+import "./home4.scss"
+import echarts from "echarts";
+class Home4 extends Component{
+    constructor(props) {
+        super(props);
+        this.timer = null;
+        this.state = {
+            tableData: [
+                {index: 1  ,name: "小金鱼",   num: '12',   price: '1288'},
+                {index: 2  ,name: "韩立聪",   num: '788',   price: '1277'},
+                {index: 3  ,name: "郝庆友",   num: '199',   price: '1222'},
+                {index: 4  ,name: "侯富荣",   num: '100',   price: '998'},
+                {index: 5  ,name: "王涵",   num: '1234',   price: '988'},
+                {index: 6  ,name: "刁克明",   num: '888',   price: '888'},
+                {index: 7  ,name: "姜振兰",   num: '888',   price: '799'},
+                {index: 8  ,name: "王磊 ",   num: '128',   price: '788'},
+                {index: 9  ,name: "张娜",   num: '888',   price: '777'},
+                {index: 10  ,name: "高晓丽",   num: '788',   price: '699'},
+                {index: 11  ,name: "郭明禄",   num: '888',   price: '688'},
+                {index: 12  ,name: "连丽华",   num: '499',   price: '666'},
+                {index: 13  ,name: "孔健",   num: '1299',   price: '555'},
+                {index: 14  ,name: "朱永丽",   num: '1599',   price: '499'},
+                {index: 15  ,name: "张晓红",   num: '899',   price: '399'},
+            ]
+        }
+    }
+    render() {
+        return(
+            <div id="home4">
+                <div className="home4">
+                    <ol className="home4_top">
+                        <ol className="home4_top_left">
+                            <ol className="home4_top_left_inner">
+                                <ol className="home4_top_left_inner_top">
+                                    <ol className="home4_top_left_inner_top_left">
+                                        <ol className="home4_top_left_inner_top_left_title">今日销售量</ol>
+                                        <ol className="home4_top_left_inner_top_left_content">
+                                            <ol className="home4_top_left_inner_top_left_content_left">5000</ol>
+                                            <ol className="home4_top_left_inner_top_left_content_right">吨</ol>
+                                        </ol>
+                                    </ol>
+                                    <ol className="home4_top_left_inner_top_right">
+                                        <ol className="home4_top_left_inner_top_right_left">+15%</ol>
+                                        <ol className="home4_top_left_inner_top_right_right"></ol>
+                                    </ol>
+                                </ol>
+                                <ol className="home4_top_left_inner_bottom">
+                                    <ol className="home4_top_left_inner_bottom_left">
+                                        <ol className="home4_top_left_inner_bottom_left_top">今日销售额</ol>
+                                        <ol className="home4_top_left_inner_bottom_left_content">
+                                            <ol className="home4_top_left_inner_bottom_left_content_text">6789.05</ol>
+                                            <ol className="home4_top_left_inner_bottom_left_content_tun">元</ol>
+                                        </ol>
+                                    </ol>
+                                    <ol className="home4_top_left_inner_bottom_right">
+                                        <ol className="home4_top_left_inner_bottom_right_left">+38%</ol>
+                                        <ol className="home4_top_left_inner_bottom_right_right"></ol>
+                                    </ol>
+                                </ol>
+                            </ol>
+                        </ol>
+                        <ol className="home4_top_center">
+                            <ol className="home4_top_center_inner">
+                                <ol className="home4_top_center_inner_title">
+                                    <ol className="home4_top_center_inner_title_left"></ol>
+                                    <ol className="home4_top_center_inner_title_middle">贸易走势</ol>
+                                    <ol className="home4_top_center_inner_title_right"></ol>
+                                </ol>
+                                <ol className="home4_top_center_inner_content" id="home4_top_center_inner_content_echarts"></ol>
+                            </ol>
+                        </ol>
+                        <ol className="home4_top_right home4_top_left">
+                            <ol className="home4_top_left_inner">
+                                <ol className="home4_top_left_inner_top">
+                                    <ol className="home4_top_left_inner_top_left">
+                                        <ol className="home4_top_left_inner_top_left_title">今日交付量</ol>
+                                        <ol className="home4_top_left_inner_top_left_content">
+                                            <ol className="home4_top_left_inner_top_left_content_left">5000</ol>
+                                            <ol className="home4_top_left_inner_top_left_content_right">吨</ol>
+                                        </ol>
+                                    </ol>
+                                    <ol className="home4_top_left_inner_top_right">
+                                        <ol className="home4_top_left_inner_top_right_left">+15%</ol>
+                                        <ol className="home4_top_left_inner_top_right_right"></ol>
+                                    </ol>
+                                </ol>
+                                <ol className="home4_top_left_inner_bottom">
+                                    <ol className="home4_top_left_inner_bottom_left">
+                                        <ol className="home4_top_left_inner_bottom_left_top">今日应交付额</ol>
+                                        <ol className="home4_top_left_inner_bottom_left_content">
+                                            <ol className="home4_top_left_inner_bottom_left_content_text">6789.05</ol>
+                                            <ol className="home4_top_left_inner_bottom_left_content_tun">元</ol>
+                                        </ol>
+                                    </ol>
+                                    <ol className="home4_top_left_inner_bottom_right">
+                                        <ol className="home4_top_left_inner_bottom_right_left">+38%</ol>
+                                        <ol className="home4_top_left_inner_bottom_right_right"></ol>
+                                    </ol>
+                                </ol>
+                            </ol>
+                        </ol>
+                    </ol>
+                    <ol className="home4_bottom">
+                        <ol className="home4_bottom_left">
+                            <ol className="home4_bottom_left_inner">
+                                <ol className="home4_bottom_left_inner_title">
+                                    <ol className="home4_bottom_left_inner_title_left"></ol>
+                                    <ol className="home4_bottom_left_inner_title_middle">最近15天最受欢迎的苹果</ol>
+                                    <ol className="home4_bottom_left_inner_title_right"></ol>
+                                </ol>
+                                <ol className="home4_bottom_left_inner_conntent" id="home4_bottom_left_inner_conntent"></ol>
+                            </ol>
+                        </ol>
+                        <ol className="home4_bottom_right">
+                            <ol className="home4_bottom_right_inner">
+                                <ol className="home4_bottom_right_inner_left">
+                                    <ol className="home4_bottom_right_inner_left_title">
+                                        <ol className="home4_bottom_right_inner_left_title_left"></ol>
+                                        <ol className="home4_bottom_right_inner_left_title_middle">客户情况</ol>
+                                        <ol className="home4_bottom_right_inner_left_title_right"></ol>
+                                    </ol>
+                                    <ol className="home4_bottom_right_inner_left_context" id="home4_bottom_right_inner_left_context"></ol>
+                                </ol>
+                                <ol className="home4_bottom_right_inner_right">
+                                    <ol className="home4_bottom_right_inner_right_top">
+                                        <ol className="home4_bottom_right_inner_right_top_left"></ol>
+                                        <ol className="home4_bottom_right_inner_right_top_middle">最近15天大咖客户</ol>
+                                        <ol className="home4_bottom_right_inner_right_top_right"></ol>
+                                    </ol>
+                                    <ol className="home4_bottom_right_inner_right_text">
+                                        <ul className="home4_bottom_right_inner_right_text_ul1">
+                                            <li className="home4_bottom_right_inner_right_text_ul1_li1">序号</li>
+                                            <li className="home4_bottom_right_inner_right_text_ul1_li1">客户名称</li>
+                                            <li className="home4_bottom_right_inner_right_text_ul1_li1">采购量(kg)</li>
+                                            <li className="home4_bottom_right_inner_right_text_ul1_li1">采购额(元)</li>
+                                        </ul>
+                                    </ol>
+                                    <div className="placeLi" id="scroll-message">
+                                        <ul className="ul7" id="ul7"></ul>
+                                    </div>
+                                </ol>
+                            </ol>
+                        </ol>
+
+                    </ol>
+                </div>
+            </div>
+        )
+    }
+    componentDidMount() {
+        this.props.parent.giveParentData();
+        this.initDom();
+        this.init();
+        this.lastSrollTop();
+    }
+    init() {
+        let myChart1 = echarts.init(document.getElementById('home4_top_center_inner_content_echarts'));
+        let img = [
+            'image://data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABRCAYAAABFTSEIAAAACXBIWXMAAAsSAAALEgHS3X78AAAEp0lEQVR42u3cz4sjRRTA8W9Vd3Vn8mMmjj9WQWSRZQ+CsH+B7MnDIgiCd0E8CYJ/gOAIelo8ehUP/gF6WLw5/gMueFP2sIcF0dHd2Z1kknR11fOQZJJJMtlZd03H7HtQpNOTnpn+8Lrm1etmjIig8e/DKoECKqACKqCGAiqgAiqghgIqoAIqoIYCKqACKqCGAiqgAiqghgIqoAJudKTr+osZMNPvBUQBHwHsPF9fB9R0DeHMOQ6T6WOrhEzXBM4swDOL0M6CrArRVoq3t2dGUIb9fTvatg8ZZup1PDBgzPmy98mey6qfzjLz2WaWjEUZKEvGyi9nWyneMOvGIyFQo2Sbg4MUSChpU9IeTTUpJdsEajPZOJeJG5uBZj7rLLduWS5dGm6XNLEELOFUFj54ACJCaychkpDSASK3bwsXL0YgVpWJKwM0iy9Zy8HdGru7jvt3Pbu7w0wES7drTwAbjTHMGCsQcIAnYTC1/wRx0wEnl27JNgZI8HQ6Kc1mQq83RNzaMjPzXqDbjTQaJRFLxIyyMSxAXEkWrhrQzAAmo5HOjCQf7jflILxOkohL+aUPgV4vEGNJo+E5PAy02+UIMEwBxo0CPDP7Dg5SnEtpt1PA0e87XO25FOoh8IYIH2Y5b45RzGAQBiIltZoHxqMcjbksXAVgdc2EQMYzzzdotyeZWKuleULXJtwT4SODfC2QCWR+IF9KnjuX1Xbo99Op7LVE8iXlz0YBTk5SyLEEjo5OLuccEoFUvHfO+reuUPx4zftXAIcx1hdcF+/TvFab4A0Bs0VwqyhpVnkJT89/Q4DDQ0e77YCMwIUsFMeFZD856699URRvX4nxE4A/jbnxXp7v4Zw3ReGNSDHI8wFQjIafuoyn58L/fB6sth/Ybg9fez2TRC6QZcZYvgHsazF+MP7YCyLXcM7gvSXLDGBqYDg+NhwdmSpPoTrAkub0W+f4FSB1fDucIunMHSLpO8WAH0rSy8u+19MBCHB4OHzd2pI+CEUhpigEiN+l6WcdY252jLn5s7Wf472ImPcN8pUl/tEHoV4XWq1Ke4KrLmPsTA3oODpytFoOyJKSyzHyMSIxteWngMW5cSEdDJQUhTdZVgxOz3/+jFJm4+bA2e5JpNU6WZ4Fw99JwnWMKccwpeddP+B7GZTNUPKqybJy0O+Hs1YfMz9swwvpB8fbGDG0GuGkkK7V0hxSmZQpABI8l2z0v3sJf50qpAMJCd2qCulql3LD1lRGQjm7lEsDz0rkxTQOfiPPxUBcuJTbbhss/Y1eyi3NwsmKInmkZsKk5gtPUzNhvp11507CSy/X6XYStpvFudpZw1ZWIOF4Cq6SdtbKbioJyAhRTu3u9yMJXerN+ugvaQQsjcZ8Q3VnZwxlSDhe1lB9GjrSw5b+1avT8+Jw+979nNaOI6U3KpTrWAosxVQmygK4ld8X0ZtK/7eViExD7O1NQPb3T7fsl4/4sBpwYzPwjFbTo95Yl9l9Vd1YN1X/147HebSjary1AHyc5qc+XLQEQx9ve8Kg6xr6hKoCKqACKqCGAiqgAiqghgIqoAIqoIYCKqACKqCGAiqgAiqghgIq4JrHP8fEWV8FMTmOAAAAAElFTkSuQmCC',
+            'image://data:image/png;base64,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',
+            'image://data:image/png;base64,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',
+            'image://data:image/png;base64,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',
+        ]
+        let option1 = {
+            grid: {
+                left: '10%',
+                top: '10%',
+                bottom: '15%',
+                right: '5%',
+            },
+            legend: {
+                type: "scroll",
+                data: "来电量",
+                itemWidth: 18,
+                itemHeight: 12,
+                textStyle: {
+                    color: "#00ffff",
+                    fontSize: 14
+                },
+            },
+            yAxis: [{
+                type: 'value',
+                position: 'left',
+                nameTextStyle: {
+                    color: '#00FFFF'
+                },
+                splitLine: {
+                    lineStyle: {
+                        type: 'dashed',
+                        color: 'rgba(135,140,147,0.8)'
+                    }
+                },
+                axisLine: {
+                    show: false
+                },
+                axisTick: {
+                    show: false
+                },
+                axisLabel: {
+                    formatter: '{value}',
+                    color: '#fff',
+                    fontSize: 14
+                }
+            }, ],
+            xAxis: [{
+                type: 'category',
+                axisTick: {
+                    show: false
+                },
+                axisLine: {
+                    show: false,
+                    lineStyle: {
+                        color: '#0696f9',
+                    }
+                },
+                axisLabel: {
+                    inside: false,
+                    textStyle: {
+                        color: '#fff', // x轴颜色
+                        fontWeight: 'normal',
+                        fontSize: '14',
+                        lineHeight: 22
+                    }
+
+                },
+                data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+            }, ],
+            series: [{
+                symbolSize: 150,
+                symbol: img[2],
+                name: '小灯光',
+                type: "line",
+                data: [67, 97, 51, 338, 32, 11, 1],
+                itemStyle: {
+                    normal: {
+                        borderWidth: 5,
+                        color: '#0696f9',
+                    }
+                }
+            },
+                {
+                    name: '滑行的光点',
+                    type: 'lines',
+                    coordinateSystem: 'cartesian2d',
+                    symbolSize: 30,
+                    polyline: true,
+                    effect: {
+                        show: true,
+                        trailLength: 0,
+                        period: 10, //光点滑动速度
+                        symbolSize: 150,
+                        symbol: img[0]
+                    },
+                    lineStyle: {
+                        normal: {
+                            width: 1,
+                            opacity: 0.6,
+                            curveness: 0.2
+                        }
+                    },
+                    data: [
+                        {coords: [
+                                ['周一', 67],
+                                ['周二', 97],
+                                ['周三', 51],
+                                ['周四', 338],
+                                ['周五', 32],
+                                ['周六', 11],
+                                ['周日', 1],
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
+        myChart1.setOption(option1);
+
+        let myChart2 = echarts.init(document.getElementById('home4_bottom_left_inner_conntent'));
+        let salvProValue =[239,181,154,144,135,117,74,72,67,55];
+        let salvProMax =[];//背景按最大值
+        for (let i = 0; i < salvProValue.length; i++) {
+            salvProMax.push(salvProValue[0])
+        }
+        let option2 = {
+            grid: {
+                left: '8%',
+                right: '8%',
+                bottom: '4%',
+                top: '2%',
+                containLabel: true
+            },
+            tooltip: {
+                show: false,
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'none'
+                },
+                formatter: function(params) {
+                    return params[0].name  + ' : ' + params[0].value
+                }
+            },
+            xAxis: {
+                show: false,
+                type: 'value'
+            },
+            yAxis: [{
+                type: 'category',
+                inverse: true,
+                axisLabel: {
+                    show: true,
+                    textStyle: {
+                        color: '#fff'
+                    },
+                },
+                splitLine: {
+                    show: false
+                },
+                axisTick: {
+                    show: false
+                },
+                axisLine: {
+                    show: false
+                },
+                // data: ["安徽省","河南省","浙江省","湖北省","贵州省","江西省","江苏省","四川省","云南省","湖南省"]
+                data: ["三级富士","85规格富士","75规格金星","85规格金星","一级富士","二级富士","五级富士","六级富士","85规格富士","95规格富士"]
+            }, {
+                type: 'category',
+                inverse: true,
+                axisTick: 'none',
+                axisLine: 'none',
+                show: true,
+                axisLabel: {
+                    textStyle: {
+                        color: '#ffffff',
+                        fontSize: '12'
+                    },
+                },
+                data:salvProValue
+            }],
+            series: [{
+                name: '值',
+                type: 'bar',
+                zlevel: 1,
+                itemStyle: {
+                    normal: {
+                        barBorderRadius: 30,
+                        color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [{
+                            offset: 0,
+                            color: 'rgb(57,89,255,1)'
+                        }, {
+                            offset: 1,
+                            color: 'rgb(46,200,207,1)'
+                        }]),
+                    },
+                },
+                barWidth: 20,
+                data: salvProValue
+            },
+                {
+                    name: '背景',
+                    type: 'bar',
+                    barWidth: 20,
+                    barGap: '-100%',
+                    data: salvProMax,
+                    itemStyle: {
+                        normal: {
+                            color: 'rgba(24,31,68,1)',
+                            barBorderRadius: 30,
+                        }
+                    }
+                }
+            ]
+        }
+        myChart2.setOption(option2);
+
+
+        let myChart3 = echarts.init(document.getElementById('home4_bottom_right_inner_left_context'));
+        let img3 = 'data:image/png;base64,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';
+
+        let trafficWay = [{
+            name: '马来西亚',
+            value: 20
+        },{
+            name: '新加坡',
+            value: 10
+        },{
+            name: '中国',
+            value: 30
+        },{
+            name: '荷兰',
+            value: 40
+        }];
+
+        let data = [];
+        let color=['#00ffff','#00cfff','#006ced','#ffe000','#ffa800','#ff5b00','#ff3000']
+        for (let i = 0; i < trafficWay.length; i++) {
+            data.push({
+                value: trafficWay[i].value,
+                name: trafficWay[i].name,
+                itemStyle: {
+                    normal: {
+                        borderWidth: 5,
+                        shadowBlur: 20,
+                        borderColor:color[i],
+                        shadowColor: color[i]
+                    }
+                }
+            }, {
+                value: 2,
+                name: '',
+                itemStyle: {
+                    normal: {
+                        label: {
+                            show: false
+                        },
+                        labelLine: {
+                            show: false
+                        },
+                        color: 'rgba(0, 0, 0, 0)',
+                        borderColor: 'rgba(0, 0, 0, 0)',
+                        borderWidth: 0
+                    }
+                }
+            });
+        }
+        let seriesOption = [{
+            name: '',
+            type: 'pie',
+            clockWise: false,
+            radius: [75, 95],
+            hoverAnimation: false,
+            itemStyle: {
+                normal: {
+                    label: {
+                        show: true,
+                        position: 'outside',
+                        color: '#ddd',
+                        formatter: function(params) {
+                            var percent = 0;
+                            var total = 0;
+                            for (var i = 0; i < trafficWay.length; i++) {
+                                total += trafficWay[i].value;
+                            }
+                            percent = ((params.value / total) * 100).toFixed(0);
+                            if(params.name !== '') {
+                                return '客户情况：' + params.name + '\n' + '\n' + '占百分比：' + percent + '%';
+                            }else {
+                                return '';
+                            }
+                        },
+                    },
+                    labelLine: {
+                        length:20,
+                        length2:10,
+                        show: true,
+                        color:'#00ffff'
+                    }
+                }
+            },
+            data: data
+        }];
+        let option3 = {
+            color : color,
+            title: {
+                text: '客户情况',
+                top: '48%',
+                textAlign: "center",
+                left: "49%",
+                textStyle: {
+                    color: '#fff',
+                    fontSize: 22,
+                    fontWeight: '400'
+                }
+            },
+            graphic: {
+                elements: [{
+                    type: "image",
+                    z: 3,
+                    style: {
+                        image: img3,
+                        width: 128,
+                        height: 128
+                    },
+                    left: 'center',
+                    top:  'center',
+                    position: [100, 100]
+                }]
+            },
+            tooltip: {
+                show: false
+            },
+            toolbox: {
+                show: false
+            },
+            series: seriesOption
+        }
+        myChart3.setOption(option3);
+
+
+        let myChart4 = echarts.init(document.getElementById('home4_bottom_right_inner_left_context'));
+        let option4 = {
+
+        }
+        myChart4.setOption(option4);
+    }
+    initDom() {
+        $(".home4_top_center_inner_content").css({height: $(".home4_top_center_inner").height() - $(".home4_top_center_inner_title").height()-20});
+        $(".home4_bottom_left_inner_conntent").css({height: $(".home4_bottom_left_inner").height() -  $(".home4_bottom_left_inner_title").height() - 20});
+        $(".home4_bottom_right_inner_left_context").css({height: $(".home4_bottom_right_inner_left").height() - $(".home4_bottom_right_inner_left_title").height() - 20})
+        $(".placeLi").css({height: $(".home4_bottom_right_inner_right").height() - $(".home4_bottom_right_inner_right_text").height() - 50})
+    }
+    lastSrollTop() {
+        setTimeout(()=>{
+            let table = document.getElementById("scroll-message");
+            let str = '';
+            let tableData = this.state.tableData;
+            tableData.forEach((item, index)=>{
+                str = '<ol class="ol111">'+
+                    '<li class="home1_bottom_right_inner_content_h3_li1">'+item.index+'</li>'+
+                    '<li class="home1_bottom_right_inner_content_h3_li1">'+item.name+'</li>'+
+                    '<li class="home1_bottom_right_inner_content_h3_li1">'+item.num+'</li>'+
+                    '<li class="home1_bottom_right_inner_content_h3_li1">'+item.price+'</li>'+
+                    '</ol>'
+                $('#scroll-message #ul7').append(str);
+            })
+            this.timer = null;
+            table.scrollTop = 0;
+            table.innerHTML += table.innerHTML;
+            // if(table.scrollTop >= table.scrollHeight / 2) {
+            // }
+            function play() {
+                clearInterval(this.timer);
+                this.timer = setInterval(function() {
+                    table.scrollTop++;
+                    if (table.scrollTop >= table.scrollHeight / 2) {
+                        table.scrollTop = 0;
+                    }
+                }, 100);
+            }
+            setTimeout(play, 500);
+            table.onmouseover = function() {
+                clearInterval(this.timer)
+            };
+            table.onmouseout = play;
+        },0)
+    }
+    componentWillUnmount() {
+        clearInterval(this.timer);
+    }
+}
+export default Home4;

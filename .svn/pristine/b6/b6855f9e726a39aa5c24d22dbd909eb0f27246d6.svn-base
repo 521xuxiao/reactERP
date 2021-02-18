@@ -1,0 +1,20 @@
+import React, {Component} from 'react';
+import './barrelsManagement.scss';
+class BarrelsManagement extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+
+        }
+    }
+    render() {
+        return(
+            <div id="barrelsManagement">
+                <div className="barrelsManagement">
+                    barrelsManagement
+                </div>
+            </div>
+        )
+    }
+}
+export default BarrelsManagement;

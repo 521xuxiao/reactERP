@@ -1,0 +1,206 @@
+.otherWarehouseOut{
+    .placeSearch{
+        height: 66px;
+        background: #fff;
+        padding-left: 40px;
+        padding-top: 18px;
+        span{
+            color: #282828;
+        }
+        .span2{
+            margin-left: 30px;
+        }
+        .input1{
+            width: 200px;
+            margin-left: 10px;
+        }
+        .inputDatePicker{
+            width: 400px;
+        }
+        .searchs{
+            margin-left: 40px;
+            width: 65px;
+            height: 32px;
+            outline: 0;
+            border: 0;
+            background: #2E71FE;
+            color: #fff;
+            border-radius: 3px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: pointer;
+        }
+    }
+    .bg{
+        background: #FAFAFA;
+        height: 62px;
+        padding-top: 16px;
+        padding-right: 18px;
+        text-align: right;
+        .searchs{
+            margin-left: 40px;
+            width: 68px;
+            height: 30px;
+            outline: 0;
+            border: 0;
+            background: #2E71FE;
+            color: #fff;
+            border-radius: 3px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: pointer;
+        }
+        .searchs1{
+            background: #27BA62;
+        }
+        .searchs2{
+            background: #70B603;
+            width: 120px;
+        }
+        .deletesClass{
+            background: #F0625D;
+        }
+    }
+    .placeTable{
+        .ant-table-thead{
+            tr > th{
+                background: #fff;
+            }
+        }
+        .changes{
+            color: #2E71FE;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: pointer;
+        }
+        .deletes{
+            color: #F0625D;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: pointer;
+        }
+        .check{
+            color: #27BA62;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: pointer;
+        }
+        .details{
+            color: #9516D1;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: pointer;
+        }
+    }
+    .placePagination{
+        text-align: right;
+        padding-top: 20px;
+    }
+    .modal1{
+        margin-top: 20px;
+        .salesInvoiceUl{
+            overflow: hidden;
+            .salesInvoiceLi{
+                float: left;
+                width: 33.33%;
+                display: flex;
+                .salesInvoiceSpan{
+                    width: 80px;
+                    text-align: right;
+                    margin-top: 5px;
+                    margin-right: 10px;
+                }
+                .salesInvoiceDiv1{
+                    flex: 1;
+                }
+            }
+        }
+        .salesInvoiceUl1{
+            margin-top: 20px
+        }
+        .placeChangeTable{
+            .span_img{
+                display: inline-block ;
+                width: 30px;
+                height: 30px;
+                line-height: 25px;
+                border-radius: 50%;
+                text-align: center;
+                border: 1px solid #999;
+                cursor: pointer;
+                user-select: none;
+                font-size: 30px;
+                font-weight: bold;
+            }
+            .span_img1{
+                background-size: 100% 100%;
+                background: url("../../common/img/add.png") no-repeat 0 0;
+                color: #14BB12;
+                font-weight: bold;
+            }
+            .span_img2{
+                background-size: 100% 100% ;
+                background: url("../../common/img/del.png") no-repeat 0 0;
+                margin-left: 8px;
+                color: #DF0035;
+                font-weight: bold;
+            }
+        }
+        .rawMaterial{
+            padding-top: 20px;
+            .madleDeletes{
+                color: #ff4d4f;
+                text-decoration:underline;
+                cursor: pointer;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+        }
+        .sendDuplicate{
+            margin-top: 20px;
+            .span6{
+                padding-right: 10px;
+            }
+            .icons{
+                font-size: 40px;
+                cursor: pointer;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+        }
+    }
+    .modal2{
+        .switch2{
+            position: relative;
+            top: 0px;
+            left: 5px;
+        }
+    }
+    .div4{
+        padding-top: 30px;
+        display: flex;
+        justify-content: space-around;
+        .li4{
+
+            .btn4{
+
+            }
+        }
+    }
+}

@@ -1,0 +1,20 @@
+import React, {Component} from 'react';
+import './weighManeger.scss';
+class WeighManeger extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+
+        }
+    }
+    render() {
+        return(
+            <div id="weighManeger">
+                <div className="weighManeger">
+                    weighManeger
+                </div>
+            </div>
+        )
+    }
+}
+export default WeighManeger;

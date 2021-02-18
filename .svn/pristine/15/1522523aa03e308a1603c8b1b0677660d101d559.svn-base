@@ -1,0 +1,90 @@
+import React, { Component } from 'react';
+import { Route, Redirect, Switch, withRouter } from "react-router-dom"
+import PropTypes from 'prop-types';
+
+
+import { FilterRouterList } from "./filterRouterList.js";
+
+import App from '../App.js';
+
+
+//私有路由，只有登录的用户才能访问
+class ProviteRoute extends Component {
+  	constructor(props) {
+	    super(props);
+		
+	    let isLogin = true ? true : false;  // 登录token
+//	    let rootIds = sessionStorage.getItem("userList") ? JSON.parse(sessionStorage.getItem("userList")) : ''  // 后台返回的权限列表
+	    let rootIds = "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20";
+	    rootIds = FilterRouterList(rootIds)
+	
+	    this.state = {
+	      isLogin: isLogin,
+	      rootIds: rootIds 
+	    }
+	
+	    if (!isLogin) {
+	
+	      const { history } = this.props;
+	
+	      setTimeout(() => {
+	        history.replace("/login");
+	      }, 1000)
+	    }
+  	}
+
+  	renderItem(data) {
+	    if (!data.length) {
+	      return "暂无数据"
+	    }
+	    let result = data.map((item, index) => {
+		    if(item.children){
+		        return (
+		            <Route path={item.path} key={item.id} component={()=>{
+			            return(
+			                <Switch>
+				                <Route exact path={item.path} key={item.id} component={item.component}></Route>
+				                {this.renderItem(item.children)}
+			                </Switch>
+			            )
+		            }}></Route>
+		        )
+		    }else{
+		        return (
+		            <Route exact path={item.path} key={item.id} component={item.component}></Route>
+		        )
+		    }
+	    })
+	    result.push(<Redirect key="index" from="/app" to="/app"></Redirect>)
+	    
+	    return result
+  	}
+
+	render() {
+    	let { path = "/", exact = false, strict = false } = this.props;
+    	let { rootIds } = this.state
+    	return this.state.isLogin ? (
+      		<Route path={path} exact={exact} strict={strict} render={() => {
+        		return (
+          			<App>
+            			<Switch>
+              				<Redirect exact from="/app" to="/app"></Redirect>
+              				{this.renderItem(rootIds)}
+           				 </Switch>
+          			</App>
+        		)
+      		}} />
+    	) 
+    	:
+    	<Redirect to={{pathname: "/login",}}/>;
+  	}
+}
+
+
+ProviteRoute.propTypes = {
+  	path: PropTypes.string.isRequired,
+  	exact: PropTypes.bool,
+  	strict: PropTypes.bool
+}
+
+export default withRouter(ProviteRoute);

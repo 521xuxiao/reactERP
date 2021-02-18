@@ -1,0 +1,20 @@
+import React, {Component} from 'react';
+import "./home1.scss"
+class Home1 extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+
+        }
+    }
+    render() {
+        return(
+            <div id="home1">
+                <div className="home1">
+                    采购
+                </div>
+            </div>
+        )
+    }
+}
+export default Home1;

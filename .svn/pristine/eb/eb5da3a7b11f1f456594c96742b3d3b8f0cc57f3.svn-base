@@ -1,0 +1,31 @@
+#misreading{
+    .misreading{
+        .placeTable{
+            .ant-table-thead{
+                tr > th{
+                    background: #fff;
+                }
+            }
+            .changes{
+                color: #2E71FE;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                cursor: pointer;
+            }
+            .deletes{
+                color: #F0625D;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                cursor: pointer;
+            }
+        }
+        .placePagination{
+            text-align: right;
+            padding-top: 16px;
+        }
+    }
+}

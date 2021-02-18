@@ -1,0 +1,350 @@
+import React, {Component} from 'react'
+import {Input, Table, Space, Pagination, Modal, Select, Button, InputNumber, message} from 'antd';
+import Axios from 'axios';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import './qualityOrder.scss'
+const {Column} = Table;
+const {Option} = Select;
+const {confirm} = Modal;
+class QualityOrder extends Component{
+    constructor(props) {
+        super(props);
+        this.downLoadBtn = "";  this.deleteBtn = "";  this.changeBtn = "";
+        this.state = {
+            code: '',
+            dataSource: [],
+            currentPage: 1,
+            pageSize: 10,
+            pageTotle: 0,
+            visible: false,
+            specification: '',
+            specificationList: [],
+            levelId: '',
+            levelIdList: [],
+            barrelsMaterial: '',  barrelsMaterialList: [],
+            distributor: '',   distributorList: [],
+            gardenId: '',  gardenIdList: [],
+            weight: null,
+            id: '',
+            msg: '',
+            flag: 1,
+
+            sheetCode: '',
+            sheetName: '',
+            createdName: '',
+            createdTime: '',
+            bucketCode: '',
+            randomCheckSheetName: '',
+            bucketName: '',
+            batchNumber: '',
+            registrationCode: '',
+            ratingDiscountWeight: '',
+            weighingDiscountWeight: ''
+        }
+    }
+    render() {
+        return(
+            <div id="qualityOrder">
+                <div className="qualityOrder">
+                    <div className="placeSearch">
+                        <span className="span1">质检单编码</span>
+                        <Input className="input1" allowClear onChange={(e)=>{this.setState({code: e.target.value})}}/>
+                        <button className="searchs" onClick={this.searchMethods.bind(this)}>查询</button>
+                    </div>
+                    <div className="bg">
+                        <button className="searchs searchs1" onClick={this.downLoad.bind(this)}
+                                style={this.downLoadBtn == 1 ? {display: 'inlineBlock'} : {display: "none"}}
+                        >导出</button>
+                    </div>
+                    <div className="placeTable">
+                        <Table pagination={false} dataSource={this.state.dataSource}>
+                            <Column title="序号" align="center" key="index" dataIndex="index" width="60px" render={(text, record, index)=>(
+                                <span>{(this.state.currentPage-1)*this.state.pageSize+index+1}</span>
+                            )} fixed="left"/>
+                            <Column title="抽检单名称" fixed="left" dataIndex="randomCheckSheetName" key="randomCheckSheetName" align="center" width={300}/>
+                            {/*<Column title="评级单名称" dataIndex="sheetName" key="sheetName" align="center"/>*/}
+                            <Column title="注册果园号" dataIndex="registrationCode" key="registrationCode" align="center"/>
+                            <Column title="批次号" dataIndex="batchNumber" key="batchNumber" align="center"/>
+                            <Column title="桶编码" dataIndex="bucketCode" key="bucketCode" align="center"/>
+                            <Column title="评级扣称" dataIndex="ratingDiscountWeight" key="ratingDiscountWeight" align="center"/>
+                            <Column title="制单人" dataIndex="createdName" key="createdName" align="center"/>
+                            <Column title="修改时间" dataIndex="modifiedTime" key="modifiedTime" align="center"/>
+                            <Column title="操作" align="center" key="records" dataIndex="records" width="200px" fixed="right"
+                                    render={(text, record) => (
+                                        <Space size="large">
+                                            {/*<span key={"changes"} onClick={this.changes.bind(this, record)} className="changes"*/}
+                                            {/*      style={this.changeBtn == 1 ? {display: 'inlineBlock'} : {display: "none"}}*/}
+                                            {/*>编辑</span>*/}
+                                            <span key={"deletes"} onClick={this.deletes.bind(this, record)} className="deletes"
+                                                  style={this.deleteBtn == 1 ? {display: 'inlineBlock'} : {display: "none"}}
+                                            >删除</span>
+                                            <span key={"details"} onClick={this.details.bind(this, record)} className="details span11">详情</span>
+                                        </Space>
+                                    )}
+                            />
+                        </Table>
+                    </div>
+                    <div className="placePagination">
+                        <Pagination showTotal={()=>`共 ${this.state.pageTotle} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotle} showSizeChanger={false}/>
+                    </div>
+                    <Modal title={this.state.msg} width="60%" footer={null} getContainer={false} closable={false}  visible={this.state.visible} centered={true}>
+                        <div className="modal1">
+                            <div className="div3">
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">评级单编码</span>
+                                        <Input allowClear onChange={(e)=>{this.setState({sheetCode: e.target.value})}} value={this.state.sheetCode} className={"input3"}
+                                               disabled/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">评级单名称</span>
+                                        <Input allowClear onChange={(e)=>{this.setState({sheetName: e.target.value})}} value={this.state.sheetName} className={"input3"}
+                                               disabled/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1 ul2">
+                                    <li className="li1">
+                                        <span className="span1">制单人</span>
+                                        <Input allowClear onChange={(e)=>{this.setState({createdName: e.target.value})}} value={this.state.createdName} className={"input3"}
+                                               disabled/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">制单时间</span>
+                                        <Input allowClear value={this.state.createdTime} className={"input3"}
+                                               disabled/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1 ul2">
+                                    <li className="li1">
+                                        <span className="span1">桶编码</span>
+                                        <Input allowClear onChange={(e)=>{this.setState({bucketCode: e.target.value})}} value={this.state.bucketCode} className={"input3"}
+                                               disabled/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">抽检单名称</span>
+                                        <Input allowClear onChange={(e)=>{this.setState({randomCheckSheetName: e})}} value={this.state.randomCheckSheetName} className={"input3"}
+                                               disabled/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1 ul2">
+                                    <li className="li1">
+                                        <span className="span1">桶名称</span>
+                                        <Input allowClear onChange={(e)=>{this.setState({bucketName: e.target.value})}} value={this.state.bucketName} className={"input3"}
+                                               disabled={this.state.flag==3?true:false}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">批次号</span>
+                                        <Input allowClear value={this.state.batchNumber} className={"input3"}
+                                               disabled={this.state.flag==3?true:false}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1 ul2">
+                                    <li className="li1">
+                                        <span className="span1">注册果园号</span>
+                                        <Input allowClear onChange={(e)=>{this.setState({registrationCode: e.target.value})}} value={this.state.registrationCode} className={"input3"}
+                                               disabled={this.state.flag==3?true:false}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">评级扣称</span>
+                                        <Input allowClear value={this.state.ratingDiscountWeight} className={"input3"}
+                                               disabled={this.state.flag==3?true:false}/>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div className="div4">
+                            <li className="li4">
+                                <Button className="btn4" type="danger" onClick={()=>{this.setState({visible: false})}}>取消</Button>
+                            </li>
+                            <li className="li4" style={this.state.flag==3?{display: 'none'}:{display: 'block'}}>
+                                <Button className="btn4" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
+                            </li>
+                        </div>
+                    </Modal>
+                </div>
+            </div>
+        )
+    }
+    initData(currentPage) {
+        let params =  {
+            pageSize: this.state.pageSize,
+            currentPage,
+            sheetCode: this.state.code
+        };
+        Axios.post('/self/erp/qualityCheck/queryCheckSheet', params).then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                res.data.data.checkSheets.forEach((item)=>{
+                    item.key = item.id;
+                });
+                this.setState({
+                    dataSource: res.data.data.checkSheets,
+                    pageTotle: res.data.data.num
+                })
+            }else{
+                this.setState({
+                    dataSource: [],
+                    pageTotle: 0
+                })
+            }
+        })
+    }
+    searchMethods() {
+        this.initData(1);
+        this.setState({
+            currentPage:1
+        })
+    }
+    // 查询原料规格等级桶材质下拉框,   查询供应商,  果园列表
+    specificationListMethods() {
+        Axios.post('/self/erp/qualityCheck/queryDictTypeAndValue').then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                this.setState({
+                    specificationList: res.data.data.standard,
+                    levelIdList: res.data.data.level,
+                    barrelsMaterialList: res.data.data.bucketMaterial
+                })
+            }else{
+                this.setState({
+                    specificationList: [],
+                    levelIdList: [],
+                    barrelsMaterialList: []
+                })
+            }
+        })
+        Axios.post('/self/erp/qualityCheck/querySupplier').then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                this.setState({
+                    distributorList: res.data.data.suppliers
+                })
+            }else{
+                this.setState({
+                    distributorList: []
+                })
+            }
+        })
+        Axios.post('/self/erp/qualityCheck/queryOrchard').then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    gardenIdList: res.data.data.orchards
+                })
+            }else{
+                this.setState({
+                    gardenIdList: []
+                })
+            }
+        })
+    }
+    changes(row) {
+        // this.specificationListMethods();
+        this.setState({
+            visible: true,
+            id: row.id,
+            msg: '修改',
+            flag: 0,
+            specification: row.standard,
+            levelId: row.level,
+            barrelsMaterial: row.bucketMaterial,
+            distributor: row.supplierId,
+            gardenId: row.orchardId,
+            weight: row.discountWeight
+        })
+    }
+    details(row) {
+        this.setState({
+            visible: true,
+            id: row.id,
+            msg: '详情',
+            flag: 3,
+
+            sheetCode: row.sheetCode,
+            sheetName: row.sheetName,
+            createdName: row.createdName,
+            createdTime: row.createdTime,
+            bucketCode: row.bucketCode,
+            randomCheckSheetName: row.randomCheckSheetName,
+            bucketName: row.bucketName,
+            batchNumber: row.batchNumber,
+            registrationCode: row.registrationCode,
+            ratingDiscountWeight: row.ratingDiscountWeight,
+            weighingDiscountWeight: row.weighingDiscountWeight
+        })
+    }
+    deletes(row) {
+        let that = this;
+        confirm({
+            title: '你确定要删除吗?',
+            icon: <ExclamationCircleOutlined />,
+            content: '',
+            onOk() {
+                let params = {
+                    id: row.id
+                };
+                Axios.post('/self/erp/qualityCheck/deleteCheckSheet', params).then((res)=>{
+                    if(res.data.success) {
+                        message.success("删除成功");
+                        that.initData(that.state.currentPage);
+                    }else{
+                        message.warning(res.data.message);
+                    }
+                })
+            },
+            onCancel() {},
+        });
+    }
+    changePages(val) {
+        this.initData(val);
+        this.setState({
+            currentPage: val
+        })
+    }
+    downLoad() {
+
+    }
+    handleOk() {
+        let params = {
+            id: this.state.id,
+            standard: this.state.specification,
+            level: this.state.levelId,
+            bucketMaterial: this.state.barrelsMaterial,
+            supplierId: this.state.distributor,
+            orchardId: this.state.gardenId,
+            discountWeight: this.state.weight
+        };
+        Axios.post('/self/erp/qualityCheck/updateCheckSheet', params).then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                this.initData(this.state.currentPage);
+                this.setState({
+                    visible: false
+                })
+                message.success('成功');
+            }else{
+                message.warning(res.data.message);
+            }
+        })
+    }
+    componentDidMount() {
+        this.initData(this.state.currentPage);
+    }
+    componentWillMount() {
+        let buttonList = JSON.parse(sessionStorage.getItem("buttonList"));
+        console.log(buttonList);
+        if(buttonList && buttonList.length) {
+            buttonList.forEach((item)=>{
+                if(item.localIndex == "1-3-1") {
+                    this.changeBtn = item.flag;
+                }
+                if(item.localIndex == "1-3-2") {
+                    this.deleteBtn = item.flag;
+                }
+                if(item.localIndex == "1-3-3") {
+                    this.downLoadBtn = item.flag;
+                }
+            })
+        }
+    }
+}
+export default QualityOrder;

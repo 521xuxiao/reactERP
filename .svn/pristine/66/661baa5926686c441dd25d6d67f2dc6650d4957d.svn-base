@@ -1,0 +1,315 @@
+import React, {Component} from 'react';
+import {Input, Table, Space, Pagination, Modal, Select, Switch, Button, TreeSelect, message} from 'antd';
+import Axios from 'axios';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import "./shopManagement.scss";
+const {Column} = Table;
+const {Option} = Select;  const {confirm} = Modal;
+class ShopManagement extends Component{
+    constructor(props) {
+        super(props);
+        this.addBtn = "";  this.changeBtn = "";  this.deleteBtn = "";
+        this.state = {
+            currentPage: 1,
+            pageSize: 10,
+            pageTotle: 0,
+            name: '',
+            dataSource: [],
+            msg: '',
+            visible: false,
+            cuName: '',   // 车间名称
+            jobNumberList: [],   jobNumber: '',   // 工号
+            options: [],         deptId: '', // 部门
+            switchValue: true,
+            id: ''
+        }
+    }
+    render() {
+        return(
+            <div id="shopManagement">
+                <div className="shopManagement">
+                    <div className="placeSearch">
+                        <span>名称</span>
+                        <Input className="input1" allowClear onChange={(e)=>{this.setState({name: e.target.value})}}/>
+                        <button className="searchs" onClick={this.searchMethods.bind(this)}>查询</button>
+                    </div>
+                    <div className="bg">
+                        <button className="searchs" onClick={this.add.bind(this)}
+                            style={this.addBtn == 1 ? {display: 'inlineBlock'} : {display: "none"}}
+                        >新增</button>
+                    </div>
+                    <div className="placeTable">
+                        <Table pagination={false} dataSource={this.state.dataSource}>
+                            <Column title="序号" align="center" key="index" dataIndex="index" width="100px" render={(text, record, index)=>(
+                                <span>{(this.state.currentPage-1)*this.state.pageSize + index+1}</span>
+                            )}/>
+                            <Column title="车间名" dataIndex="name" key="name" align="center"/>
+                            <Column title="负责人工号" dataIndex="empno" key="empno" align="center"/>
+                            <Column title="联系人姓名" dataIndex="realname" key="realname" align="center"/>
+                            <Column title="部门" dataIndex="deptName" key="deptName" align="center"/>
+                            <Column title="是否再用" dataIndex="isUsing" key="isUsing" align="center" render={(text)=>(
+                                <span>{text == 1 ? "可用" : "不可用"}</span>
+                            )}/>
+                            <Column title="操作" align="center" key="records" dataIndex="records"
+                                render={(text, record) => (
+                                    <Space size="large">
+                                        <span key={"changes"} onClick={this.changes.bind(this, record)} className="changes"
+                                              style={this.changeBtn == 1 ? {display: 'inlineBlock'} : {display: "none"}}
+                                        >编辑</span>
+                                        <span key={"deletes"} onClick={this.deletes.bind(this, record)} className="deletes"
+                                              style={this.deleteBtn == 1 ? {display: 'inlineBlock'} : {display: "none"}}
+                                        >删除</span>
+                                        <span key={"details"} onClick={this.details.bind(this, record)} className="details span11">详情</span>
+                                    </Space>
+                                )}
+                            />
+                        </Table>
+                    </div>
+                    <div className="placePagination">
+                        <Pagination showTotal={()=>`共 ${this.state.pageTotle} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotle} />
+                    </div>
+                    <Modal title={this.state.msg} width="60%" footer={null} getContainer={false} closable={false}  visible={this.state.visible} centered={true}>
+                        <div className="modal1">
+                            <div className="div3">
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">*车间名称</span>
+                                        <Input allowClear onChange={(e)=>{this.setState({cuName: e.target.value})}} value={this.state.cuName} className={"input3"}
+                                               disabled={this.state.flag==3?true:false}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">*负责人工号</span>
+                                        <Select  className={"input3"} allowClear onChange={(e)=>{this.setState({jobNumber: e})}} value={this.state.jobNumber}
+                                                 disabled={this.state.flag==3?true:false}>
+                                            {
+                                                this.state.jobNumberList.map((item, index)=>{
+                                                    return(
+                                                        <Option value={item.empno} key={index}>{item.realname}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </li>
+                                </ul>
+                                <ul className="ul1 ul2">
+                                    <li className="li1">
+                                        <span className="span1">*所属部门</span>
+                                        <TreeSelect showSearch className={"input3"} value={this.state.deptId}
+                                                    dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                                                    placeholder=""  allowClear treeDefaultExpandAll onChange={(val)=>{this.setState({deptId: val})}}
+                                                    treeData={this.state.options}
+                                                    disabled={this.state.flag==3?true:false}>
+                                        </TreeSelect>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">*是否可用</span>
+                                        <Switch checkedChildren="可用" unCheckedChildren="不可用" defaultChecked={this.state.switchValue} onChange={(e)=>{this.setState({switchValue: e})}} className="switch"
+                                                disabled={this.state.flag==3?true:false}/>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div className="div4">
+                            <li className="li4">
+                                <Button className="btn4" type="danger" onClick={()=>{this.setState({visible: false})}}>取消</Button>
+                            </li>
+                            <li className="li4" style={this.state.flag==3?{display: 'none'}:{display: 'block'}}>
+                                <Button className="btn4" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
+                            </li>
+                        </div>
+                    </Modal>
+                </div>
+            </div>
+        )
+    }
+    componentWillMount() {
+        let buttonList = JSON.parse(sessionStorage.getItem("buttonList"));
+        console.log(buttonList);
+        if(buttonList && buttonList.length) {
+            buttonList.forEach((item)=>{
+                if(item.localIndex == "2-5-1") {
+                    this.addBtn = item.flag;
+                }
+                if(item.localIndex == "2-5-2") {
+                    this.changeBtn = item.flag;
+                }
+                if(item.localIndex == "2-5-3") {
+                    this.deleteBtn = item.flag;
+                }
+            })
+        }
+    }
+    initData(currentPage) {
+        let params = {
+            currentPage,
+            pageSize: this.state.pageSize,
+            name: this.state.name
+        };
+        Axios.post('/self/erp/baseinfo/queryWorkRoom', params).then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                res.data.data.workRooms.forEach((item)=>{
+                    item.key = item.id;
+                });
+                this.setState({
+                    dataSource: res.data.data.workRooms,
+                    pageTotle: res.data.data.num
+                })
+            }else{
+                this.setState({
+                    dataSource: [],
+                    pageTotle: 0
+                })
+            }
+        })
+    }
+    searchMethods() {
+        this.initData(1);
+        this.setState({
+            currentPage: 1
+        })
+    }
+    changePages(val) {
+        this.initData(val);
+        this.setState({
+            currentPage: val
+        })
+    }
+    add() {
+        this.setState({
+            msg: '新增',
+            flag: 1,
+            visible: true,
+            cuName: '',
+            jobNumber: '',
+            deptId: ''
+        })
+    }
+    changes(row) {
+        this.setState({
+            msg: '修改',
+            flag: 0,
+            visible: true,
+            id: row.id,
+            cuName: row.name,
+            jobNumber: row.empno,
+            deptId: row.deptId,
+            switchValue: row.isUsing == 1 ? true : false
+        })
+    }
+    details(row) {
+        this.setState({
+            msg: '详情',
+            flag: 3,
+            visible: true,
+            id: row.id,
+            cuName: row.name,
+            jobNumber: row.empno,
+            deptId: row.deptId,
+            switchValue: row.isUsing == 1 ? true : false
+        })
+    }
+    deletes(row) {
+        let that = this;
+        confirm({
+            title: '你确定要删除吗?',
+            icon: <ExclamationCircleOutlined />,
+            content: '',
+            onOk() {
+                let params = {
+                    id: row.id
+                };
+                Axios.post('/self/erp/baseinfo/deleteWorkRoom', params).then((res)=>{
+                    if(res.data.success) {
+                        message.success("删除成功");
+                        that.initData(that.state.currentPage);
+                    }else{
+                        message.warning(res.data.message);
+                    }
+                })
+            },
+            onCancel() {},
+        });
+    }
+    handleOk() {
+        let params = {
+            name: this.state.cuName,
+            empno: this.state.jobNumber,
+            deptId: this.state.deptId,
+            isUsing: this.state.switchValue ? 1 : 0
+        };
+        if(this.state.flag == 1) {  // 新增
+            Axios.post('/self/erp/baseinfo/addWorkRoom', params).then((res)=>{
+                if(res.data.success) {
+                    message.success("新增成功");
+                    this.initData(this.state.currentPage);
+                    this.setState({
+                        visible: false
+                    })
+                }else{
+                    message.warning(res.data.message);
+                }
+            })
+        }else{
+            params.id = this.state.id;
+            Axios.post('/self/erp/baseinfo/updateWorkRoom', params).then((res)=>{
+                if(res.data.success) {
+                    message.success("修改成功");
+                    this.initData(this.state.currentPage);
+                    this.setState({
+                        visible: false
+                    })
+                }else{
+                    message.warning(res.data.message);
+                }
+            })
+        }
+    }
+    // 负责人下拉框和所属部门
+    principalCode() {
+        Axios.post('/self/erp/baseinfo/queryUser').then((res)=>{
+            console.log(res.data);
+            if(res.data.success) {
+                this.setState({
+                    jobNumberList: res.data.data.users
+                })
+            }else{
+                this.setState({
+                    jobNumberList: []
+                })
+            }
+        })
+        Axios.post('/self/erp/dept/queryDept').then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                this.deptAgin(res.data.data.deptList);
+            }else{
+                this.setState({
+                    options: []
+                })
+            }
+        })
+    }
+    // 递归部门级联狂
+    deptAgin(arr) {
+        if(arr && arr.length) {
+            arr.forEach((item, index)=>{
+                item.title = item.deptName;
+                item.value = item.deptId;
+                delete item.deptName;
+                delete item.deptId;
+                if(item.children && item.children.length) {
+                    this.deptAgin(item.children);
+                }
+            })
+        }
+        this.setState({
+            options: arr
+        })
+    }
+    componentDidMount() {
+        this.initData(this.state.currentPage);
+        this.principalCode();
+    }
+}
+export default ShopManagement;

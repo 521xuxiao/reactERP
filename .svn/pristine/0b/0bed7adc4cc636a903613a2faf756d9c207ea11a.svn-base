@@ -1,0 +1,234 @@
+import React, {Component} from 'react';
+import echarts from "echarts";
+import "./home3.scss"
+
+class Home3 extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            realList: [1, 3, 3, 5, 6, "，", 8, 9]
+        }
+    }
+
+    render() {
+        return (
+            <div id="home3">
+                <div className="home3">
+                    <ol className="home3_top">
+                        <div className="home3_top_left">
+                            <ol className="home3_top_left_inner">
+                                <ol className="home3_top_left_inner-top">
+                                    <ul className="ul1">
+                                        {
+                                            this.state.realList.map((item, index) => {
+                                                return (
+                                                    <li className="li1" key={index}>{item}</li>
+                                                )
+                                            })
+                                        }
+                                    </ul>
+                                </ol>
+                                <ol className="home3_top_left_inner-bottom">
+                                    <div className="home3_top_left_inner-bottom-left">
+                                        <div className="reals">
+                                            <h3 className="h1">今日入库量</h3>
+                                            <h3 className="h2"></h3>
+                                            <h3 className="h3">
+                                                <p className="p1">34567.89</p>
+                                                <a className="a1">吨</a>
+                                            </h3>
+                                        </div>
+                                    </div>
+                                    <div className="home3_top_left_inner-bottom-right home3_top_left_inner-bottom-left">
+                                        <div className="reals">
+                                            <h3 className="h1">今日出库量</h3>
+                                            <h3 className="h2"></h3>
+                                            <h3 className="h3">
+                                                <p className="p1 p2">34567.89</p>
+                                                <a className="a1">吨</a>
+                                            </h3>
+                                        </div>
+                                    </div>
+                                </ol>
+                            </ol>
+                        </div>
+                        <div className="home3_top_center">
+                            <ol className="home3_top_center_inner">
+
+                            </ol>
+                        </div>
+                        <div className="home3_top_right">
+                            <ol className="home3_top_right_inner">
+                                <ol className="home3_top_right_inner_top">
+                                    <div className="home3_top_right_inner_top_left">
+                                        <div className="home3_top_right_inner_top_left_inner">
+                                            <p className="home3_top_right_inner_top_left_inner_p4">3223.64</p>
+                                            <p className="home3_top_right_inner_top_left_inner_p5">今日销售额（元）</p>
+                                        </div>
+                                    </div>
+                                    <div className="home3_top_right_inner_top_right">
+                                        <div className="home3_top_right_inner_top_right_inner">
+                                            <p className="home3_top_right_inner_top_left_inner_p4  home3_top_right_inner_top_left_inner_p42">3223.64</p>
+                                            <p className="home3_top_right_inner_top_left_inner_p5">今日销售量（kg）</p>
+                                        </div>
+                                    </div>
+                                </ol>
+                                <ol className="home3_top_right_inner_bottom  home3_top_right_inner_top">
+                                    <div className="home3_top_right_inner_top_left home3_top_right_inner_top_left1">
+                                        <div className="home3_top_right_inner_top_left_inner">
+                                            <p className="home3_top_right_inner_top_left_inner_p4 home3_top_right_inner_top_left_inner_p41">3223.64</p>
+                                            <p className="home3_top_right_inner_top_left_inner_p5">今日生产量（kg）</p>
+                                        </div>
+                                    </div>
+                                    <div className="home3_top_right_inner_top_right home3_top_right_inner_top_left1">
+                                        <div className="home3_top_right_inner_top_right_inner">
+                                            <p className="home3_top_right_inner_top_left_inner_p4 home3_top_right_inner_top_left_inner_p43">3223.64</p>
+                                            <p className="home3_top_right_inner_top_left_inner_p5">今日发货量（kg）</p>
+                                        </div>
+                                    </div>
+                                </ol>
+                            </ol>
+                        </div>
+                    </ol>
+                    <ol className="home3_bottom">
+                        <ol className="home3_bottom_left">
+                            <ul className="home3_bottom_left_inner">
+                                <p className="home3_bottom_left_inner_content">
+                                    齐鲁泉源供应链有限公司，结合齐鲁交通强大的资源优势及泉源公司完善的购销网络、丰富的行业经验，共同建设“天下果仓”项目。以栖霞为基础，用具体的行动响应和落实党的十九大有关“实施乡村振兴”的战略部署。为促进农业产业化转型升级，推动当地经济社会发展，乃至为山东的乡村振兴建设探索新模式，注入新动能。
+                                </p>
+                                <ul className="home3_bottom_left_inner_three">
+                                    <li className="home3_bottom_left_inner_three_li4">
+                                        <div className="home3_bottom_left_inner_three_li4_a1">2003 <a
+                                            className="a1">年</a></div>
+                                        <a className="home3_bottom_left_inner_three_li4_a2">始创于</a>
+                                    </li>
+                                    <li className="home3_bottom_left_inner_three_li4">
+                                        <div
+                                            className="home3_bottom_left_inner_three_li4_a1 home3_bottom_left_inner_three_li4_a11">5004 <a
+                                            className="a1">万元</a></div>
+                                        <a className="home3_bottom_left_inner_three_li4_a2">注册资本</a>
+                                    </li>
+                                    <li className="home3_bottom_left_inner_three_li4">
+                                        <div
+                                            className="home3_bottom_left_inner_three_li4_a1 home3_bottom_left_inner_three_li4_a111">5.6 <a
+                                            className="a1">万吨</a></div>
+                                        <a className="home3_bottom_left_inner_three_li4_a2">储藏能力</a>
+                                    </li>
+                                </ul>
+                            </ul>
+                        </ol>
+                        <ol className="home3_bottom_right">
+                            <ul className="home3_bottom_right_inner">
+                                <ol className="home3_bottom_right_inner_left">
+                                    <ol className="home3_bottom_right_inner_left_echarts"
+                                        id="home3_bottom_right_inner_left_echarts"></ol>
+                                </ol>
+                                <ol className="home3_bottom_right_inner_right">
+                                    <span
+                                        className="home3_bottom_right_inner_right_b1 home3_bottom_right_inner_right_b0">当日价格</span>
+                                    <span
+                                        className="home3_bottom_right_inner_right_b1 home3_bottom_right_inner_right_b2">当日均价（元/斤）：2.51</span>
+                                    <span
+                                        className="home3_bottom_right_inner_right_b1 home3_bottom_right_inner_right_b3">相对比前日：价格平稳</span>
+                                    <span
+                                        className="home3_bottom_right_inner_right_b1 home3_bottom_right_inner_right_b4 home3_bottom_right_inner_right_b0">近7日价格</span>
+                                    <span
+                                        className="home3_bottom_right_inner_right_b1 home3_bottom_right_inner_right_b5">近7日最高价（元/斤）：2.5</span>
+                                    <span
+                                        className="home3_bottom_right_inner_right_b1 home3_bottom_right_inner_right_b6">近7日最低价（元/斤）：2.25</span>
+                                    <span
+                                        className="home3_bottom_right_inner_right_b1 home3_bottom_right_inner_right_b7">近7日均价（元/斤）：2.29</span>
+                                </ol>
+                            </ul>
+                        </ol>
+                    </ol>
+                </div>
+            </div>
+        )
+    }
+
+    componentDidMount() {
+        this.initEcharts();
+    }
+
+    initEcharts() {
+        let myChart = echarts.init(document.getElementById('home3_bottom_right_inner_left_echarts'));
+        let option = {
+            grid: {
+                top: '15%',
+                right: '10%',
+                left: '10%',
+                bottom: '12%'
+            },
+            xAxis: [{
+                type: 'category',
+                data: ['2019Q1', '2019Q2', '2019Q3', '2019Q4'],
+                axisLabel: {
+                    margin: 20,
+                    color: '#fff',
+                    textStyle: {
+                        fontSize: 12
+                    },
+                },
+                axisLine: {
+                    lineStyle: {
+                        color: '#0F2C4D',
+                    }
+                },
+                axisTick: {
+                    show: false
+                },
+            }],
+            yAxis: [{
+                axisLabel: {
+                    formatter: '{value}元',
+                    color: '#fff',
+                    textStyle: {
+                        fontSize: 12
+                    },
+                },
+                axisLine: {
+                    lineStyle: {
+                        color: '#0F2C4D',
+                    }
+                },
+                axisTick: {
+                    show: true
+                },
+                splitLine: {
+                    lineStyle: {
+                        color: '#0F2C4D',
+                        type: 'dashed',
+                    }
+                }
+            }],
+            series: [{
+                data: [48, 40, 10, -6],
+                type: 'line',
+                smooth: true,
+                name: '折线图',
+                // symbol: 'none',
+                symbol: 'circle',
+                symbolSize: 16,
+                itemStyle: {
+                    normal: {
+                        color: "#00D3FF",
+                        label : {
+                            show: true
+                        }
+                    }
+                },
+                lineStyle: {
+                    color: '#FFDC1D',
+                    width: 4,
+                    shadowColor: 'rgba(0, 0, 0, 0.3)',//设置折线阴影
+                    shadowBlur: 15,
+                    shadowOffsetY: 20,
+                }
+            }]
+        };
+        myChart.setOption(option);
+    }
+}
+
+export default Home3;

@@ -1,0 +1,20 @@
+import React, {Component} from 'react'
+import './purchaseOrder.scss'
+class PurchaseOrder extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+
+        }
+    }
+    render() {
+        return(
+            <div id="purchaseOrder">
+                <div className="purchaseOrder">
+                    1123
+                </div>
+            </div>
+        )
+    }
+}
+export default PurchaseOrder;

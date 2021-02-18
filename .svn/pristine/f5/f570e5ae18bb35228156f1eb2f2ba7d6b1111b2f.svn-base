@@ -1,0 +1,19 @@
+#app{
+  height: 100%;
+  .header{
+    position: fixed;
+    height: 70px;
+    width: 100%;
+  }
+  .main{
+    padding-top: 70px;
+    display: flex;
+    .main_left{
+      width: 200px;
+      overflow: auto;
+    }
+    .main_right{
+      flex: 1;
+    }
+  }
+}

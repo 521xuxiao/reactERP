@@ -1,0 +1,81 @@
+import React, {Component} from 'react';
+import {Input, Select, Table, Space, Pagination, Modal,DatePicker,Button,InputNumber,Cascader,message} from 'antd';
+import Axios from 'axios';
+import './billboard.scss';
+const {Column} = Table;
+const {Option} = Select; const { RangePicker } = DatePicker;
+class Billboard extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            dataSource: [],
+            currentPage: 1,  pageSize: 10, pageTotle: 0,
+
+        }
+    }
+    render() {
+        return(
+            <div id="billboard">
+                <div className="billboard">
+                    <div className="bg">
+                        <button className="searchs searchs1" onClick={this.donload.bind(this)}>导出</button>
+                    </div>
+                    <div className="placeTable">
+                        <Table pagination={false} dataSource={this.state.dataSource}>
+                            <Column title="序号" align="center" key="index" dataIndex="index" width="100px" render={(text, record, index)=>(
+                                <span>{(this.state.currentPage-1)*this.state.pageSize+index+1}</span>
+                            )}/>
+                            <Column title="车间名" dataIndex="workroomName" workroomId="workroomName" align="center"/>
+                            <Column title="客户要求" dataIndex="customRequest" workroomId="customRequest" align="center"/>
+                            <Column title="交付日期" dataIndex="deliveryDate" workroomId="deliveryDate" align="center"/>
+                            <Column title="操作" align="center" workroomId="records" dataIndex="records"
+                                render={(text, record) => (
+                                    <Space size="large">
+                                        <span key={"changes"} onClick={this.details.bind(this, record)} className="changes">详情</span>
+                                    </Space>
+                                )}
+                            />
+                        </Table>
+                    </div>
+                    <div className="placePagination">
+                        <Pagination showTotal={()=>`共 ${this.state.pageTotle} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotle} />
+                    </div>
+                </div>
+            </div>
+        )
+    }
+    initData(currentPage){
+        let params = {
+            currentPage,
+            pageSize: this.state.pageSize
+        };
+        Axios.post('/self/erp/productManage/queryProductionTips', params).then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                this.setState({
+                    dataSource: res.data.data.productionTips
+                })
+            }else{
+                this.setState({
+                    dataSource: []
+                })
+            }
+        })
+    }
+    donload() {
+
+    }
+    changePages(val) {
+        this.setState({
+            currentPage: val
+        });
+        this.initData(val);
+    }
+    details(row) {
+        
+    }
+    componentDidMount() {
+        this.initData(this.state.currentPage);
+    }
+}
+export default Billboard;

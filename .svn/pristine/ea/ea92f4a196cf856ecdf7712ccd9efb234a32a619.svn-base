@@ -1,0 +1,167 @@
+#qualityOrder{
+  .qualityOrder{
+    .placeSearch{
+      height: 66px;
+      background: #fff;
+      padding-left: 40px;
+      padding-top: 18px;
+      span{
+        color: #282828;
+      }
+      .input1{
+        width: 200px;
+        margin-left: 10px;
+      }
+      .searchs{
+        margin-left: 40px;
+        width: 65px;
+        height: 32px;
+        outline: 0;
+        border: 0;
+        background: #2E71FE;
+        color: #fff;
+        border-radius: 3px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+    }
+    .bg{
+      background: #FAFAFA;
+      height: 62px;
+      padding-top: 16px;
+      padding-right: 18px;
+      text-align: right;
+      .searchs{
+        margin-left: 40px;
+        width: 68px;
+        height: 30px;
+        outline: 0;
+        border: 0;
+        background: #2E71FE;
+        color: #fff;
+        border-radius: 3px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+      .searchs1{
+        background: #27BA62;
+      }
+      .searchs3{
+        background: #9515D0;
+      }
+      .deletesClass{
+        background: #F0625D;
+      }
+    }
+    .placeTable{
+      .ant-table-thead{
+        tr > th{
+          background: #fff;
+        }
+      }
+      .changes{
+        color: #2E71FE;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+      .deletes{
+        color: #F0625D;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+      .check{
+        color: #27BA62;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+      .details{
+        color: #9516D1;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+    }
+    .placePagination{
+      text-align: right;
+      padding-top: 20px;
+    }
+    .modal1{
+      .div3{
+        .ul1{
+          overflow: hidden;
+          .li1{
+            float: left;
+            width: 47%;
+            display: flex;
+            margin-bottom: 10px;
+            .span1{
+              display: block;
+              width: 70px;
+              padding-top: 5px;
+            }
+            .input3{
+              flex: 1;
+            }
+          }
+          .li2{
+            margin-left: 6%;
+          }
+        }
+      }
+      .rawMaterial{
+        padding-top: 20px;
+        .madleDeletes{
+          color: #ff4d4f;
+          text-decoration:underline;
+          cursor: pointer;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+        }
+      }
+      .sendDuplicate{
+        margin-top: 20px;
+        .span6{
+          padding-right: 10px;
+        }
+        .icons{
+          font-size: 40px;
+          cursor: pointer;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+        }
+      }
+    }
+    .div4{
+      padding-top: 30px;
+      display: flex;
+      justify-content: space-around;
+      .li4{
+
+        .btn4{
+
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,155 @@
+import React, {Component} from 'react';
+import {Input, Select, DatePicker, Table, Pagination} from 'antd';
+import Axios from 'axios';
+import locale from 'antd/es/date-picker/locale/zh_CN';
+import 'moment/locale/zh-cn';
+import './inList.scss'
+const {Option} = Select;
+const {RangePicker } =  DatePicker;
+const {Column} =  Table;
+class InList extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            code: '',
+            typeId: '',
+            typeIdList: [{label: '采购入库', value: 1}, {label: '生产剩余入库', value: 2}, {label: '移库入库', value: 3}],
+            name: '',
+            startTime: '',
+            endTime: '',
+            dataSource: [],
+            currentPage: 1,
+            pageSize: 10,
+            pageTotle: 0,
+            statusList: [{label: '未入库', value: 0}, {label: '已入库', value: 1}],   statusId: ''
+        }
+    }
+    render() {
+        return(
+            <div id="inList">
+                <div className="inList">
+                    <div className="placeSearch">
+                        <div className="left1">
+                            <span className="span1">入库单号</span>
+                            <Input onChange={(e)=>{this.setState({code: e.target.value})}} className="input1" allowClear/>
+                        </div>
+                        <div className="left1">
+                            <span className="span1">入库类型</span>
+                            <Select className={"input1"} allowClear onChange={(e)=>{this.setState({typeId: e})}}>
+                                {
+                                    this.state.typeIdList.map((item, index)=>{
+                                        return(
+                                            <Option value={item.value} key={index}>{item.label}</Option>
+                                        )
+                                    })
+                                }
+                            </Select>
+                        </div>
+                        <div className="left1">
+                            <span className="span1">仓库名称</span>
+                            <Input onChange={(e)=>{this.setState({name: e.target.value})}} className="input1" allowClear/>
+                        </div>
+                        <div className="left1 left2">
+                            <span className="span1">时间</span>
+                            <RangePicker renderExtraFooter={() => 'extra footer'} className="input1 input2" showTime locale={locale} onChange={this.timePick.bind(this)}/>
+                        </div>
+                        <div className="btn">
+                            <button className="searchs" onClick={this.searchMethods.bind(this)}>查询</button>
+                        </div>
+                    </div>
+                    <div className="placeSearch">
+                        <div className="left1">
+                            <span className="span1">状态</span>
+                            <Select className={"input1"} allowClear onChange={(e)=>{this.setState({statusId: e})}}>
+                                {
+                                    this.state.statusList.map((item, index)=>{
+                                        return(
+                                            <Option value={item.value} key={index}>{item.label}</Option>
+                                        )
+                                    })
+                                }
+                            </Select>
+                        </div>
+                    </div>
+                    <div className="placeTable">
+                        <Table pagination={false} dataSource={this.state.dataSource}>
+                            <Column title="名称" dataIndex="sheetName" key="sheetName" align="center"/>
+                            {/*<Column title="质检单编码" dataIndex="qualityCheckSheetCode" key="qualityCheckSheetCode" align="center"/>*/}
+
+                            <Column title="仓库" dataIndex="realname" key="realname" align="center" render={(text, record)=>(
+                                <span>{record.warehouseAreaName}{record.warehouseName}</span>
+                            )}/>
+                            <Column title="入库类型" dataIndex="inboundType" key="inboundType" align="center" render={(text)=>(
+                                <span>{text==1?'采购入库':text==2?'生产剩余入库':'移库入库'}</span>
+                            )}/>
+                            <Column title="状态" dataIndex="statusIntro" key="statusIntro" align="center"/>
+                            <Column title="入库时间" dataIndex="warehousingTime" key="warehousingTime" align="center"/>
+                            <Column title="重量" dataIndex="realWeight" key="realWeight" align="center"/>
+                        </Table>
+                    </div>
+                    <div className="placePagination">
+                        <Pagination showTotal={()=>`共 ${this.state.pageTotle} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotle} />
+                    </div>
+                </div>
+            </div>
+        )
+    }
+    initData(currentPage) {
+        let params = {
+            currentPage,
+            pageSize: this.state.pageSize,
+            sheetCode: this.state.code,
+            inboundType: !this.state.typeId ? "": this.state.typeId,
+            warehouseId: this.state.name,
+            startTime: this.state.startTime,
+            endTime: this.state.endTime,
+            status: this.state.statusId
+        };
+        Axios.post('/self/erp/warehousing/queryWarehousingSheet', params).then((res)=>{
+            // console.log(res.data.data)
+            if(res.data.success) {
+                res.data.data.warehousingSheets.forEach((item)=>{
+                    item.key = item.id;
+                });
+                this.setState({
+                    dataSource: res.data.data.warehousingSheets,
+                    pageTotle: res.data.data.num
+                })
+            }else{
+                this.setState({
+                    dataSource: [],
+                    pageTotle: 0
+                })
+            }
+        })
+    }
+    searchMethods() {
+        this.initData(1);
+        this.setState({
+            currentPage: 1
+        })
+    }
+    timePick(dates, pickys) {
+        if(pickys[0]) {
+            this.setState({
+                startTime: pickys[0],
+                endTime: pickys[1]
+            })
+        }else{
+            this.setState({
+                startTime: "",
+                endTime: ""
+            })
+        }
+    }
+    changePages(val) {
+        this.setState({
+            currentPage: val
+        });
+        this.initData(val);
+    }
+    componentDidMount() {
+        this.initData(this.state.currentPage);
+    }
+}
+export default InList;

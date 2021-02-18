@@ -1,0 +1,35 @@
+import React, {Component} from 'react';
+import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
+import App from '../App.js';
+import Home from '../components/home/home.js'
+import Index from '../components/index/index.js'
+import Bill from '../components/bill/bill.js'
+import CollectGoods from '../components/collectGoods/collectGoods.js'
+import NowReturn from '../components/nowReturn/nowReturn.js'
+class MyRouter extends Component{
+    render() {
+        return(
+            <Router>
+                <Switch>
+                    <Redirect exact from="/" to="/app"></Redirect>
+                    <Route path="/app" render={()=>{
+                        return(
+                            <App>
+                                <Switch>
+                                    {/*<Redirect exact from="/" to="/app/home"></Redirect>*/}
+                                    <Route path="/app/home" component={Home}></Route>
+                                    <Route path="/app/index" component={Index}></Route>
+                                    <Route path="/app/bill" component={Bill}></Route>
+                                    <Route path="/app/collectGoods" component={CollectGoods}></Route>
+                                    <Route path="/app/nowReturn" component={NowReturn}></Route>
+                                </Switch>
+                            </App>
+                        )
+                    }}></Route>
+                    <Route path="/" component={App}/>
+                </Switch>
+            </Router>
+        )
+    }
+}
+export default MyRouter;

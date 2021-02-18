@@ -1,0 +1,52 @@
+import React, {Component} from 'react';
+import "./home4.scss"
+class Home4 extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+
+        }
+    }
+    render() {
+        return(
+            <div id="home4">
+                <div className="home4">
+                    <ol className="home4_top">
+                        <ol className="home4_top_left">
+                            <ol className="home4_top_left_inner">
+                                
+                            </ol>
+                        </ol>
+                        <ol className="home4_top_center">
+                            <ol className="home4_top_center_inner">
+
+                            </ol>
+                        </ol>
+                        <ol className="home4_top_right">
+                            <ol className="home4_top_right_inner">
+
+                            </ol>
+                        </ol>
+                    </ol>
+                    <ol className="home4_bottom">
+                        <ol className="home4_bottom_left">
+                            <ol className="home4_bottom_left_inner">
+
+                            </ol>
+                        </ol>
+                        <ol className="home4_bottom_right">
+                            <ol className="home4_bottom_right_inner">
+
+                            </ol>
+                        </ol>
+
+                    </ol>
+                </div>
+            </div>
+        )
+    }
+    componentDidMount() {
+        this.props.parent.giveParentData();
+    }
+}
+export default Home4;

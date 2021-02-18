@@ -1,0 +1,67 @@
+import React, {Component} from 'react';
+import {Button, Table, Space, Pagination, Modal, Input, message} from 'antd';
+import Axios from 'axios';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import './deviceSetting.scss';
+const {Column} = Table;
+const {TextArea} = Input;
+const {confirm} = Modal;
+class DeviceSetting extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            dataSource: [],
+            currentPage: 1,
+            pageSize: 10,
+            pageTotal: 0
+        }
+    }
+    render() {
+        return(
+            <div id="deviceSetting">
+                <div className="deviceSetting">
+                    <div className="bg">
+                        <button className="searchs" onClick={this.add.bind(this)}>新增</button>
+                    </div>
+                    <div className="placeTable">
+                        <Table pagination={false} dataSource={this.state.dataSource}>
+                            <Column title="序号" align="center" key="index" dataIndex="index" width="100px" render={(text, record, index)=>(
+                                <span>{(this.state.currentPage-1)*this.state.pageSize + index+1}</span>
+                            )}/>
+                            <Column title="设备名称" dataIndex="groupName" key="groupName" align="center"/>
+                            <Column title="设备类型" dataIndex="intro" key="intro" align="center"/>
+                            <Column title="设备地点" dataIndex="intro" key="intro" align="center"/>
+                            <Column title="设备状态" dataIndex="intro" key="intro" align="center"/>
+                            <Column title="负责人" dataIndex="intro" key="intro" align="center"/>
+                            <Column title="备注" dataIndex="intro" key="intro" align="center"/>
+                            <Column title="操作" align="center" key="records" dataIndex="records"
+                                render={(text, record) => (
+                                    <Space size="large">
+                                        <span key={"changes"} onClick={this.changes.bind(this, record)} className="changes">编辑</span>
+                                        <span key={"deletes"} onClick={this.deletes.bind(this, record)} className="deletes">删除</span>
+                                    </Space>
+                                )}
+                            />
+                        </Table>
+                    </div>
+                    <div className="placePagination">
+                        <Pagination showTotal={()=>`共 ${this.state.pageTotal} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotal} />
+                    </div>
+                </div>
+            </div>
+        )
+    }
+    add() {
+
+    }
+    changes(row) {
+
+    }
+    deletes(row) {
+
+    }
+    changePages(val) {
+
+    }
+}
+export default DeviceSetting;

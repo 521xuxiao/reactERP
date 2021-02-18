@@ -1,0 +1,16 @@
+#slider.slider{
+  height: 100%;
+  .ant-menu{
+    height: 100%;
+    .ant-menu-submenu{
+      .ant-menu-submenu-title{
+        div{
+          .img1{
+            width: 20px;
+            height: 20px;
+          }
+        }
+      }
+    }
+  }
+}

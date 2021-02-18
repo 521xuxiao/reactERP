@@ -1,0 +1,347 @@
+import React, {Component} from 'react'
+import Axios from 'axios';
+
+import { Table, Input,Space, Button,message, Pagination , Modal, Select, InputNumber} from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import './purchaseOrder.scss'
+const {Column} = Table;
+const {Option} = Select;
+const { confirm } = Modal;
+
+class PurchaseOrder extends Component{
+    constructor(props) {
+        super(props);
+        this.row = [];
+        this.state = {
+            placeOrderCode: '',
+            currentPage: 1,
+            pageSize: 10,
+            pageTotle: 0,
+            dataSource: [],
+
+            orderCode: '', plancode: '',plancodeList: [],   supplierList: [],   supplierId: undefined,   orderPrice: '',
+            msg: '',   visible: false,
+            modalData: [],
+            handleData: [],
+            stantIdList: [],  stantId: undefined,
+            levelsList: [],  levels: undefined
+        }
+    }
+    render() {
+        return(
+            <div id="purchaseOrder">
+                <div className="purchaseOrder">
+                    <div className="placeSearch">
+                        <span className="span1">订单编码</span>
+                        <Input className="input1" allowClear onChange={(e)=>{this.setState({placeOrderCode: e.target.value})}}/>
+                        <button className="searchs" onClick={this.searchMethods.bind(this)}>查询</button>
+                    </div>
+                    <div className="bg">
+                        <button className="searchs" onClick={this.add.bind(this)}>新增</button>
+                    </div>
+                    <div className="placeTable">
+                        <Table pagination={false} dataSource={this.state.dataSource}>
+                            <Column title="序号" align="center" key="index" dataIndex="index" width="100px" render={(text, record, index)=>(
+                                <span>{(this.state.currentPage-1)*this.state.pageSize+index+1}</span>
+                            )}/>
+                            <Column title="采购单编码" dataIndex="orderCode" key="orderCode" align="center"/>
+                            <Column title="代办" dataIndex="supplierName" key="supplierName" align="center"/>
+                            <Column title="采购金额" dataIndex="purchasePrice" key="purchasePrice" align="center" render={(text)=>(
+                                <span>{text / 100}</span>
+                            )}/>
+                            <Column title="制单人" dataIndex="createdName" key="createdName" align="center"/>
+                            <Column title="修改时间" dataIndex="modifiedTime" key="modifiedTime" align="center"/>
+                            <Column title="操作" align="center" key="records" dataIndex="records"
+                                render={(text, record) => (
+                                    <Space size="large">
+                                        {/*<span key={"changes"} style={record.status==0?{display: "block"}:{display: 'none'}} onClick={this.changes.bind(this, record)} className="changes">编辑</span>*/}
+                                        <span key={"deletes"} onClick={this.deletes.bind(this, record)} className="deletes">删除</span>
+                                    </Space>
+                                )}
+                            />
+                        </Table>
+                    </div>
+                    <div className="placePagination">
+                        <Pagination showTotal={()=>`共 ${this.state.pageTotle} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotle} />
+                    </div>
+
+                    <Modal title={this.state.msg} width="60%" footer={null} getContainer={false} closable={false}  visible={this.state.visible} centered={true}>
+                        <div className="modal1">
+                            <div className="div3">
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">*采购单编码</span>
+                                        <Input allowClear disabled value={this.state.orderCode} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">*代办</span>
+                                        <Select className={"input3"} onChange={
+                                            (e)=>{
+                                                this.setState({supplierId: e,modalData: [],handleData: []}); this.modalTableList1(e);
+
+                                            }
+                                        } value={this.state.supplierId}>
+                                            {
+                                                this.state.supplierList.map((item, index)=>{
+                                                    return(
+                                                        <Option value={item.id} key={index}>{item.supplierName}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </li>
+                                </ul>
+                                <div className="placeChangeTable">
+                                    <Table pagination={false} dataSource={this.state.modalData} locale={{emptyText: '暂无数据'}} rowSelection={{
+                                        type: "checkbox",
+                                        selectedRowKeys: this.state.handleData,
+                                        onChange: this.changeTableSelstor.bind(this)
+                                    }}>
+                                        <Column title="质检单编码" dataIndex="sheetCode" key="sheetCode" align="center"/>
+                                        <Column title="原料规格" dataIndex="rawMaterialStandard" key="rawMaterialStandard" align="center"/>
+                                        <Column title="原料品种" dataIndex="variety" key="variety" align="center"/>
+                                        <Column title="原料等级" dataIndex="rawMaterialLevel" key="rawMaterialLevel" align="center"/>
+                                        <Column title="原料重量" dataIndex="accountWeight" key="accountWeight" align="center"/>
+                                    </Table>
+                                </div>
+                                <div className="div11">
+                                    <Button danger onClick={this.figureUp.bind(this)}>开始计算</Button>
+                                </div>
+                                {
+                                    this.row.map((item, index)=>{
+                                        return(
+                                            <ol className="ol11" key={index}>
+                                                <li className="li11">
+                                                    <span className="span11">单价:</span>
+                                                    <InputNumber className="input11" value={item.unitPrice} onChange={(e)=>{
+                                                        if(this.row && this.row.length) {
+                                                            this.row.forEach((arrayItem)=>{
+                                                                if(arrayItem.id == item.id) {
+                                                                    arrayItem.unitPrice = e;
+                                                                    this.setState({
+                                                                        unitPrice: e
+                                                                    })
+                                                                }
+                                                            })
+                                                        }
+                                                    }} />
+                                                </li>
+                                                <li className="li11">
+                                                    <span className="span11">重量:</span>
+                                                    <p className="p11">{item.accountWeight}</p>
+                                                </li>
+                                                <li className="li11">
+                                                    <span className="span11">等级:</span>
+                                                    <p className="p11">{item.rawMaterialLevel}</p>
+                                                </li>
+                                                <li className="li11">
+                                                    <span className="span11">品种:</span>
+                                                    <p className="p11">{item.variety}</p>
+                                                </li>
+                                                <li className="li11">
+                                                    <span className="span11">规格:</span>
+                                                    <p className="p11">{item.rawMaterialStandard}</p>
+                                                </li>
+                                            </ol>
+                                        )
+                                    })
+                                }
+                            </div>
+                        </div>
+                        <div className="div4">
+                            <li className="li4">
+                                <Button className="btn4" type="danger" onClick={()=>{this.setState({visible: false})}}>取消</Button>
+                            </li>
+                            <li className="li4">
+                                <Button className="btn4" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
+                            </li>
+                        </div>
+                    </Modal>
+                </div>
+            </div>
+        )
+    }
+    initData(currentPage) {
+        let params = {
+            currentPage,
+            pageSize: this.state.pageSize,
+            placeOrderCode: this.state.placeOrderCode
+        };
+        Axios.post('/self/erp/purchaseOrder/queryPurchaseOrder', params).then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                if(res.data.data.purchaseOrders && res.data.data.purchaseOrders.length) {
+                    res.data.data.purchaseOrders.forEach((item)=>{
+                        item.key = item.id;
+                    })
+                }
+                this.setState({
+                    dataSource: res.data.data.purchaseOrders,
+                    pageTotle: res.data.data.num
+                })
+            }else{
+                this.setState({
+                    dataSource: [],
+                    pageTotle: 0
+                })
+            }
+        })
+    }
+    searchMethods() {
+        this.setState({
+            currentPage: 1
+        });
+        this.initData(1);
+    }
+    changePages(val) {
+        this.setState({
+            currentPage: val
+        });
+        this.initData(val);
+    }
+    add() {
+        this.setState({
+            visible: true,
+            msg: '新增'
+        });
+        this.purchaseOrderCode();
+        this.levelStart();
+    }
+    // 查询原谅和等级的下拉框
+    levelStart() {
+        Axios.post('/self/erp/purchasePlan/queryStandardAndLevel').then((res)=>{
+            console.log(res.data);
+            if(res.data.success) {
+                this.setState({
+                    stantIdList: res.data.data.standard,
+                    levelsList: res.data.data.level
+                })
+            }else{
+                this.setState({
+                    stantIdList: [],
+                    levelsList: []
+                })
+            }
+        })
+    }
+    deletes(row) {
+        let that = this;
+        confirm({
+            title: '你确定要继续吗?',
+            icon: <ExclamationCircleOutlined />,
+            content: '',
+            onOk() {
+                let params = {
+                    id: row.id
+                };
+                Axios.post('/self/erp/purchaseOrder/deletePurchaseOrder', params).then((res)=>{
+                    if(res.data.success) {
+                        message.success("成功");
+                        that.initData(that.state.currentPage);
+                    }else{
+                        message.warning(res.data.message);
+                    }
+                })
+            },
+            onCancel() {},
+        });
+    }
+    handleOk() {
+        if(this.row && this.row.length) {
+            this.row.forEach((item)=>{
+                item.unitPrice = item.unitPrice * 100;
+            })
+        }
+        let params = {
+            supplierId: this.state.supplierId,
+            qualityCheckSheetIds: this.state.handleData,
+            purchaseOrderSingleSheets: this.row,
+            orderCode: this.state.orderCode
+        };
+        Axios.post('/self/erp/purchaseOrder/addPurchaseOrder', params).then((res)=>{
+            if(res.data.success) {
+                message.success("成功");
+                this.setState({
+                    visible: false
+                });
+                this.initData(this.state.currentPage);
+            }else{
+                message.warning(res.data.message);
+            }
+        })
+    }
+    // 模态框里面的表格-复选框
+    changeTableSelstor(selectedRowKeys, selectedRows) {
+        this.setState({
+            handleData: selectedRowKeys,
+            selectedRows
+        })
+    }
+    // 开始计算
+    figureUp() {
+        let row = this.state.selectedRows;
+        for(let i=0;i<row.length;i++) {
+            for(let j=i+1;j<row.length;j++) {
+                row[i].unitPrice = null;
+                if(row[i].rawMaterialStandardId == row[j].rawMaterialStandardId && row[i].rawMaterialLevelId == row[j].rawMaterialLevelId && row[i].varietyId == row[j].varietyId) {
+                    row[i].accountWeight = Number(row[i].accountWeight) + Number(row[j].accountWeight);
+                    row.splice(j, 1);
+                }
+            }
+        }
+        this.row = row;
+        this.modalTableList1(this.state.supplierId);
+    }
+    // 模态框表格数据
+    modalTableList1(id) {
+        Axios.post('/self/erp/purchaseOrder/queryCheckSheet', {supplierId: id}).then((res)=>{
+            if(res.data.success) {
+                if(res.data.data.qualityCheckSheets && res.data.data.qualityCheckSheets.length) {
+                    res.data.data.qualityCheckSheets.forEach((item)=>{
+                        item.key = item.id;
+                    })
+                }
+                this.setState({
+                    modalData: res.data.data.qualityCheckSheets
+                });
+            }else{
+                this.setState({
+                    modalData: []
+                })
+            }
+        })
+    }
+    // 采购单编码
+    purchaseOrderCode() {
+        Axios.post('/self/erp/purchaseOrder/generatePurchaseOrderCode').then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    orderCode: res.data.data
+                })
+            }else{
+                this.setState({
+                    orderCode: ""
+                })
+            }
+        })
+    }
+    // 供应商下拉框
+    banList() {
+        Axios.post('/self/erp/purchaseTask/querySupplier').then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    supplierList: res.data.data.suppliers
+                })
+            }else{
+                this.setState({
+                    supplierList: []
+                })
+            }
+        })
+    }
+    componentDidMount() {
+        this.initData(this.state.currentPage);
+        this.banList();
+    }
+}
+export default PurchaseOrder;

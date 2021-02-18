@@ -1,0 +1,379 @@
+import React, {Component} from 'react';
+import {Input, Select, Table, Space, Pagination, Modal, InputNumber, Button, DatePicker, Upload, message, Switch} from 'antd';
+import { ExclamationCircleOutlined ,UploadOutlined} from '@ant-design/icons';
+import Axios from 'axios';
+import 'moment/locale/zh-cn';
+import moment from 'moment';
+import locale from 'antd/es/date-picker/locale/zh_CN';
+import './salesInvoice.scss';
+const {Option} = Select;
+const {Column} = Table;
+const {TextArea} = Input;
+const { confirm } = Modal;
+class SalesInvoice extends Component{
+    constructor(props) {
+        super(props);
+        this.pic = [];
+        this.state = {
+            dataSource: [],
+            currentPage: 1,
+            pageSize: 10,
+            pageTotle: 0,
+            msg: '', flag: 1,  visible:false,
+            marketList: [],  market: '',
+            modalData: [],
+            obj: {},
+            code: '',
+            dateTime: '',
+            deliveryAddress: '',
+            picPaths: [],
+            selectedRowKeys: []
+        }
+    }
+    render() {
+        return(
+            <div id="salesInvoice">
+                <div className="salesInvoice">
+                    <div className="bg">
+                        <button className="searchs" onClick={this.add.bind(this)}>新增</button>
+                        <button className="searchs searchs1" onClick={this.donload.bind(this)}>导出</button>
+                    </div>
+                    <div className="placeTable">
+                        <Table pagination={false} dataSource={this.state.dataSource}>
+                            <Column title="序号" align="center" key="index" dataIndex="index" width="100px" render={(text, record, index)=>(
+                                <span>{(this.state.currentPage-1)*this.state.pageSize+index+1}</span>
+                            )}/>
+                            <Column title="发货单编号" dataIndex="deliveryCode" key="deliveryCode" align="center"/>
+                            <Column title="发货地点" dataIndex="deliveryLocation" key="deliveryLocation" align="center"/>
+                            <Column title="发货日期" dataIndex="deliveryDate" key="deliveryDate" align="center"/>
+                            <Column title="交付时间" dataIndex="deliveryDate" key="deliveryDate" align="center"/>
+                            <Column title="客户电话" dataIndex="clientPhone" key="clientPhone" align="center"/>
+                            <Column title="客户姓名" dataIndex="clientName" key="clientName" align="center"/>
+
+                            {/*<Column title="操作" align="center" key="records" dataIndex="records"*/}
+                                {/*render={(text, record) => (*/}
+                                    {/*<Space size="large">*/}
+                                    {/*<span key={"changes"} onClick={this.changes.bind(this, record)} className="changes">编辑</span>*/}
+                                        {/*<span key={"deletes"} onClick={this.deletes.bind(this, record)} className="deletes">删除</span>*/}
+                                    {/*</Space>*/}
+                                {/*)}*/}
+                            {/*/>*/}
+                        </Table>
+                    </div>
+                    <div className="placePagination">
+                        <Pagination showTotal={()=>`共 ${this.state.pageTotle} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotle} />
+                    </div>
+                    <Modal title={this.state.msg} width="80%" footer={null} getContainer={false} closable={false}  visible={this.state.visible} centered={true}>
+                        <div className="modal1">
+                            <div className="div3">
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">*编号</span>
+                                        <Input disabled value={this.state.code} className="input3"/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">状态</span>
+                                        <Input disabled value={this.state.obj.status==0?"保存草稿":this.state.obj.status==1?"待审核":this.state.obj.status==2?"审核不通过":
+                                            this.state.obj.status==3?"可分配":this.state.obj.status==4?"分配完毕":this.state.obj.status==5?"待交付":this.state.obj.status==6?"订单完成":""} className="input3"/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">*销售单编码</span>
+                                        <Select className="input3" value={this.state.market} onChange={(e)=>{
+                                            this.setState({market:e});
+                                            this.marketDetail(e)
+                                        }}>
+                                            {
+                                                this.state.marketList.map((item, index)=>{
+                                                    return(
+                                                        <Option value={item.id} key={index}>{item.orderName}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">客户</span>
+                                        <Input disabled value={this.state.obj.clientName} className="input3"/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">*发货地点</span>
+                                        <Input value={this.state.deliveryAddress} onChange={(e)=>{this.setState({deliveryAddress:e.target.value})}} className="input3"/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">交付日期</span>
+                                        <DatePicker onChange={(e, packier)=>{this.setState({dateTime:packier})}}
+                                                    value={ this.state.dateTime ? moment(this.state.dateTime, 'YYYY-MM-DD') : ''}
+                                                    className="input3" locale={locale}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul11">
+                                    <li className="li11">
+                                        <span className="span1">*交付凭证</span>
+                                        <Upload
+                                            className="unload"
+                                            action={this.beforeUpload.bind(this)}
+                                            fileList={false}>
+                                            <Button icon={<UploadOutlined />}>点击上传+</Button>
+                                        </Upload>
+                                        <div className="div11">
+                                            {
+                                                this.pic.map((item, index)=>{
+                                                    return(
+                                                        <img src={ JSON.parse(sessionStorage.getItem("userInfo")).host+item} key={index} className="img1"/>
+                                                    )
+                                                })
+                                            }
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div className="rawMaterial">
+                                <div className="placeChangeTable">
+                                    <Table pagination={false} dataSource={this.state.modalData} rowSelection={{
+                                        type: "checkbox",
+                                        selectedRowKeys: this.state.selectedRowKeys,
+                                        onChange: this.changeTableSelstor.bind(this)
+                                    }}>
+                                        <Column title="成品名称" dataIndex="productName" key="productName" align="center"/>
+                                        <Column title="数量" dataIndex="purchaseNum" key="purchaseNum" align="center" render={(text, record)=>(
+                                            <div>
+                                                <InputNumber min={0} style={{width: '60%'}} value={text} onChange={(e)=>{
+                                                    if(this.state.modalData && this.state.modalData.length) {
+                                                        this.state.modalData.forEach((item)=>{
+                                                            if(item.key == record.key) {
+                                                                item.purchaseNum = e;
+                                                                this.setState({
+                                                                    purchaseNum: e
+                                                                })
+                                                            }
+                                                        })
+                                                    }
+                                                }}/>
+                                                kg
+                                            </div>
+                                        )}/>
+                                    </Table>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="div4">
+                            <li className="li4">
+                                <Button className="btn4" type="danger" onClick={()=>{this.setState({visible: false})}}>取消</Button>
+                            </li>
+                            <li className="li4">
+                                <Button className="btn4" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
+                            </li>
+                        </div>
+                    </Modal>
+                </div>
+            </div>
+        )
+    }
+    initData(currentPage) {
+        let param = {
+            currentPage,
+            pageSize: this.state.pageSize
+        };
+        Axios.post('/self/erp/salesDelivery/querySalesDeliveryOrder', param).then((res)=>{
+            console.log(res.data);
+            if(res.data.success) {
+                if(res.data.data.salesDeliveryOrders && res.data.data.salesDeliveryOrders.length) {
+                    res.data.data.salesDeliveryOrders.forEach((item)=>{
+                        item.key = item.id;
+                    })
+                }
+                this.setState({
+                    dataSource: res.data.data.salesDeliveryOrders,
+                    pageTotle: res.data.data.num
+                })
+            }else{
+                this.setState({
+                    dataSource: [],
+                    pageTotle: 0
+                })
+            }
+        })
+    }
+    add() {
+        this.setState({
+            visible: true,
+            flag: 1,
+            msg: '新增',
+            market: '',
+            dateTime: '',
+            deliveryAddress: '',
+            modalData: []
+        });
+        this.newCode();
+        this.pic = [];
+    }
+    changePages(val) {
+        this.initData(val);
+        this.setState({
+            currentPage: val
+        })
+    }
+    donload() {
+
+    }
+    changes(row) {
+        this.setState({
+            visible: true,
+            flag: 0,
+            msg: '修改'
+        })
+    }
+    deletes(row) {
+        let that = this;
+        confirm({
+            title: '你确定要删除吗?',
+            icon: <ExclamationCircleOutlined />,
+            content: '',
+            onOk() {
+                let params = {
+                    id: row.id
+                };
+                Axios.post('/self/erp/sales/deleteSalesOrder', params).then((res)=>{
+                    if(res.data.success) {
+                        message.success("删除成功");
+                        that.initData(that.state.currentPage);
+                    }else{
+                        message.warning(res.data.message);
+                    }
+                })
+            },
+            onCancel() {},
+        });
+    }
+    // 上传图片
+    beforeUpload(file) {
+        let formdata = new FormData();
+        formdata.append("file",file);
+        const config = {
+            headers: { "Content-Type": "multipart/form-data" }
+        };
+        Axios.post('/self/erp/salesDelivery/uploadProductPicture', formdata, config).then((res)=>{
+            if(res.data.success) {
+                message.success("上传成功");
+                this.pic.push(res.data.data.picture);
+                this.setState({
+                    picPaths: this.pic
+                })
+            }else{
+                message.warning(res.data.message);
+            }
+        })
+    }
+    handleOk() {
+        let arr = [];
+        if(this.state.modalData && this.state.modalData.length) {
+            this.state.modalData.forEach((outItem)=>{
+                if(this.state.selectedRowKeys && this.state.selectedRowKeys.length) {
+                    this.state.selectedRowKeys.forEach((item)=>{
+                        if(outItem.id == item) {
+                            arr.push({
+                                productId:outItem.productId  ,
+                                ramainingDeliveryNum:outItem.ramainingDeliveryNum  ,
+                                orderProductInfoId:outItem.id    ,
+                                totalPurchaseNum:outItem.totalPurchaseNum    ,
+                                deliveryNum:outItem.purchaseNum   ,
+                                key:outItem.key ,
+                                productName: outItem.productName
+                            })
+                        }
+                    })
+                }
+            })
+        }
+        if(this.state.flag == 1) {
+
+            let param = {
+                deliveryCode: this.state.code,
+                salesOrderId: this.state.market,
+                deliveryDate: this.state.dateTime,
+                deliveryLocation: this.state.deliveryAddress,
+                picPaths: this.state.picPaths,
+                deliveryProducts: arr
+            };
+            Axios.post('/self/erp/salesDelivery/addSalesDeliveryOrder', param).then((res)=>{
+                if(res.data.success) {
+                    message.success("成功");
+                    this.setState({
+                        visible: false
+                    });
+                    this.initData(this.state.currentPage);
+                }else{
+                    message.warning(res.data.message);
+                }
+            })
+        }else{
+            console.log("修改");
+        }
+    }
+    componentDidMount() {
+        this.initData(this.state.currentPage);
+        this.scaleList();
+    }
+    // 销售单编码下拉框
+    scaleList() {
+        Axios.post("/self/erp/salesDelivery/querySalesOrder").then((res)=>{
+            // console.log(res.data.data);
+            if(res.data.success) {
+                this.setState({
+                    marketList: res.data.data.salesOrders
+                })
+            }else{
+                this.setState({
+                    marketList: []
+                })
+            }
+        })
+    }
+    // 销售订单编码的详情展示
+    marketDetail(id) {
+        Axios.post('/self/erp/sales/querySalesOrderById', {id}).then((res)=>{
+            if(res.data.success) {
+                if(res.data.data.salesOrder.products && res.data.data.salesOrder.products.length) {
+                    res.data.data.salesOrder.products.forEach((item)=>{
+                        item.key = item.id;
+                    })
+                }
+                this.setState({
+                    modalData: res.data.data.salesOrder.products,
+                    obj: res.data.data.salesOrder
+                })
+            }else{
+                this.setState({
+                    obj: {},
+                    modalData: []
+                })
+            }
+        })
+    }
+    newCode() {
+        Axios.post('/self/erp/salesDelivery/generateDeliveryCode').then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    code: res.data.data
+                })
+            }else{
+                this.setState({
+                    code: ''
+                })
+            }
+        })
+    }
+    // 表格复选
+    changeTableSelstor(selectedRowKeys, selectedRows) {
+        // console.log(selectedRowKeys);
+        // console.log(selectedRows);
+        this.setState({
+            selectedRowKeys
+        })
+    }
+}
+export default SalesInvoice;

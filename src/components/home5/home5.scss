@@ -1,0 +1,341 @@
+#home5{
+    height: 100%;
+    .home5{
+        height: 100%;
+        padding: 0 10px 10px 10px;
+        box-sizing: border-box;
+        .home5_top{
+            height: 55%;
+            margin-bottom: 0;
+            .home5_top_inner{
+                height: 100%;
+                padding-bottom: 5px;
+                box-sizing: border-box;
+                overflow: hidden;
+                .home5_top_inner_left{
+                    float: left;
+                    width: 35%;
+                    height: 100%;
+                    .home5_top_inner_left_inner{
+                        padding-right: 5px;
+                        height: 100%;
+                        .home5_top_inner_left_inner_top{
+                            height: 30%;
+                            .home5_top_inner_left_inner_top_inner{
+                                padding-bottom: 5px;
+                                height: 100%;
+                                overflow: hidden;
+                                background: url("../../common/img/copy.png") no-repeat 0 0;
+                                background-size: 100% 100%;
+                                .home5_top_inner_left_inner_top_inner_left{
+                                    float: left;
+                                    height: 100%;
+                                    width: 50%;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    flex-direction: column;
+                                    .home5_top_inner_left_inner_top_inner_left_text{
+                                        .home5_top_inner_left_inner_top_inner_left_text_left{
+                                            color: #FFE535;
+                                            font-family: UnidreamLED;
+                                            font-size: 4.8rem;
+                                        }
+                                        .home5_top_inner_left_inner_top_inner_left_text_right{
+                                            color: #fff;
+                                            font-size: 2.2rem;
+                                            margin-left: 1rem;
+                                        }
+                                    }
+                                    .home5_top_inner_left_inner_top_inner_left_bottom{
+                                        color: #fff;
+                                        font-size: 1.6rem;
+                                    }
+                                }
+                                .home5_top_inner_left_inner_top_inner_right{
+                                    float: left;
+                                    height: 100%;
+                                    width: 50%;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    .home5_top_inner_left_inner_top_inner_right_num{
+                                        font-size: 2.8rem;
+                                        color: #F03F3F;
+                                    }
+                                    .home5_top_inner_left_inner_top_inner_right_img{
+                                        background: url("../../common/img/xiangshang.png") no-repeat 0 0;
+                                        background-size: 100% 100%;
+                                        width: 2.4rem;
+                                        height: 3.1rem;
+                                        display: block;
+                                        margin-left: 1rem;
+                                    }
+                                }
+                            }
+                        }
+                        .home5_top_inner_left_inner_bottom{
+                            height: 70%;
+                            .home5_top_inner_left_inner_bottom_inner{
+                                height: 100%;
+                                padding-top: 5px;
+                                background: url("../../common/img/tree.png") no-repeat 0 0;
+                                background-size: 100% 100%;
+                                box-sizing: border-box;
+                                position: relative;
+                                .home5_top_inner_left_inner_bottom_inner_fu {
+                                    position: absolute;
+                                    left: 2rem;
+                                    top: 2rem;
+                                    .home5_top_inner_left_inner_bottom_inner_collum {
+                                        display: inline-block;
+                                        width: .4rem;
+                                        height: 1.8rem;
+                                        background: #00BEF6;
+                                    }
+                                    .home5_top_inner_left_inner_bottom_inner_title {
+                                        color: #00BEF6;
+                                        font-size: 1.8rem;
+                                        position: relative;
+                                        margin-left: 1rem;
+                                        top: -.3rem;
+                                    }
+                                }
+                                .home5_top_inner_left_inner_bottom_inner_echarts{
+                                    height: 100%;
+                                }
+                            }
+                        }
+                    }
+                }
+                .home5_top_inner_middle{
+                    float: left;
+                    width: 25%;
+                    height: 100%;
+                    .home5_top_inner_middle_inner{
+                        padding: 0 5px;
+                        height: 100%;
+                        background: url("../../common/img/tree.png") no-repeat 0 0;
+                        background-size: 100% 100%;
+                        display: flex;
+                        justify-content: left;
+                        align-items: center;
+                        flex-direction: column;
+                        .home5_top_inner_middle_inner_top{
+                            height: 50%;
+                            width: 100%;
+                            overflow: hidden;
+                            .home5_top_inner_middle_inner_top_left{
+                                float: left;
+                                width: 50%;
+                                height: 100%;
+                                display: flex;
+                                flex-direction: column;
+                                justify-content: center;
+                                align-items: center;
+                                .home5_top_inner_middle_inner_top_left_top{
+                                    .home5_top_inner_middle_inner_top_left_top_left{
+                                        color: #00C6FF;
+                                        font-size: 7.2rem;
+                                        font-family: UnidreamLED;
+                                    }
+                                    .home5_top_inner_middle_inner_top_left_top_left1{
+                                        color: #DA8F1A;
+                                    }
+                                    .home5_top_inner_middle_inner_top_left_top_right{
+                                        font-size: 2.2rem;
+                                        color: #fff;
+                                        margin-left: 1rem;
+                                    }
+                                }
+                                .home5_top_inner_middle_inner_top_left_content{
+                                    color: #fff;
+                                    font-size: 1.8rem;
+                                }
+                            }
+                            .home5_top_inner_middle_inner_top_right{
+                                float: left;
+                                width: 50%;
+                                height: 100%;
+                                display: flex;
+                                justify-content: center;align-items: center;
+                                .home5_top_inner_middle_inner_top_right_num{
+                                    color: #F03F3F;
+                                    font-size: 3rem;
+                                }
+                                .home5_top_inner_middle_inner_top_right_img{
+                                    display: inline-block;
+                                    background: url("../../common/img/xiangshang.png") no-repeat 0 0;
+                                    background-size: 100% 100%;
+                                    width: 2.4rem;
+                                    height: 3.1rem;
+                                    margin-left: 1rem;
+                                }
+                            }
+                        }
+                        .home5_top_inner_middle_inner_bottom{
+                            height: 50%;
+                            width: 100%;
+                        }
+                    }
+                }
+                .home5_top_inner_right{
+                    float: left;
+                    width: 40%;
+                    height: 100%;
+                    .home5_top_inner_right_inner{
+                        padding-left: 5px;
+                        height: 100%;
+                        box-sizing: border-box;
+                        background: url("../../common/img/tree.png") no-repeat 0 0;
+                        background-size: 100% 100%;
+                        position: relative;
+                        .home5_top_inner_right_inner_text{
+                            position: absolute;
+                            left: 2.8rem;
+                            top: 2rem;
+                            .home5_top_inner_right_inner_text_collum{
+                                display: inline-block;
+                                width: .4rem;
+                                height: 1.8rem;
+                                background: #00BEF6;
+                            }
+                            .home5_top_inner_right_inner_text_content{
+                                display: inline-block;
+                                font-size: 1.8rem;
+                                color: #00BEF6;
+                                position: relative;
+                                top: -3px;
+                                left: 1rem;
+                            }
+                        }
+                        .home5_top_inner_right_inner_echarts{
+                            height: 100%;
+                            width: 100%;
+                        }
+                    }
+                }
+            }
+        }
+        .home5_bottom{
+            height: 45%;
+            margin-bottom: 0;
+            .home5_bottom_inner{
+                height: 100%;
+                padding-top: 5px;
+                box-sizing: border-box;
+                overflow: hidden;
+                .home5_bottom_inner_left{
+                    float: left;
+                    width: 34%;
+                    height: 100%;
+                    .home5_bottom_inner_left_inner{
+                        padding-right: 5px;
+                        width: 100%;
+                        height: 100%;
+                        box-sizing: border-box;
+                        background: url("../../common/img/tree.png") no-repeat 0 0;
+                        background-size: 100% 100%;
+                        position: relative;
+                        .home5_bottom_inner_left_inner_title{
+                            position: absolute;
+                            left: 2rem;top: 2rem;
+                            .home5_bottom_inner_left_inner_title_collum{
+                                display: inline-block;
+                                width: .4rem;
+                                height: 1.8rem;
+                                background: #00BEF6;
+                            }
+                            .home5_bottom_inner_left_inner_title_txt{
+                                color: #00BEF6;
+                                font-size: 1.8rem;
+                                margin-left: 1rem;
+                                position: relative;
+                                top: -3px;
+                            }
+                        }
+                        .home5_bottom_inner_left_inner_echarts{
+                            height: 100%;
+                        }
+                    }
+                }
+                .home5_bottom_inner_right{
+                    float: left;
+                    width: 66%;
+                    height: 100%;
+                    .home5_bottom_inner_right_inner{
+                        padding-left: 5px;
+                        width: 100%;
+                        height: 100%;
+                        box-sizing: border-box;
+                        background: url("../../common/img/tree.png") no-repeat 0 0;
+                        background-size: 100% 100%;
+                        //position: relative;
+                        .home5_bottom_inner_right_inner_title{
+                            position: relative;
+                            left: 2rem;
+                            top: 2rem;
+                            .home5_bottom_inner_right_inner_title_collum{
+                                display: inline-block;
+                                width: .4rem;
+                                height: 1.8rem;
+                                background: #00BEF6;
+                            }
+                            .home5_bottom_inner_right_inner_title_txt{
+                                display: inline-block;
+                                font-size: 1.8rem;
+                                color: #00BEF6;
+                                margin-left: 1rem;
+                                position: relative;
+                                top: -.3rem;
+                            }
+                        }
+                        .home5_bottom_inner_right_inner_content{
+                            display: flex;
+                            flex-direction: column;
+                            width: 100%;
+                            height: 100%;
+                            .home5_bottom_inner_right_inner_content_ul1{
+                                overflow: hidden;
+                                height: 5rem;
+                                display: flex;
+                                padding-top: 2rem;
+                                .home5_bottom_inner_right_inner_content_ul1_li1{
+                                    flex: 1;
+                                    color: #3BF1FC;
+                                    font-size: 1.8rem;
+                                    text-align: center;
+                                }
+                            }
+                            .home5_bottom_inner_right_inner_content_txt{
+                                flex: 1;
+                                padding-bottom: 3.6rem;
+                                overflow: auto;
+                                .home5_bottom_inner_right_inner_content_txt_ul2{
+                                    display: flex;
+                                    margin-top: 1rem;
+                                    .home5_bottom_inner_right_inner_content_txt_li2{
+                                        flex: 1;
+                                        color: #fff;
+                                        font-size: 1.6rem;
+                                        text-align: center;
+                                        .ant-progress-outer{
+                                            .ant-progress-inner{
+                                                .ant-progress-bg{
+                                                    height: 100% !important;
+                                                }
+                                            }
+                                        }
+                                        .ant-progress-text{
+                                            color: #fff;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

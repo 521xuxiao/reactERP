@@ -1,0 +1,288 @@
+import React, {Component} from 'react';
+import {Input, Select, DatePicker, Table, Pagination, message, Button, Modal, Cascader} from 'antd';
+import Axios from 'axios';
+import locale from 'antd/es/date-picker/locale/zh_CN';
+import 'moment/locale/zh-cn';
+import './inList.scss'
+const {Option} = Select;
+const {RangePicker } =  DatePicker;
+const {Column} =  Table;
+class InList extends Component{
+    constructor(props){
+        super(props);
+        this.warehouse = '';
+        this.reservoir = '';
+        this.state = {
+            typeId: '',
+            typeIdList: [{label: '采购入库', value: "1"}, {label: '剩余入库', value: "2"}, {label: '调拨入库', value: "3"}, {label: '漏读入库', value: "4"}, {label: '漏评入库', value: "5"}],
+            name: [],
+            startTime: '',
+            endTime: '',
+            dataSource: [],
+            currentPage: 1,
+            pageSize: 10,
+            pageTotle: 0,
+            statusList: [{label: '待入库', value: "0"}, {label: '已入库', value: "1"}, {label: "已出库", value: "2"}, {label: "已生成调拨单", value: "3"}, {label: "越库", value: "4"}],   statusId: '',
+            dataList: [],
+            visible: false,
+            msg: '',
+            options: [],
+            createdStartTime: '',
+            createdEndTime: ''
+        }
+    }
+    render() {
+        return(
+            <div id="inList">
+                <div className="inList">
+                    <div className="placeSearch">
+                        <div className="left1">
+                            <span className="span1">入库名称</span>
+                            <Input onChange={(e)=>{this.setState({code: e.target.value})}} className="input1" allowClear/>
+                        </div>
+                        <div className="left1">
+                            <span className="span1">入库类型</span>
+                            <Select className={"input1"} allowClear onChange={(e)=>{this.setState({typeId: e})}}>
+                                {
+                                    this.state.typeIdList.map((item, index)=>{
+                                        return(
+                                            <Option value={item.value} key={index}>{item.label}</Option>
+                                        )
+                                    })
+                                }
+                            </Select>
+                        </div>
+                        <div className="left1">
+                            <span className="span1">仓库名称</span>
+                            <Cascader options={this.state.options} onChange={(e)=>{this.setState({name: e})}} placeholder="" allowClear className="input1"/>
+                        </div>
+                        <div className="left1 left2">
+                            <span className="span1">入库时间</span>
+                            <RangePicker renderExtraFooter={() => 'extra footer'} className="input1 input2" showTime locale={locale} onChange={this.timePick.bind(this)}/>
+                        </div>
+                        <div className="btn">
+                            <button className="searchs" onClick={this.searchMethods.bind(this)}>查询</button>
+                        </div>
+                    </div>
+                    <div className="placeSearch">
+                        <div className="left1">
+                            <span className="span1">状态</span>
+                            <Select className={"input1"} allowClear onChange={(e)=>{this.setState({statusId: e})}}>
+                                {
+                                    this.state.statusList.map((item, index)=>{
+                                        return(
+                                            <Option value={item.value} key={index}>{item.label}</Option>
+                                        )
+                                    })
+                                }
+                            </Select>
+                        </div>
+                        <div className="left1 left2">
+                            <span className="span1">创建时间</span>
+                            <RangePicker renderExtraFooter={() => 'extra footer'} className="input1 input2" showTime locale={locale} onChange={this.creatTime.bind(this)}/>
+                        </div>
+                    </div>
+                    <div className="bg">
+                        <button className="searchs" onClick={this.add.bind(this)}>异常处理</button>
+                    </div>
+                    <div className="placeTable">
+                        <Table pagination={false} dataSource={this.state.dataSource} rowSelection={{
+                            onChange: this.onSelectChange.bind(this)
+                        }}>
+                            <Column title="入库单名称" dataIndex="sheetName" key="sheetName" align="center"/>
+                            {/*<Column title="质检单编码" dataIndex="qualityCheckSheetCode" key="qualityCheckSheetCode" align="center"/>*/}
+
+                            <Column title="仓库" dataIndex="realname" key="realname" align="center" render={(text, record)=>(
+                                <span>{record.warehouseAreaName}{record.warehouseName}</span>
+                            )}/>
+                            <Column title="入库类型" dataIndex="inboundTypeIntro" key="inboundTypeIntro" align="center"/>
+                            <Column title="状态" dataIndex="statusIntro" key="statusIntro" align="center"/>
+                            <Column title="桶编码" dataIndex="bucketCode" key="bucketCode" align="center"/>
+                            <Column title="入库时间" dataIndex="warehousingTime" key="warehousingTime" align="center"/>
+                            <Column title="创建时间" dataIndex="createdTime" key="createdTime" align="center"/>
+                            <Column title="重量" dataIndex="realWeight" key="realWeight" align="center"/>
+                        </Table>
+                    </div>
+                    <div className="placePagination">
+                        <Pagination showTotal={()=>`共 ${this.state.pageTotle} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotle} showSizeChanger={false}/>
+                    </div>
+
+                    <Modal title={this.state.msg} width="40%" footer={null} getContainer={false} closable={false}  visible={this.state.visible} centered={true}>
+                        <div className="modal1">
+                            <div className="div3">
+                                <ul className="ul1">
+                                    <li className="li11">
+                                        <span className="span11">选择库区</span>
+                                        <Cascader options={this.state.options} onChange={this.houseChange.bind(this)} className="input11"
+                                        placeholder=""/>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div className="div4">
+                            <li className="li4">
+                                <Button className="btn4" type="danger" onClick={()=>{this.setState({visible: false})}}>取消</Button>
+                            </li>
+                            <li className="li4" style={this.state.flag==3?{display: 'none'}:{display: 'block'}}>
+                                <Button className="btn4" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
+                            </li>
+                        </div>
+                    </Modal>
+                </div>
+            </div>
+        )
+    }
+    initData(currentPage) {
+        let params = {
+            currentPage,
+            pageSize: this.state.pageSize,
+            sheetName: this.state.code,
+            inboundType: !this.state.typeId ? "": this.state.typeId,
+            warehousingStartTime: this.state.startTime,
+            warehousingEndTime: this.state.endTime,
+            status: this.state.statusId,
+            warehouseAreaId: this.state.name.length>0?this.state.name[0]:"",
+            warehouseId: this.state.name.length>0?this.state.name[1]:"",
+            createdStartTime: this.state.createdStartTime,
+            createdEndTime: this.state.createdEndTime
+        };
+        Axios.post('/self/erp/warehousing/queryWarehousingSheet', params).then((res)=>{
+            // console.log(res.data.data)
+            if(res.data.success) {
+                res.data.data.warehousingSheets.forEach((item)=>{
+                    item.key = item.id;
+                });
+                this.setState({
+                    dataSource: res.data.data.warehousingSheets,
+                    pageTotle: res.data.data.num
+                })
+            }else{
+                this.setState({
+                    dataSource: [],
+                    pageTotle: 0
+                })
+            }
+        })
+    }
+    searchMethods() {
+        this.initData(1);
+        this.setState({
+            currentPage: 1
+        })
+    }
+    timePick(dates, pickys) {
+        if(pickys[0]) {
+            this.setState({
+                startTime: pickys[0],
+                endTime: pickys[1]
+            })
+        }else{
+            this.setState({
+                startTime: "",
+                endTime: ""
+            })
+        }
+    }
+    creatTime(ates, pickys) {
+        if(pickys[0]) {
+            this.setState({
+                createdStartTime: pickys[0],
+                createdEndTime: pickys[1]
+            })
+        }else{
+            this.setState({
+                createdStartTime: "",
+                createdEndTime: ""
+            })
+        }
+    }
+    changePages(val) {
+        this.setState({
+            currentPage: val
+        });
+        this.initData(val);
+    }
+    onSelectChange(selectKeys, selectInfos) {
+        this.setState({
+            dataList: selectInfos
+        })
+    }
+    add() {
+        if(!(this.state.dataList && this.state.dataList.length)) {
+            message.warning("请选中再提交");
+            return false;
+        }
+        this.setState({
+            visible: true,
+            flag: 1,
+            msg: '选择库区'
+        })
+    }
+    handleOk() {
+        let arr = [];
+        if(this.state.dataList && this.state.dataList.length) {
+            this.state.dataList.forEach((item)=>{
+                arr.push(item.id);
+            })
+        }
+        let params = {
+            ids: arr,
+            warehouseAreaId: this.reservoir,
+            warehouseId: this.warehouse
+        };
+        Axios.post('/self/erp/warehousing/updateWarehousingSheet', params).then((res)=>{
+            if(res.data.success){
+                message.success("成功");
+                this.setState({
+                    visible: false
+                });
+                this.initData(this.state.currentPage);
+            }else{
+                message.warning(res.data.message);
+            }
+        })
+    }
+    componentDidMount() {
+        this.initData(this.state.currentPage);
+        this.houseList();
+    }
+    houseChange(e) {
+        if(e && e.length) {
+            this.reservoir = e[0];
+            this.warehouse = e[1];
+        }else{
+            this.reservoir = '';
+            this.warehouse = '';
+        }
+    }
+    /**
+     * 查询仓库信息
+     */
+    houseList() {
+        Axios.post('/self/erp/baseinfo/queryWarehouse').then((res)=>{
+            console.log(res.data.data.warehouses);
+            if(res.data.success) {
+                if(res.data.data.warehouses && res.data.data.warehouses.length) {
+                    res.data.data.warehouses.forEach((outItem)=>{
+                        outItem.label = outItem.name;
+                        outItem.value = outItem.id;
+                        if(outItem.children && outItem.children.length) {
+                            outItem.children.forEach((innerItem)=>{
+                                innerItem.label = innerItem.name;
+                                innerItem.value = innerItem.id;
+                            })
+                        }
+                    })
+                }
+                this.setState({
+                    options: res.data.data.warehouses
+                })
+            }else{
+                this.setState({
+                    options: []
+                })
+            }
+        })
+    }
+}
+export default InList;

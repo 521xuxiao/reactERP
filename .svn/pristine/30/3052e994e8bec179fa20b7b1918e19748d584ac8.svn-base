@@ -1,0 +1,25 @@
+#slider.slider{
+  height: 100%;
+  .ant-menu{
+    height: 100%;
+    background: #353B48;
+    //margin-top: -10px;
+    .ant-menu-submenu{
+      .ant-menu-submenu-title{
+        background: #353B48;
+        //margin-top: -6px;
+        .img1{
+          width: 26px;
+          position: relative;
+          top: -3px;
+        }
+        div{
+          .img1{
+            width: 20px;
+            height: 20px;
+          }
+        }
+      }
+    }
+  }
+}

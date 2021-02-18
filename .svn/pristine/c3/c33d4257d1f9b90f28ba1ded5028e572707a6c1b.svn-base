@@ -1,0 +1,114 @@
+import React, {Component} from 'react';
+import {Input, Select, Table, Space, Pagination, Modal,DatePicker,Button,InputNumber,Cascader,message} from 'antd';
+import Axios from 'axios';
+import './billboard.scss';
+const {Column} = Table;
+const {Option} = Select; const { RangePicker } = DatePicker;
+class Billboard extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            dataSource: [],
+            currentPage: 1,  pageSize: 10, pageTotle: 0,
+            modlaData: [],
+            visibleChecked: false
+        }
+    }
+    render() {
+        return(
+            <div id="billboard">
+                <div className="billboard">
+                    <div className="bg">
+                        <button className="searchs searchs1" onClick={this.donload.bind(this)}>导出</button>
+                    </div>
+                    <div className="placeTable">
+                        <Table pagination={false} dataSource={this.state.dataSource}>
+                            <Column title="序号" align="center" key="index" dataIndex="index" width="100px" render={(text, record, index)=>(
+                                <span>{(this.state.currentPage-1)*this.state.pageSize+index+1}</span>
+                            )}/>
+                            <Column title="车间名" dataIndex="workroomName" workroomId="workroomName" align="center"/>
+                            <Column title="客户要求" dataIndex="customRequest" workroomId="customRequest" align="center"/>
+                            <Column title="交付日期" dataIndex="deliveryDate" workroomId="deliveryDate" align="center"/>
+                            <Column title="操作" align="center" workroomId="records" dataIndex="records"
+                                render={(text, record) => (
+                                    <Space size="large">
+                                        <span key={"changes"} onClick={this.details.bind(this, record)} className="changes">详情</span>
+                                    </Space>
+                                )}
+                            />
+                        </Table>
+                    </div>
+                    <div className="placePagination">
+                        <Pagination showTotal={()=>`共 ${this.state.pageTotle} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotle} />
+                    </div>
+
+                    <Modal title="详情" width="90%" footer={null} getContainer={false} closable={false}  visible={this.state.visibleChecked} centered={true}>
+                        <div className="modal1">
+                            <div className="div3">
+                                <Table pagination={false} dataSource={this.state.modlaData}>
+                                    <Column title="产品名" dataIndex="productName" workroomId="productName" align="center"/>
+                                    <Column title="产品净重" dataIndex="productWeight" workroomId="productWeight" align="center"/>
+                                    <Column title="计量单位" dataIndex="measurement" workroomId="measurement" align="center"/>
+                                    <Column title="任务量" dataIndex="taskLoad" workroomId="taskLoad" align="center"/>
+                                    <Column title="剩余任务量" dataIndex="remainingLoad" workroomId="remainingLoad" align="center"/>
+                                    <Column title="已生产任务量" dataIndex="productedLoad" workroomId="productedLoad" align="center"/>
+                                    <Column title="总的产品重量" dataIndex="productTotalWeight" workroomId="productTotalWeight" align="center"/>
+                                </Table>
+                            </div>
+                        </div>
+                        <div className="div4">
+                            <li className="li4">
+                                <Button className="btn4" type="danger" onClick={()=>{
+                                    this.setState({visibleChecked: false})
+                                }}>返回</Button>
+                            </li>
+                        </div>
+                    </Modal>
+                </div>
+            </div>
+        )
+    }
+    initData(currentPage){
+        let params = {
+            currentPage,
+            pageSize: this.state.pageSize
+        };
+        Axios.post('/self/erp/productManage/queryProductionTips', params).then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                this.setState({
+                    dataSource: res.data.data.productionTips
+                })
+            }else{
+                this.setState({
+                    dataSource: []
+                })
+            }
+        })
+    }
+    donload() {
+
+    }
+    changePages(val) {
+        this.setState({
+            currentPage: val
+        });
+        this.initData(val);
+    }
+    details(row) {
+        if(row.taskProducts != undefined) {
+            this.setState({
+                modlaData: row.taskProducts,
+                visibleChecked: true
+            })
+        }else{
+            this.setState({
+                modlaData: []
+            })
+        }
+    }
+    componentDidMount() {
+        this.initData(this.state.currentPage);
+    }
+}
+export default Billboard;

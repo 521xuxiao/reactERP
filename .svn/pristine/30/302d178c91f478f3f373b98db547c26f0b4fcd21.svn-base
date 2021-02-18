@@ -1,0 +1,76 @@
+import React, {Component} from 'react';
+import {Tree, Input,Button} from 'antd';
+import { DownOutlined } from '@ant-design/icons';
+import './menuConfig.scss';
+class MenuConfig extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            treeData: [{title: '呵呵', key: '1'}],
+            path: '',
+            component: '',
+            fuIndex: '',
+            selfIndex: ''
+        }
+    }
+    render() {
+        return(
+            <div id="menuConfig">
+                <div className="menuConfig">
+                    <div className="placeTree">
+                        <div className="innerLeft">
+                            <Tree
+                                switcherIcon={<DownOutlined />}
+                                onSelect={this.onSelect.bind(this)}
+                                treeData={this.state.treeData}
+                            />
+                        </div>
+                        <div className="innerRight">
+                            <ul className="ul1">
+                                <li className="li1">
+                                    <span className="span1">path</span>
+                                    <Input className="input1" value={this.state.path} onChange={(e)=>{this.setState({path:e.target.value})}}/>
+                                </li>
+                                <li className="li1">
+                                    <span className="span1">component</span>
+                                    <Input className="input1" value={this.state.component} onChange={(e)=>{this.setState({component:e.target.value})}}/>
+                                </li>
+                            </ul>
+                            <ul className="ul1">
+                                <li className="li1">
+                                    <span className="span1">父索引</span>
+                                    <Input className="input1" value={this.state.fuIndex} onChange={(e)=>{this.setState({fuIndex:e.target.value})}}/>
+                                </li>
+                                <li className="li1">
+                                    <span className="span1">自身的索引</span>
+                                    <Input className="input1" value={this.state.selfIndex} onChange={(e)=>{this.setState({selfIndex:e.target.value})}}/>
+                                </li>
+                            </ul>
+                            <div className="placeBtn">
+                                <Button onClick={this.add.bind(this)}>新增</Button>
+                                <Button onClick={this.deletes.bind(this)}>删除</Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+    onSelect(selectedKeys, info) {
+         console.log(selectedKeys);
+         console.log(info);
+    }
+    add() {
+        let params = {
+            path: this.state.path,
+            component: this.state.component,
+            fuIndex: this.state.fuIndex,
+            selfIndex: this.state.selfIndex
+        };
+        console.log(params);
+    }
+    deletes() {
+
+    }
+}
+export default MenuConfig;

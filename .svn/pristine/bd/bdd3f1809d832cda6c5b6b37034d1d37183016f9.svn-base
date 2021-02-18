@@ -1,0 +1,808 @@
+import React, {Component} from 'react'
+import Axios from 'axios';
+
+import { Table, Input,Space, Button,message, Pagination , Modal, Select, InputNumber, DatePicker, Tree} from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { CarryOutOutlined, FormOutlined } from '@ant-design/icons';
+import './purchaseOrder.scss'
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+import locale from 'antd/es/date-picker/locale/zh_CN';
+const {Column} = Table;
+const {Search} = Input;
+const {Option} = Select;
+const { confirm } = Modal;
+const { RangePicker } = DatePicker;
+
+class PurchaseOrder extends Component{
+    constructor(props) {
+        super(props);
+        this.row = [];
+        this.state = {
+            distributorList: [{label: '张三', value: 1}, {label: '李四', value: 2}],   distributor: null,
+            touchingList: [{label: '张三', value: 1}, {label: '李四', value: 2}],   touching: null,
+            inventoryStatusList: [{label: '张三', value: 1}, {label: '李四', value: 2}],   inventoryStatus: null,
+            startTime: "",   endTime: "",
+            treeData: [
+                {
+                    title: 'parent 1',
+                    key: '0-0',
+                    icon: <CarryOutOutlined />,
+                    children: [
+                        {
+                            title: 'parent 1-0',
+                            key: '0-0-0',
+                            icon: <CarryOutOutlined />,
+                            children: [
+                                { title: 'leaf', key: '0-0-0-0', icon: <CarryOutOutlined /> },
+                                {
+                                    title: (
+                                        <>
+                                            <div>multiple line title</div>
+                                            <div>multiple line title</div>
+                                        </>
+                                    ),
+                                    key: '0-0-0-1',
+                                    icon: <CarryOutOutlined />,
+                                },
+                                { title: 'leaf', key: '0-0-0-2', icon: <CarryOutOutlined /> },
+                            ],
+                        },
+                        {
+                            title: 'parent 1-1',
+                            key: '0-0-1',
+                            icon: <CarryOutOutlined />,
+                            children: [{ title: 'leaf', key: '0-0-1-0', icon: <CarryOutOutlined /> }],
+                        },
+                        {
+                            title: 'parent 1-2',
+                            key: '0-0-2',
+                            icon: <CarryOutOutlined />,
+                            children: [
+                                { title: 'leaf', key: '0-0-2-0', icon: <CarryOutOutlined /> },
+                                {
+                                    title: 'leaf',
+                                    key: '0-0-2-1',
+                                    icon: <CarryOutOutlined />,
+                                    switcherIcon: <FormOutlined />,
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    title: 'parent 2',
+                    key: '0-1',
+                    icon: <CarryOutOutlined />,
+                    children: [
+                        {
+                            title: 'parent 2-0',
+                            key: '0-1-0',
+                            icon: <CarryOutOutlined />,
+                            children: [
+                                { title: 'leaf', key: '0-1-0-0', icon: <CarryOutOutlined /> },
+                                { title: 'leaf', key: '0-1-0-1', icon: <CarryOutOutlined /> },
+                            ],
+                        },
+                    ],
+                },
+            ],
+            materialTypesList: [{label: '周转一', value: 1}, {label: '周转二', value: 2}, {label: '周转三', value: 3}],   materialTypes: null,
+            placeOrderCode: '',
+            currentPage: 1,
+            pageSize: 10,
+            pageTotle: 0,
+            dataSource: [],
+            dateStrings: "",
+
+            orderCode: '', plancode: '',plancodeList: [],   supplierList: [],   supplierId: undefined,   orderPrice: '',
+            msg: '',   visible: false,
+            modalData: [{id:  '1', name1:"1", name2:"1", name3:"1", name4:"1",name5:"1", name6:"1", name7:"1", name8:"1", name9:"1", name10:"1", name11:"1", name12:"1", name13:"1", name14:"1"},
+                {id:  '2', name1:"许潇", name2:"1", name3:"1", name4:"1",name5:"1", name6:"1", name7:"1", name8:"1", name9:"1", name10:"1", name11:"1", name12:"1", name13:"1", name14:"1"},
+                ],
+            handleData: [],
+            stantIdList: [],  stantId: undefined,
+            levelsList: [],  levels: undefined,
+            visible1: false,
+            flag: 1,
+            selectedRows: [],
+            currentPage1: 1,
+            pageSize1: 10,
+            pageTotal1: 0,
+            id: '',   checklist: [],  price: '',
+            name: '',
+            keys: '',
+            isShow: false,
+            orderName: '', supplierName: ''
+        }
+    }
+    render() {
+        return(
+            <div id="purchaseOrder">
+                <div className="purchaseOrder">
+                    <div className="placeSearch">
+                        <div className="li1">
+                            <span className="span0">供应商</span>
+                            <Select value={this.state.distributor} onChange={(e)=>{this.setState({distributor: e})}} allowClear className="input0">
+                                {this.state.distributorList.map((item)=>{
+                                    return(
+                                        <Option value={item.value}>{item.label}</Option>
+                                    )
+                                })}
+                            </Select>
+                        </div>
+                        <div className="li1">
+                            <span className="span0">制单</span>
+                            <Select value={this.state.touching} onChange={(e)=>{this.setState({touching: e})}} allowClear className="input0">
+                                {this.state.touchingList.map((item)=>{
+                                    return(
+                                        <Option value={item.value}>{item.label}</Option>
+                                    )
+                                })}
+                            </Select>
+                        </div>
+                        <div className="li1">
+                            <span className="span0">入库状态</span>
+                            <Select value={this.state.inventoryStatus} onChange={(e)=>{this.setState({inventoryStatus: e})}} allowClear className="input0">
+                                {this.state.inventoryStatusList.map((item)=>{
+                                    return(
+                                        <Option value={item.value}>{item.label}</Option>
+                                    )
+                                })}
+                            </Select>
+                        </div>
+                        <div className="li1 li01">
+                            <span className="span0">日期</span>
+                            <RangePicker showTime className="input0" allowClear placeholder="" locale={locale} onChange={this.dateTime.bind(this)}
+                                value={
+                                    this.state.startTime? [moment(this.state.startTime, 'YYYY-MM-DD HH:mm:ss'), moment(this.state.endTime, 'YYYY-MM-DD HH:mm:ss')] : ''
+                                }/>
+                        </div>
+                        <div className="placeBtn">
+                            <button className="searchs" onClick={this.searchMethods.bind(this)}>查询</button>
+                        </div>
+                    </div>
+                    <div className="bg">
+                        <button className="searchs" onClick={this.add.bind(this)}>新增</button>
+                        <button className="searchs" onClick={this.clearInput.bind(this)}>清空</button>
+                    </div>
+                    <div className="placeTable">
+                        <Table pagination={false} dataSource={this.state.dataSource}>
+                            <Column title="序号" align="center" key="index" dataIndex="index" width="100px" render={(text, record, index)=>(
+                                <span>{(this.state.currentPage-1)*this.state.pageSize+index+1}</span>
+                            )}/>
+                            <Column title="日期" dataIndex="orderName" key="orderName" align="center"/>
+                            <Column title="供应商" dataIndex="supplierName" key="supplierName" align="center"/>
+                            <Column title="订单编码" dataIndex="purchasePrice" key="purchasePrice" align="center" render={(text)=>(
+                                <span>{text / 100}</span>
+                            )}/>
+                            <Column title="金额" dataIndex="createdName" key="createdName" align="center"/>
+                            <Column title="制单" dataIndex="modifiedTime" key="modifiedTime" align="center"/>
+                            <Column title="审核" dataIndex="modifiedTime" key="modifiedTime" align="center"/>
+                            <Column title="入库状态" dataIndex="modifiedTime" key="modifiedTime" align="center"/>
+                            <Column title="操作" align="center" key="records" dataIndex="records"
+                                render={(text, record) => (
+                                    <Space size="large">
+                                        <span key={"changes"} style={record.status==0?{display: "block"}:{display: 'none'}} onClick={this.changes.bind(this, record)} className="changes">编辑</span>
+                                        <span key={"deletes"} style={record.status==0?{display: "block"}:{display: 'none'}} onClick={this.deletesTable.bind(this, record)} className="changes">删除</span>
+                                        <span key={"git"} onClick={this.checks.bind(this, record)} className="deletes">审核</span>
+                                        <span key={"details"} onClick={this.details.bind(this, record)} className="details span11">查看</span>
+                                    </Space>
+                                )}
+                            />
+                        </Table>
+                    </div>
+                    <div className="placePagination">
+                        <Pagination showTotal={()=>`共 ${this.state.pageTotle} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotle} showSizeChanger={false}/>
+                    </div>
+
+                    <Modal title={this.state.msg} width="90%" footer={null} getContainer={false} closable={false}  visible={this.state.visible} centered={true}>
+                        <div className="modal1">
+                            <div className="div3">
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">*订单编码</span>
+                                        <Input allowClear disabled value={this.state.orderCode} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">*供应商</span>
+
+                                    </li>
+                                </ul>
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">*送货日期</span>
+                                        <DatePicker onChange={this.delivery.bind(this)} className={"input3"} locale={locale} value={
+                                            this.state.dateStrings ? moment(this.state.dateStrings, 'YYYY-MM-DD'): ""
+                                        }/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">*部门</span>
+                                        <Select className={"input3"} onChange={
+                                            (e)=>{
+                                                // this.setState({supplierId: e,modalData: [],handleData: []}); this.modalTableList1(e);
+                                            }
+                                        } value={this.state.supplierId} disabled={this.state.flag==3?true:false} filterOption={(input, option) =>
+                                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                        } showSearch>
+                                            {
+                                                this.state.supplierList.map((item, index)=>{
+                                                    return(
+                                                        <Option value={item.id} key={index}>{item.supplierName}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </li>
+                                </ul>
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">*业务员</span>
+                                        <Select className={"input3"} onChange={
+                                            (e)=>{
+                                                // this.setState({supplierId: e,modalData: [],handleData: []}); this.modalTableList1(e);
+                                            }
+                                        } value={this.state.supplierId} disabled={this.state.flag==3?true:false} filterOption={(input, option) =>
+                                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                        } showSearch>
+                                            {
+                                                this.state.supplierList.map((item, index)=>{
+                                                    return(
+                                                        <Option value={item.id} key={index}>{item.supplierName}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </li>
+                                </ul>
+                                <div className="placeChangeTable">
+                                    <Table pagination={false} dataSource={this.state.modalData} locale={{emptyText: '暂无数据'}}>
+                                        <Column title="" align="center" key="records" dataIndex="records" width={120}
+                                            render={(text, record) => (
+                                                <>
+                                                    <span className="span_img1 span_img" onClick={this.addModalData.bind(this)}>+</span>
+                                                    <span className="span_img2 span_img" onClick={this.subtraction.bind(this, record)}>-</span>
+                                                </>
+                                            )}
+                                        />
+                                        <Column title="物料编码" dataIndex="name1" key="name1" align="center" render={(text, record)=>(
+                                            <>
+                                                <Search enterButton="选择" size="middle" loading={false} value={text} onChange={(e)=>{
+                                                    this.state.modalData.forEach((item)=>{
+                                                        if(item.id == record.id) {
+                                                            item.name1 = e.target.value
+                                                            this.setState({
+                                                                modalData: this.state.modalData
+                                                            })
+                                                        }
+                                                    })
+                                                }}  onSearch={()=>{
+                                                    this.setState({visible1: true})
+                                                }}/>
+                                            </>
+                                        )}/>
+                                        <Column title="物料名称" dataIndex="name2" key="name2" align="center"/>
+                                        <Column width={200} title="周转物类型" dataIndex="name3" key="name3" align="center" render={(text, record)=>(
+                                            <>
+                                                <Select style={{width: '100%', textAlign: "left"}} value={this.state.materialTypes} onChange={(e)=>{this.setState({materialTypes: e})}}>
+                                                    {this.state.materialTypesList.map((item)=>{
+                                                        return(
+                                                            <Option value={item.value}>{item.label}</Option>
+                                                        )
+                                                    })}
+                                                </Select>
+                                            </>
+                                        )}/>
+                                        <Column title="箱数" dataIndex="name4" key="name4" align="center" render={(text, record)=>(
+                                            <>
+                                                <InputNumber value={text} onChange={(e)=>{
+                                                    this.state.modalData.forEach((item)=>{
+                                                        if(item.id == record.id) {
+                                                            item.name4 = e;
+                                                            this.setState({modalData: this.state.modalData})
+                                                        }
+                                                    })
+                                                    this.initTableData("name4");
+                                                }} />
+                                            </>
+                                        )}/>
+                                        <Column title="桶数" dataIndex="name5" key="name5" align="center"/>
+                                        <Column title="单位" dataIndex="name6" key="name6" align="center"/>
+                                        <Column title="单位净重" dataIndex="name7" key="name7" align="center"/>
+                                        <Column title="重量" dataIndex="name8" key="name8" align="center"/>
+                                        <Column title="综合单位数量" dataIndex="name9" key="name9" align="center"/>
+                                        <Column title="单价" dataIndex="name10" key="name10" align="center"/>
+                                        <Column title="金额" dataIndex="name11" key="name11" align="center"/>
+                                        <Column title="备注" dataIndex="name12" key="name12" align="center"/>
+                                        <Column title="规格" dataIndex="name13" key="name13" align="center"/>
+                                        <Column title="库存" dataIndex="name14" key="name14" align="center"/>
+                                    </Table>
+                                </div>
+                                <ul className="ul1" style={{marginTop: '40PX'}}>
+                                    <li className="li1">
+                                        <span className="span1">*制单</span>
+                                        <DatePicker onChange={this.delivery.bind(this)} className={"input3"} locale={locale} value={
+                                            this.state.dateStrings ? moment(this.state.dateStrings, 'YYYY-MM-DD'): ""
+                                        }/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">*日期</span>
+
+                                    </li>
+                                </ul>
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">*审核</span>
+                                        <DatePicker onChange={this.delivery.bind(this)} className={"input3"} locale={locale} value={
+                                            this.state.dateStrings ? moment(this.state.dateStrings, 'YYYY-MM-DD'): ""
+                                        }/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">*审核日期</span>
+
+                                    </li>
+                                </ul>
+                                <div className="div7" style={this.state.isShow?{display: 'block'}:{display: 'none'}}>
+                                    <span className="span7"></span>
+                                    <ol className="ol1">
+                                        <div className="olDiv">
+                                            <li className="li4">品种</li>
+                                            <li className="li4">规格</li>
+                                            <li className="li4">等级</li>
+                                            <li className="li4">桶数</li>
+                                            <li className="li4">单价(元)</li>
+                                            <li className="li4">单桶重量(kg)</li>
+                                        </div>
+                                    </ol>
+                                    <ol className="ol1">
+                                        {
+                                            this.state.checklist.map((item)=>{
+                                                return(
+                                                    <div className="olDiv" key={item.id}>
+                                                        <li className="li4">{item.variety}</li>
+                                                        <li className="li4">{item.standard}</li>
+                                                        <li  className="li4">{item.level}</li>
+                                                        <li  className="li4">{item.number}</li>
+                                                        <li className="li4">
+                                                            <InputNumber allowClear value={item.unitPrice} onChange={(e)=>{
+                                                                this.state.checklist.forEach((itemArr)=>{
+                                                                    if(itemArr.id == item.id) {
+                                                                        itemArr.unitPrice = e;
+                                                                    }
+                                                                    this.setState({
+                                                                        unitPrice: e
+                                                                    })
+                                                                })
+                                                            }}/>
+                                                        </li>
+                                                        <li className="li4">
+                                                            <InputNumber allowClear value={item.netWeight} onChange={(e)=>{
+                                                                this.state.checklist.forEach((itemArr)=>{
+                                                                    if(itemArr.id == item.id) {
+                                                                        itemArr.netWeight = e;
+                                                                    }
+                                                                    this.setState({
+                                                                        netWeight: e
+                                                                    })
+                                                                })
+                                                            }}/>
+                                                        </li>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="div4">
+                            <li className="li4">
+                                <Button className="btn4" type="danger" onClick={()=>{this.setState({visible: false});this.initData(this.state.currentPage)}}>取消</Button>
+                            </li>
+                            <li className="li4" style={this.state.flag==1 && this.state.isShow?{display: 'block'}:{display: 'none'}}>
+                                <Button className="btn4" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
+                            </li>
+                        </div>
+                    </Modal>
+
+                    <Modal title="选择物料" width="100%" footer={null} getContainer={false} closable={false}  visible={this.state.visible1} centered={true}>
+                        <div className="modal11 modal1">
+                            <div className="modalTop">
+                                <div className="modalTop_left">
+                                    <Tree
+                                        showLine={true}
+                                        showIcon={true}
+                                        defaultExpandedKeys={['0-0-0']}
+                                        onSelect={this.onSelect.bind(this)}
+                                        treeData={this.state.treeData}
+                                    />
+                                </div>
+                                <div className="modalTop_right">
+
+                                </div>
+                            </div>
+                            <div className="modalBottom">
+
+                            </div>
+                        </div>
+                        <div className="div4">
+                            <li className="li4">
+                                <Button className="btn4" type="danger" onClick={()=>{this.setState({visible1: false})}}>取消</Button>
+                            </li>
+                            <li className="li4">
+                                <Button className="btn4" type="primary" onClick={this.handleOk1.bind(this)}>确定</Button>
+                            </li>
+                        </div>
+                    </Modal>
+                </div>
+            </div>
+        )
+    }
+    initData(currentPage) {
+        let params = {
+            currentPage,
+            pageSize: this.state.pageSize,
+            orderName: this.state.orderName,
+            supplierName: this.state.supplierName
+        };
+        Axios.post('/self/erp/purchaseOrder/queryPurchaseOrder', params).then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                if(res.data.data.purchaseOrders && res.data.data.purchaseOrders.length) {
+                    res.data.data.purchaseOrders.forEach((item)=>{
+                        item.key = item.id;
+                    })
+                }
+                this.setState({
+                    dataSource: res.data.data.purchaseOrders,
+                    pageTotle: res.data.data.num
+                })
+            }else{
+                this.setState({
+                    dataSource: [],
+                    pageTotle: 0
+                })
+            }
+        })
+    }
+    onSelect(selectedKeys, e) {
+        console.log(selectedKeys)
+        console.log(e)
+    }
+    clearInput() {
+        this.setState({
+            inventoryStatus: "",
+            distributor: "",
+            touching: "",
+            startTime: "",
+            endTime: ""
+        })
+    }
+
+    /**
+     * 统计表格的数据的公共方法
+     * @param str
+     */
+    initTableData(str) {
+        if(str == "name4") {
+            let num4 = 0;
+            this.state.modalData.forEach((item)=>{
+                num4 = num4+Number(item.name4);
+            })
+            console.log(num4)
+            console.log(this.state.modalData);
+        }
+    }
+    delivery(date, dateString) {
+        this.setState({
+            dateStrings: dateString
+        })
+    }
+    searchMethods() {
+        this.setState({
+            currentPage: 1
+        });
+        this.initData(1);
+    }
+
+    /**
+     * 模态框里面的加法按钮
+     * @param row
+     */
+    addModalData() {
+        let str = new Date().getTime();
+        this.state.modalData.push({id: str, name1:"1", name2:"1", name3:"1", name4:"1",name5:"1", name6:"1", name7:"1", name8:"1", name9:"1", name10:"1", name11:"1", name12:"1", name13:"1", name14:"1"});
+        this.setState({
+            modalData: [...this.state.modalData]
+        })
+    }
+
+    /**
+     * 模态框里面的减法按钮
+     * @param row
+     */
+    subtraction(row) {
+        if(this.state.modalData.length > 1) {
+            this.state.modalData.forEach((outItem, index)=>{
+                if(outItem.id == row.id) {
+                    this.state.modalData.splice(index, 1);
+                }
+            });
+            this.setState({
+                modalData: [...this.state.modalData]
+            })
+        }
+    }
+    changes(row) {
+
+    }
+    deletesTable(row) {
+
+    }
+    checks(row) {
+
+    }
+    details(row){
+
+    }
+    changePages(val) {
+        this.setState({
+            currentPage: val
+        });
+        this.initData(val);
+    }
+    changePages1(val) {
+        this.setState({
+            currentPage1: val
+        });
+        this.modalTableList1(this.state.id);
+    }
+    add() {
+        this.setState({
+            visible: true,
+            msg: '新增',
+            handleData: [],
+            supplierId: [],
+            flag: 1,
+            isShow: false
+        });
+        this.row = [];
+        this.purchaseOrderCode();
+        this.levelStart();
+    }
+
+    /**
+     * 查询抽检单列表
+     * @param id
+     */
+    checkList(row) {
+        this.setState({
+            name: row.supplierName,
+            keys: row.id
+        });
+        Axios.post('/self/erp/purchaseOrder/queryRandomCheckSheetById', {id: row.id}).then((res)=>{
+            if(res.data.success) {
+                res.data.data.randomCheckSheet.samplingItems.forEach((item)=>{
+                    item.unitPrice = item.unitPrice / 100;
+                })
+                this.setState({
+                    checklist: res.data.data.randomCheckSheet.samplingItems,
+                    isShow: true
+                })
+            }else{
+                this.setState({
+                    checklist: [],
+                    isShow: false
+                });
+                message.warning(res.data.message);
+            }
+        })
+    }
+    // 查询原谅和等级的下拉框
+    levelStart() {
+        Axios.post('/self/erp/purchasePlan/queryStandardAndLevel').then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                this.setState({
+                    stantIdList: res.data.data.standard,
+                    levelsList: res.data.data.level
+                })
+            }else{
+                this.setState({
+                    stantIdList: [],
+                    levelsList: []
+                })
+            }
+        })
+    }
+    deletes(row) {
+        let that = this;
+        confirm({
+            title: '你确定要继续吗?',
+            icon: <ExclamationCircleOutlined />,
+            content: '',
+            onOk() {
+                let params = {
+                    id: row.id
+                };
+                Axios.post('/self/erp/purchaseOrder/deletePurchaseOrder', params).then((res)=>{
+                    if(res.data.success) {
+                        message.success("成功");
+                        that.initData(that.state.currentPage);
+                    }else{
+                        message.warning(res.data.message);
+                    }
+                })
+            },
+            onCancel() {},
+        });
+    }
+    details(row) {
+        this.setState({
+            visible: true,
+            msg: '详情',
+            handleData: [],
+            supplierId: row.supplierId,
+            flag: 3
+        });
+        this.row = [];
+        this.purchaseOrderCode();
+        // this.levelStart();
+        // this.modalTableList1(row.supplierId);
+        this.initDetail(row.id);
+    }
+
+    /**
+     * 详情数据
+     * @param id
+     */
+    initDetail(id) {
+        Axios.post('/self/erp/purchaseOrder/queryPurchaseOrderById', {id}).then((res)=>{
+            if(res.data.success) {
+                let obj = res.data.data.purchaseOrder;
+                obj.orderStandardVarietyLevels.forEach((item)=>{
+                    item.key = item.id;
+                })
+                this.setState({
+                    pageTotal1: obj.orderStandardVarietyLevels.length
+                })
+            }else{
+                this.setState({
+                    pageTotal1: 0
+                })
+            }
+        })
+    }
+    handleOk() {
+        this.state.checklist.forEach((item)=>{
+            item.unitPrice = item.unitPrice * 100;
+        });
+        let params = {
+            supplierId: this.state.supplierId,
+            randomCheckSheetId: this.state.keys,
+            orderStandardVarietyLevels: this.state.checklist,
+            supplierName: this.state.name
+        };
+        Axios.post('/self/erp/purchaseOrder/addPurchaseOrder', params).then((res)=>{
+            if(res.data.success) {
+                message.success("操作成功");
+                this.modalTableList1(this.state.id);
+                this.setState({
+                    isShow: false
+                })
+            }else{
+                message.warning(res.data.message);
+                this.setState({
+                    isShow: true
+                })
+            }
+        })
+    }
+    handleOk1() {
+        if(this.row && this.row.length) {
+            this.row.forEach((item)=>{
+                item.unitPrice = item.unitPrice;
+            })
+        }
+        let params = {
+            supplierId: this.state.supplierId,
+            qualityCheckSheetIds: this.state.handleData,
+            purchaseOrderSingleSheets: this.row,
+            orderCode: this.state.orderCode
+        };
+        Axios.post('/self/erp/purchaseOrder/addPurchaseOrder', params).then((res)=>{
+            if(res.data.success) {
+                message.success("成功");
+                this.setState({
+                    visible: false,
+                    visible1: false
+                });
+                this.initData(this.state.currentPage);
+            }else{
+                message.warning(res.data.message);
+            }
+        })
+    }
+    // 模态框里面的表格-复选框
+    changeTableSelstor(selectedRowKeys, selectedRows) {
+        this.setState({
+            handleData: selectedRowKeys,
+            selectedRows
+        })
+    }
+    // 模态框表格数据
+    modalTableList1(id) {
+        this.setState({
+            id
+        });
+        let params = {
+            supplierId: id,
+            currentPage: this.state.currentPage1,
+            pageSize: this.state.pageSize1
+        };
+        Axios.post('/self/erp/purchaseOrder/queryRandomCheckSheet', params).then((res)=>{
+            if(res.data.success) {
+                if(res.data.data.randomCheckSheets && res.data.data.randomCheckSheets.length) {
+                    res.data.data.randomCheckSheets.forEach((item)=>{
+                        item.key = item.id;
+                    })
+                }
+                this.setState({
+                    pageTotal1: res.data.data.num
+                });
+            }else{
+                this.setState({
+                    pageTotal1: 0
+                })
+            }
+        })
+    }
+    // 采购单编码
+    purchaseOrderCode() {
+        Axios.post('/self/erp/purchaseOrder/generatePurchaseOrderCode').then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    orderCode: res.data.data
+                })
+            }else{
+                this.setState({
+                    orderCode: ""
+                })
+            }
+        })
+    }
+    // 供应商下拉框
+    banList() {
+        Axios.post('/self/erp/purchaseTask/querySupplier').then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    supplierList: res.data.data.suppliers
+                })
+            }else{
+                this.setState({
+                    supplierList: []
+                })
+            }
+        })
+    }
+    dateTime(date, dateString) {
+        console.log(date);
+        console.log(dateString);
+        if(dateString[0]) {
+            this.setState({
+                startTime: dateString[0],
+                endTime: dateString[1]
+            })
+        }else{
+            this.setState({
+                startTime: "",
+                endTime: ""
+            })
+        }
+    }
+    componentDidMount() {
+        this.initData(this.state.currentPage);
+        this.banList();
+    }
+}
+export default PurchaseOrder;

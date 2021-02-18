@@ -1,0 +1,152 @@
+#storeManagement{
+  height: 100%;
+  .storeManagement{
+    height: 100%;
+    display: flex;
+    .dictionaryLeft{
+      width: 200px;
+      //overflow: auto;
+      height: 100%;
+      padding: 0 5px 6px 12px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      .innerDiv{
+        background: #fff;
+        height: 100%;
+        .dictType{
+          font-size: 20px;
+          text-align: center;
+          padding: 10px 0 15px 0;
+          background-image: -webkit-linear-gradient(left, #3073FE, #7F7EED);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          -moz-text-fill-color: transparent;
+          text-fill-color: transparent;
+        }
+
+      }
+    }
+    .dictionaryRight{
+      flex: 1;
+      height: 100%;
+      padding: 0 12px 6px 6px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      .innerRight{
+        .btn{
+          text-align: right;
+          padding-top: 20px;
+          padding-right: 20px;
+        }
+        background: #fff;
+        height: 100%;
+        .ul1, .ol1{
+          overflow: hidden;
+          padding-top: 30px;
+          .li1{
+            float: left;
+            width: 50%;
+            overflow: hidden;
+            .span1{
+              display: block;
+              float: left;
+              width: 80px;
+              text-align: right;
+              padding: 5px 4px 0 0;
+            }
+            .input1{
+              float: left;
+              width: 80%;
+            }
+            .input2{
+              float: left;
+              margin: 4px 0 0 0px;
+            }
+          }
+        }
+        .ol1{
+          padding-top: 10px;
+        }
+        .div4{
+          padding-top: 60px;
+          display: flex;
+          justify-content: space-around;
+          .li4{
+
+            .btn4{
+
+            }
+          }
+        }
+      }
+    }
+    .modal1{
+      .div3{
+        .ul1{
+          overflow: hidden;
+          .li1{
+            float: left;
+            width: 47%;
+            display: flex;
+            .span1{
+              display: block;
+              width: 70px;
+              padding-top: 5px;
+              padding-right: 6px;
+              text-align: right;
+            }
+            .input3{
+              flex: 1;
+            }
+            input4{
+              position: relative;
+              top: 4px;
+            }
+          }
+          .li10{
+            margin-top: 30px;
+          }
+        }
+      }
+      .rawMaterial{
+        padding-top: 20px;
+        .madleDeletes{
+          color: #ff4d4f;
+          text-decoration:underline;
+          cursor: pointer;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+        }
+      }
+      .sendDuplicate{
+        margin-top: 20px;
+        .span6{
+          padding-right: 10px;
+        }
+        .icons{
+          font-size: 40px;
+          cursor: pointer;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+        }
+      }
+    }
+    .div4{
+      padding-top: 30px;
+      display: flex;
+      justify-content: space-around;
+      .li4{
+
+        .btn4{
+
+        }
+      }
+    }
+  }
+}

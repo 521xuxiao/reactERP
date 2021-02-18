@@ -1,0 +1,239 @@
+#home2{
+    height: 100%;
+    .home2{
+        height: 100%;
+        overflow: hidden;
+        padding: 0 1rem 1rem 1rem;
+        box-sizing: border-box;
+        ol{margin-bottom: 0}
+        div{margin-bottom: 0}
+        .home2_left{
+            float: left;
+            height: 100%;
+            width: 42%;
+            padding-right: .5rem;
+            box-sizing: border-box;
+            .home2_left_inner{
+                height: 100%;
+                .home2_left_inner_top{
+                    height: 20%;
+                    padding-bottom: .5rem;
+                    box-sizing: border-box;
+                    .home2_left_inner_top_inner{
+                        height: 100%;
+                        background: url("../../common/img/tree.png") no-repeat 0 0;
+                        background-size: 100% 100%;
+                        display: flex;
+                        .home2_left_inner_top_inner_left{
+                            flex: 1;
+                            height: 100%;
+                            padding: 1rem;
+                            box-sizing: border-box;
+                            display: flex;
+                            .home2_left_inner_top_inner_left_left{
+                                flex: 1;
+                                .home2_left_inner_top_inner_left_left_top{
+                                    height: 50%;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    font-size: 2rem;
+                                    color: #fff;
+                                }
+                                .home2_left_inner_top_inner_left_left_bottom{
+                                    height: 50%;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    .home2_left_inner_top_inner_left_left_bottom_left_content{
+                                        font-family: UnidreamLED;
+                                        color: #FFE535;
+                                        font-size: 4.8rem;
+                                    }
+                                    .home2_left_inner_top_inner_left_left_bottom_left_cool{
+                                        color: #fff;
+                                        font-size: 1.8rem;
+                                        position: relative;
+                                        top: .8rem;
+                                        left: 1rem;
+                                    }
+                                }
+                            }
+                            .home2_left_inner_top_inner_left_right{
+                                flex: 1;
+                                .home2_left_inner_top_inner_left_right_top{
+                                    height: 50%;
+                                }
+                                .home2_left_inner_top_inner_left_right_bottom{
+                                    height: 50%;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    font-size: 2.4rem;
+                                    color: #F03F3F;
+                                    .home2_left_inner_top_inner_left_right_bottom_span2{
+                                        display: block;
+                                        width: 2.2rem;
+                                        height: 2.9rem;
+                                        background: url("../../common/img/xiangshang.png") no-repeat 0 0;
+                                        background-size: 100% 100%;
+                                        margin-left: 1rem;
+                                    }
+                                }
+                            }
+                        }
+                        .home2_left_inner_top_inner_right{
+                            flex: 1;
+                            height: 100%;
+                            padding: 1rem;
+                            box-sizing: border-box;
+                        }
+                    }
+                }
+                .home2_left_inner_bottom{
+                    height: 80%;
+                    padding-top: .5rem;
+                    box-sizing: border-box;
+                    .home2_left_inner_bottom_inner{
+                        height: 100%;
+                        background: url("../../common/img/tree.png") no-repeat 0 0;
+                        background-size: 100% 100%;
+                        padding: 1rem;
+                        box-sizing: border-box;
+                        position: relative;
+                        .home2_left_inner_bottom_inner_box{
+                            position: absolute;
+                            left: 3rem;
+                            top: 2rem;
+                            .home2_left_inner_bottom_inner_box_collun{
+                                display: inline-block;
+                                width: .4rem;
+                                height: 1.6rem;
+                                background: #00BEF6;
+                            }
+                            .home2_left_inner_bottom_inner_box_title{
+                                display: inline-block;
+                                font-size: 1.8rem;
+                                color: #00BEF6;
+                                margin-left: 1rem;
+                                position: relative;
+                                top: -.1rem;
+                            }
+                        }
+                        .home2_left_inner_bottom_inner_box_echarts{
+                            height: 100%;
+                        }
+                    }
+                }
+            }
+        }
+        .home2_center{
+            float: left;
+            height: 100%;
+            width: 38%;
+            padding: 0 .5rem;
+            box-sizing: border-box;
+            .home2_center_inner{
+                height: 100%;
+                .home2_center_inner_top{
+                    height: 40%;
+                    padding-bottom: .5rem;
+                    box-sizing: border-box;
+                    .home2_center_inner_top_inner{
+                        height: 100%;
+                        background: url("../../common/img/tree.png") no-repeat 0 0;
+                        background-size: 100% 100%;
+                        padding: 1rem;
+                        box-sizing: border-box;
+                        .home2_center_inner_top_inner_echarts{
+                            height: 100%;
+                        }
+                    }
+                }
+                .home2_center_inner_middle{
+                    height: 30%;
+                    padding: .5rem 0;
+                    box-sizing: border-box;
+                    .home2_center_inner_middle_inner{
+                        height: 100%;
+                        background: url("../../common/img/tree.png") no-repeat 0 0;
+                        background-size: 100% 100%;
+                        padding: 1rem;
+                        box-sizing: border-box;
+                        .home2_center_inner_middle_inner_ul1{
+                            display: flex;
+                            justify-content: space-around;
+                            height: 50%;
+                            .home2_center_inner_middle_inner_ul1_li1{
+                                height: 100%;
+                                width: 100%;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                .home2_center_inner_middle_inner_ul1_li1_span1{
+                                    width: 80%;
+                                    height: 60%;
+                                    background: url("../../common/img/zhengfaxing.png") no-repeat 0 0;
+                                    background-size: 100% 100%;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    color: #fff;
+                                    font-size: 2.4rem;
+                                }
+                                .home2_center_inner_middle_inner_ul1_li1_span2{
+                                    background: url("../../common/img/weiman.png") no-repeat 0 0;
+                                    background-size: 100% 100%;
+                                }
+                            }
+                        }
+                    }
+                }
+                .home2_center_inner_bottom{
+                    height: 30%;
+                    padding-top: .5rem;
+                    box-sizing: border-box;
+                    .home2_center_inner_bottom_inner{
+                        height: 100%;
+                        background: url("../../common/img/tree.png") no-repeat 0 0;
+                        background-size: 100% 100%;
+                    }
+                }
+            }
+        }
+        .home2_right{
+            float: left;
+            width: 20%;
+            height: 100%;
+            padding-left: .5rem;
+            box-sizing: border-box;
+            .home2_right_inner{
+                height: 100%;
+                background: url("../../common/img/tree.png") no-repeat 0 0;
+                background-size: 100% 100%;
+                .home2_center_inner_middle_inner_ul1{
+                    display: flex;
+                    height: 12.5%;
+                    .home2_center_inner_middle_inner_ul1_li1{
+                        flex: 1;
+                        height: 100%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        .home2_center_inner_middle_inner_ul1_li1_span1{
+                            width: 80%;
+                            height: 60%;
+                            background: url("../../common/img/weiman.png") no-repeat 0 0;
+                            background-size: 100% 100%;
+                            color: #fff;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            font-size: 2.4rem;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

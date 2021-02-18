@@ -1,0 +1,61 @@
+#app{
+  height: 100%;
+  .header{
+    position: fixed;
+    height: 61px;
+    line-height: 61px;
+    width: 100%;
+    background: url("./common/img/top.png") no-repeat 0 0;
+    -webkit-background-size: 100% 100%;
+    background-size: 100% 100%;
+    padding: 0 25px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    .header_left{
+      float: left;
+    }
+    .header_right{
+      float: right;
+      .ant-dropdown-link{
+        color: #fff;
+      }
+    }
+  }
+  .main{
+    padding-top: 61px;
+    display: flex;
+    .main_left{
+      width: 200px;
+      overflow: auto;
+    }
+    .main_right{
+      flex: 1;
+      .ant-tabs-nav-wrap{
+        overflow: auto;
+      }
+      .ant-tabs-nav{
+        padding: 20px 10px 0 10px;
+      }
+      .ant-tabs-tab{
+        height: 30px;
+        border-radius: 15px;
+        margin: 0 10px;
+        background: #fff;
+      }
+      .ant-tabs-tab-active{
+        border-bottom: 1px solid #F0F0F0;
+      }
+    }
+  }
+  .ant-tabs-top > .ant-tabs-nav::before, .ant-tabs-bottom > .ant-tabs-nav::before, .ant-tabs-top > div > .ant-tabs-nav::before, .ant-tabs-bottom > div > .ant-tabs-nav::before{
+    border-bottom: 0;
+  }
+  .ant-tabs-tab .ant-tabs-tab-remove .anticon{
+    background: #409eff;
+    border-radius: 50%;
+    color: #fff;
+    padding: 3px;
+    font-size: 8px;
+  }
+}

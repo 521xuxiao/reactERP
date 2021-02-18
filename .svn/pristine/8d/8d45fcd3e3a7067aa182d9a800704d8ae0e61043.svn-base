@@ -1,0 +1,324 @@
+import React, {Component} from 'react';
+import {Input, Select, Table, Space, Pagination, Modal,DatePicker,Button,InputNumber,Cascader,message} from 'antd';
+import Axios from 'axios';
+import 'moment/locale/zh-cn';
+import locale from 'antd/es/date-picker/locale/zh_CN';
+import './productionManagement.scss';
+const {Column}  = Table;
+const {Option}  = Select;
+class ProductionManagement extends Component{
+    constructor(props) {
+        super(props);
+        this.id = "";
+        this.state = {
+            time: '',
+            dataSource: [],
+            currentPage: 1,
+            pageSize: 10,
+            pageTotle: 0,
+
+            msg: '',
+            flag: 1,
+            visible: false,
+
+
+            task: '', taskList: [],
+            taskFactory: '',   timeRacge: '',    taskPerson: '',
+            modalData: [],
+            obj: {}
+        }
+    }
+    render() {
+        return(
+            <div id="productionManagement">
+                <div className="productionManagement">
+                    <div className="placeSearch">
+                        <span className="span1">创建时间</span>
+                        <DatePicker className="input1" locale={locale} onChange={(e, time)=>{this.setState({time})}} />
+                        <button className="searchs" onClick={this.searchMethods.bind(this)}>查询</button>
+                    </div>
+                    <div className="bg">
+                        <button className="searchs" onClick={this.add.bind(this)}>新增</button>
+                        <button className="searchs searchs1" onClick={this.donload.bind(this)}>导出</button>
+                    </div>
+                    <div className="placeTable">
+                        <Table pagination={false} dataSource={this.state.dataSource}>
+                            <Column title="序号" align="center" key="index" dataIndex="index" width="100px" render={(text, record, index)=>(
+                                <span>{(this.state.currentPage-1)*this.state.pageSize+index+1}</span>
+                            )}/>
+                            <Column title="管理名称" dataIndex="manageName" id="manageName" align="center"/>
+                            <Column title="创建时间" dataIndex="createdTime" id="createdTime" align="center"/>
+                            <Column title="车间" dataIndex="workroomName" id="workroomName" align="center"/>
+                            <Column title="质检人" dataIndex="checkmanName" id="checkmanName" align="center"/>
+                            <Column title="任务" dataIndex="taskName" id="taskName" align="center"/>
+                            <Column title="状态" dataIndex="inbound" id="inbound" align="center" render={(text)=>(
+                                <div>
+                                    <span>{text==0?"未入库" : text==1?"已入库":text==2?"产品数量有错，退回生产":""}</span>
+                                </div>
+                            )}/>
+                            <Column title="操作" align="center" id="records" dataIndex="records" width="100px"
+                                render={(text, record) => (
+                                    <Space size="large">
+                                        <span key={"changes"} onClick={this.changes.bind(this, record)} className="changes">编辑</span>
+                                        {/*<span key={"deletes"} onClick={this.deletes.bind(this, record)} className="deletes">删除</span>*/}
+                                        {/*<span key={"check"} onClick={this.check.bind(this, record)} className="check">审核</span>*/}
+                                    </Space>
+                                )}
+                            />
+                        </Table>
+                    </div>
+                    <div className="placePagination">
+                        <Pagination showTotal={()=>`共 ${this.state.pageTotle} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotle} />
+                    </div>
+
+                    <Modal title={this.state.msg} width="60%" footer={null} getContainer={false} closable={false}  visible={this.state.visible} centered={true}>
+                        <div className="modal1">
+                            <div className="div3">
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">*生产任务</span>
+                                        <Select disabled={this.state.flag==1?false:true} value={this.state.task} style={{width: '100%'}} onChange={(e)=>{
+                                            this.setState({task:e});
+                                            this.modalList(e);
+                                        }} className={"input3"}>
+                                            {
+                                                this.state.taskList.map((item, index)=>{
+                                                    return(
+                                                        <Option value={item.id} key={index}>{item.taskName}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">车间</span>
+                                        <Input allowClear disabled value={this.state.taskFactory} className={"input3"}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">*工期</span>
+                                        <Input allowClear disabled value={this.state.timeRacge} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">*质检人</span>
+                                        <Input allowClear disabled value={this.state.taskPerson} className={"input3"}/>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div className="rawMaterial">
+                                <div className="placeChangeTable">
+                                    <Table pagination={false} dataSource={this.state.modalData}>
+                                        <Column title="成品名称" dataIndex="productName" id="productName" align="center"/>
+                                        <Column title="任务量" dataIndex="taskLoad" id="taskLoad" align="center" render={(text, record)=>(
+                                            <InputNumber disabled min={0} style={{width: '60%'}} value={text} onChange={(e)=>{
+                                                if(this.state.modalData && this.state.modalData.length) {
+                                                    this.state.modalData.forEach((item)=>{
+                                                        if(item.id == record.id) {
+                                                            item.taskLoad = e;
+                                                            this.setState({
+                                                                taskLoad: e
+                                                            })
+                                                        }
+                                                    })
+                                                }
+                                            }}/>
+                                        )}/>
+                                        <Column title="剩余任务量" dataIndex="remainingLoad" id="remainingLoad" align="center"/>
+                                        <Column title="今日产量" dataIndex="todayProduction" id="todayProduction" align="center" render={(text, record)=>(
+                                            <InputNumber min={0} style={{width: '60%'}} value={text} onChange={(e)=>{
+                                                console.log(record);
+                                                if(this.state.modalData && this.state.modalData.length) {
+                                                    this.state.modalData.forEach((tems)=>{
+                                                        if(tems.id == record.id) {
+                                                            tems.todayProduction = e;
+                                                            this.setState({
+                                                                todayProduction: e
+                                                            })
+                                                        }
+                                                    })
+                                                }
+                                            }}/>
+                                        )}/>
+                                    </Table>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="div4">
+                            <li className="li4">
+                                <Button className="btn4" type="danger" onClick={()=>{this.setState({visible: false})}}>取消</Button>
+                            </li>
+                            <li className="li4">
+                                <Button className="btn4" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
+                            </li>
+                        </div>
+                    </Modal>
+                </div>
+            </div>
+        )
+    }
+    initData(currentPage){
+        let params = {
+            currentPage,
+            pageSize: this.state.pageSize,
+            createdTime: this.state.time
+        };
+        Axios.post('/self/erp/productManage/queryProductManage', params).then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                this.setState({
+                    dataSource: res.data.data.productManages,
+                    pageTotle: res.data.data.num
+                })
+            }else{
+                this.setState({
+                    dataSource: [],
+                    pageTotle: 0
+                })
+            }
+        })
+    }
+    changePages(val) {
+        this.initData(val);
+        this.setState({
+            currentPage: val
+        })
+    }
+    searchMethods() {
+        this.initData(1);
+        this.setState({
+            currentPage: 1
+        })
+    }
+    donload() {
+
+    }
+    add() {
+        this.taskListMethods();
+        this.setState({
+            visible: true,
+            msg: '新增',
+            flag: 1,
+            task: '',  taskFactory: '',    timeRacge: '',   taskPerson: '',    modalData: []
+        })
+    }
+    changes(row) {
+        this.id = row.id;
+        this.setState({
+            visible: true,
+            msg: '修改',
+            flag: 0,
+            task: row.taskName,
+            taskFactory: row.workroomName,
+        });
+        this.taskListMethods();
+        this.initDataDetail(row.id);
+    }
+    // id查询生产管理的详细数据
+    initDataDetail(id) {
+        let params = {
+            id
+        };
+        Axios.post('/self/erp/productManage/queryProductManageById', params).then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                this.setState({
+                    timeRacge: res.data.data.productManage.workPeriod,
+                    taskPerson: res.data.data.productManage.checkmanName,
+                    modalData: res.data.data.productManage.productManageProductInfos
+                })
+            }else{
+                this.setState({
+                    timeRacge: '',
+                    taskPerson: '',
+                    modalData: []
+                })
+            }
+        })
+    }
+    handleOk() {
+        let params = {
+            taskId: this.state.obj.id,
+            workroomId: this.state.obj.workroomId,
+            workroomName: this.state.obj.workroomName,
+            checkman: this.state.obj.checkman,
+            taskProducts: this.state.modalData,
+        };
+        if(this.state.flag == 1) { // 新增
+            Axios.post('/self/erp/productManage/doProductManage', params).then((res)=>{
+                // console.log(res.data);
+                if(res.data.success) {
+                    message.success("新增成功");
+                    this.setState({
+                        visible: false
+                    });
+                    this.initData(this.state.currentPage);
+                }else{
+                    message.warning(res.data.message);
+                }
+            })
+        }else{
+            let params1 = {
+                id: this.id,
+                productManageProductInfos: this.state.modalData
+            };
+            Axios.post("/self/erp/productManage/updateProductManageById", params1).then((res)=>{
+                if(res.data.success) {
+                    message.success("修改成功");
+                    this.setState({
+                        visible: false
+                    });
+                    this.initData(this.state.currentPage);
+                }else{
+                    message.warning(res.data.message);
+                }
+            })
+        }
+    }
+    componentDidMount() {
+        this.initData(this.state.currentPage);
+    }
+    // 查询生产任务
+    taskListMethods() {
+        Axios.post('/self/erp/productManage/queryProductTask').then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                this.setState({
+                    taskList: res.data.data.productTasks
+                })
+            }else{
+                this.setState({
+                    taskList: []
+                })
+            }
+        })
+    }
+    modalList(id) {
+        Axios.post('/self/erp/productManage/queryProductTaskById', {taskId:id}).then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                if(res.data.data.productTask.taskProducts && res.data.data.productTask.taskProducts.length) {
+                    res.data.data.productTask.taskProducts.forEach((item)=>{
+                        item.todayProduction = null;
+                    })
+                }
+                this.setState({
+                    obj: res.data.data.productTask,
+                    taskFactory: res.data.data.productTask.workroomName,
+                    timeRacge: res.data.data.productTask.startTime+' ----- '+res.data.data.productTask.endTime,
+                    taskPerson: res.data.data.productTask.checkmanName,
+                    modalData: res.data.data.productTask.taskProducts
+                })
+            }else{
+                this.setState({
+                    obj: {},
+                    taskFactory: "",
+                    timeRacge: "",
+                    taskPerson: "",
+                    modalData: []
+                })
+            }
+        })
+    }
+}
+export default ProductionManagement;

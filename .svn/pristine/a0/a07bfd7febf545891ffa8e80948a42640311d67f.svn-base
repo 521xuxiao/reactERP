@@ -1,0 +1,327 @@
+import React, {Component} from 'react';
+import {Button, Table, Space, Pagination, Modal, Input, message,Select,Cascader} from 'antd';
+import Axios from 'axios';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import './deviceSetting.scss';
+const {Column} = Table;
+const {TextArea} = Input;
+const {confirm} = Modal;
+const {Option} = Select;
+class DeviceSetting extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            dataSource: [],
+            currentPage: 1,
+            pageSize: 10,
+            pageTotal: 0,
+
+            deviceName: '',  deviceType: '',  address: [],  personId: '',    personList: [],       info: '',  addressList: [],  IP: '',  port: '',  uniqueness: '',
+            visible: false,
+            msg: '',
+            flag: 1,
+            id: ''
+        }
+    }
+    render() {
+        return(
+            <div id="deviceSetting">
+                <div className="deviceSetting">
+                    <div className="bg">
+                        <button className="searchs" onClick={this.add.bind(this)}>新增</button>
+                    </div>
+                    <div className="placeTable">
+                        <Table pagination={false} dataSource={this.state.dataSource}>
+                            <Column title="序号" align="center" id="index" dataIndex="index" width="100px" render={(text, record, index)=>(
+                                <span>{(this.state.currentPage-1)*this.state.pageSize + index+1}</span>
+                            )}/>
+                            <Column title="设备名称" dataIndex="reader_name" id="reader_name" align="center"/>
+                            <Column title="设备类型" dataIndex="reader_type" id="reader_type" align="center"/>
+                            <Column title="设备地点" dataIndex="ware_house_name" id="ware_house_name" align="center"/>
+                            <Column title="设备状态" dataIndex="status" id="status" align="center" render={(text)=>(
+                                <span>{text==0?"在线":text==1?"掉线":text==2?"待连接":""}</span>
+                            )}/>
+                            <Column title="负责人" dataIndex="name" id="name" align="center"/>
+                            <Column title="备注" dataIndex="note" id="note" align="center"/>
+                            <Column title="操作" align="center" id="records" dataIndex="records"
+                                render={(text, record) => (
+                                    <Space size="large">
+                                        <span key={"changes"} onClick={this.changes.bind(this, record)} className="changes">编辑</span>
+                                        <span key={"deletes"} onClick={this.deletes.bind(this, record)} className="deletes">删除</span>
+                                        <span key={"details"} onClick={this.details.bind(this, record)} className="details span11">详情</span>
+                                    </Space>
+                                )}
+                            />
+                        </Table>
+                    </div>
+                    <div className="placePagination">
+                        <Pagination showTotal={()=>`共 ${this.state.pageTotal} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotal} />
+                    </div>
+
+                    <Modal title={this.state.msg} width="60%" footer={null} getContainer={false} closable={false}  visible={this.state.visible} centered={true}>
+                        <div className="modal1">
+                            <div className="div3">
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">*名称</span>
+                                        <Input allowClear onChange={(e)=>{this.setState({deviceName: e.target.value})}} value={this.state.deviceName} className={"input3"}
+                                               disabled={this.state.flag==3?true:false}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">*型号</span>
+                                        <Input allowClear onChange={(e)=>{this.setState({deviceType: e.target.value})}} value={this.state.deviceType} className={"input3"}
+                                               disabled={this.state.flag==3?true:false}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1 ul2">
+                                    <li className="li1">
+                                        <span className="span1">*IP</span>
+                                        <Input allowClear onChange={(e)=>{this.setState({IP: e.target.value})}} value={this.state.IP} className={"input3"}
+                                               disabled={this.state.flag==3?true:false}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">*port</span>
+                                        <Input allowClear onChange={(e)=>{this.setState({port: e.target.value})}} value={this.state.port} className={"input3"}
+                                               disabled={this.state.flag==3?true:false}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1 ul2">
+                                    <li className="li1">
+                                        <span className="span1">*地点</span>
+                                        <Cascader options={this.state.addressList} value={this.state.address} placeholder="" className="input3" onChange={(e)=>{
+                                            this.setState({address: e})
+                                        }} disabled={this.state.flag==3?true:false}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">*负责人</span>
+                                        <Select  className={"input3"} allowClear onChange={(e)=>{this.setState({personId: e})}} value={this.state.personId}
+                                                 disabled={this.state.flag==3?true:false}>
+                                            {
+                                                this.state.personList.map((item, index)=>{
+                                                    return(
+                                                        <Option value={item.realname+","+item.empno} key={index}>{item.realname}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </li>
+                                </ul>
+                                <ul className="ul1 ul2">
+                                    <li className="li1">
+                                        <span className="span1">*唯一标识</span>
+                                        <Input allowClear onChange={(e)=>{this.setState({uniqueness: e.target.value})}} value={this.state.uniqueness} className={"input3"}
+                                               disabled={this.state.flag==3?true:false}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1 ul2">
+                                    <li className="li11">
+                                        <span className="span1">*备注</span>
+                                        <TextArea rows={4} onChange={(e)=>{this.setState({info: e.target.value})}} value={this.state.info} className={"input4"}
+                                                  disabled={this.state.flag==3?true:false}/>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div className="div4">
+                            <li className="li4">
+                                <Button className="btn4" type="danger" onClick={()=>{this.setState({visible: false})}}>取消</Button>
+                            </li>
+                            <li className="li4" style={this.state.flag==3?{display: 'none'}:{display: 'block'}}>
+                                <Button className="btn4" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
+                            </li>
+                        </div>
+                    </Modal>
+                </div>
+            </div>
+        )
+    }
+    initData(currentPage) {
+        let params = {
+            currentPage,
+            pageSize: this.state.pageSize
+        };
+        Axios.post('/self/erp/rfidCheck/queryReaderConfig', params).then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                this.setState({
+                    dataSource: res.data.data.readerConfigDatas,
+                    pageTotal: res.data.data.num
+                })
+            }else{
+                this.setState({
+                    dataSource: [],
+                    pageTotal: 0
+                })
+            }
+        })
+    }
+    add() {
+        this.setState({
+            visible: true,
+            msg: '新增',
+            flag: 1,
+            deviceName: '',  deviceType: '',  address: [],  personId: '',  info: '',  IP: '',  port: '',  uniqueness: '',
+        })
+    }
+    changes(row) {
+        this.setState({
+            visible: true,
+            msg: '修改',
+            flag: 0,
+            deviceName: row.reader_name,  deviceType: row.reader_type,
+            address: [row.warehouse_area_id, row.ware_house_id],
+            personId: row.name+","+row.emp_no,
+            info: row.note,  IP: row.reader_ip,  port: row.reader_ip,  uniqueness: row.reader_id,
+            id: row.id
+        })
+    }
+    details(row) {
+        this.setState({
+            visible: true,
+            msg: '详情',
+            flag: 3,
+            deviceName: row.reader_name,  deviceType: row.reader_type,
+            address: [row.warehouse_area_id, row.ware_house_id],
+            personId: row.name+","+row.emp_no,
+            info: row.note,  IP: row.reader_ip,  port: row.reader_ip,  uniqueness: row.reader_id,
+            id: row.id
+        })
+    }
+    deletes(row) {
+        let that = this;
+        confirm({
+            title: '你确定要删除吗?',
+            icon: <ExclamationCircleOutlined />,
+            content: '',
+            onOk() {
+                let params = {
+                    id: row.id,
+                    reader_ip: row.reader_ip,
+                    status: row.status,
+                };
+                Axios.post('/self/erp/rfidCheck/deleteReaderConfig', params).then((res)=>{
+                    if(res.data.success) {
+                        message.success("删除成功");
+                        that.initData(that.state.currentPage);
+                    }else{
+                        message.warning(res.data.message);
+                    }
+                })
+            },
+            onCancel() {},
+        });
+    }
+    changePages(val) {
+        this.initData(val);
+        this.setState({
+            currentPage: val
+        })
+    }
+    handleOk() {
+        let str = this.state.address.length==2?this.state.address[1]:"";
+        let ware_house_name = "";
+        if(str) {
+            if(this.state.addressList && this.state.addressList.length) {
+                this.state.addressList.forEach((item)=>{
+                    if(item.children && item.children.length) {
+                        item.children.forEach((innerItem)=>{
+                            if(innerItem.id == str) {
+                                ware_house_name = innerItem.name;
+                            }
+                        })
+                    }
+                })
+            }
+        }
+        let params = {
+            reader_ip: this.state.IP,
+            reader_port: this.state.port,
+            warehouse_area_id: this.state.address.length==2?this.state.address[0]:'',
+            ware_house_id: this.state.address.length==2?this.state.address[1]:"",
+            ware_house_name,
+            name: this.state.personId.indexOf(",")!=-1?this.state.personId.split(",")[0]:"",
+            emp_no: this.state.personId.indexOf(",")!=-1?this.state.personId.split(",")[1]:"",
+            reader_name: this.state.deviceName,
+            reader_type: this.state.deviceType,
+            reader_id: this.state.uniqueness,
+            note: this.state.info
+        };
+        if(this.state.flag==1) {
+            Axios.post("/self/erp/rfidCheck/addReaderConfig", params).then((res)=>{
+                if(res.data.success) {
+                    message.success("成功");
+                    this.setState({
+                        visible: false
+                    });
+                    this.initData(this.state.currentPage);
+                }else{
+                    message.warning(res.data.message);
+                }
+            })
+        }else{
+            params.id = this.state.id;
+            Axios.post("/self/erp/rfidCheck/updateReaderConfig", params).then((res)=>{
+                if(res.data.success) {
+                    message.success("成功");
+                    this.setState({
+                        visible: false
+                    });
+                    this.initData(this.state.currentPage);
+                }else{
+                    message.warning(res.data.message);
+                }
+            })
+        }
+    }
+
+    /**
+     * 负责人下拉框
+     * */
+    personListMethod() {
+        Axios.post("/self/erp/baseinfo/queryUser").then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    personList: res.data.data.users
+                })
+            }else{
+                this.setState({
+                    personList: []
+                })
+            }
+        })
+    }
+    /**
+     * 仓库级联框
+     * */
+    repostory() {
+        Axios.post('/self/erp/baseinfo/queryWarehouse').then((res)=>{
+            if(res.data.success) {
+                if(res.data.data.warehouses && res.data.data.warehouses.length) {
+                    res.data.data.warehouses.forEach((outItem)=>{
+                        outItem.label = outItem.name;
+                        outItem.value = outItem.id;
+                        if(outItem.children && outItem.children.length) {
+                            outItem.children.forEach((innerItem)=>{
+                                innerItem.label = innerItem.name;
+                                innerItem.value = innerItem.id;
+                            })
+                        }
+                    })
+                }
+                this.setState({
+                    addressList: res.data.data.warehouses
+                })
+            }else{
+                this.setState({
+                    addressList: []
+                })
+            }
+        })
+    }
+    componentDidMount() {
+        this.initData(this.state.currentPage);
+        this.repostory();
+        this.personListMethod();
+    }
+}
+export default DeviceSetting;

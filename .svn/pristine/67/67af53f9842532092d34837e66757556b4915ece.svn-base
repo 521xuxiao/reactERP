@@ -1,0 +1,79 @@
+#home4{
+    height: 100%;
+    .home4{
+        height: 100%;
+        .home4_top{
+            height: 40%;
+            margin-bottom: 0;
+            padding: 0 1rem 1rem 1rem;
+            box-sizing: border-box;
+            overflow: hidden;
+            .home4_top_left{
+                float: left;
+                width: 30%;
+                height: 100%;
+                padding-right: .5rem;
+                box-sizing: border-box;
+                .home4_top_left_inner{
+                    height: 100%;
+                    background: url("../../common/img/caigou.png") no-repeat 0 0;
+                    background-size: 100% 100%;
+                }
+            }
+            .home4_top_center{
+                float: left;
+                width: 40%;
+                height: 100%;
+                padding: 0 .5rem;
+                box-sizing: border-box;
+                .home4_top_center_inner{
+                    height: 100%;
+                    background: url("../../common/img/caigou.png") no-repeat 0 0;
+                    background-size: 100% 100%;
+                }
+            }
+            .home4_top_right{
+                float: left;
+                width: 30%;
+                height: 100%;
+                padding-left: .5rem;
+                box-sizing: border-box;
+                .home4_top_right_inner{
+                    height: 100%;
+                    background: url("../../common/img/caigou.png") no-repeat 0 0;
+                    background-size: 100% 100%;
+                }
+            }
+        }
+        .home4_bottom{
+            height: 60%;
+            padding: 0 1rem 1rem 1rem;
+            box-sizing: border-box;
+            overflow: hidden;
+            .home4_bottom_left{
+                float: left;
+                width: 40%;
+                height: 100%;
+                padding-right: .5rem;
+                box-sizing: border-box;
+                .home4_bottom_left_inner{
+                    height: 100%;
+                    background: url("../../common/img/bigBg.png") no-repeat 0 0;
+                    background-size: 100% 100%;
+                }
+            }
+            .home4_bottom_right{
+                float: left;
+                width: 60%;
+                height: 100%;
+                padding-left: .5rem;
+                box-sizing: border-box;
+                .home4_bottom_right_inner{
+                    height: 100%;
+                    background: url("../../common/img/bigBg.png") no-repeat 0 0;
+                    background-size: 100% 100%;
+                }
+            }
+        }
+    }
+}

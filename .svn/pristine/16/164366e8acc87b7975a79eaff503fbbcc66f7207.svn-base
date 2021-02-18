@@ -1,0 +1,22 @@
+#exception{
+    .exception{
+        .ul1{
+            overflow: hidden;
+            padding-left: 20px;
+            .li1{
+                float: left;
+                user-select: none;
+                cursor: pointer;
+                padding: 0 20px;
+                border: 1px solid #409eff;
+            }
+            .li1:last-child{
+                margin-left: 20px;
+            }
+            .active{
+                background: #409eff;
+                color: #fff;
+            }
+        }
+    }
+}

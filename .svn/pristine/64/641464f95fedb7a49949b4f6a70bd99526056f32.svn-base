@@ -1,0 +1,91 @@
+import React, {Component} from 'react';
+import { withRouter, Link } from 'react-router-dom'
+import { Menu } from 'antd';
+import './slider.scss';
+import {
+    createFromIconfontCN,
+    DiffOutlined
+} from '@ant-design/icons';
+const IconFont = createFromIconfontCN({
+    scriptUrl: [
+        '//at.alicdn.com/t/font_1788044_0dwu4guekcwr.js', // icon-javascript, icon-java, icon-shoppingcart (overrided)
+        '//at.alicdn.com/t/font_1788592_a5xf2bdic3u.js', // icon-shoppingcart, icon-python
+    ],
+});
+const { SubMenu } = Menu;
+class Slider extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            defaultActive: '',
+            defaultSelectedKeys: ['1-1'],  // 默认高亮
+            defaultOpenKeys: ['1'],   // 默认打开
+            openKeys: [],
+            menuList: []
+        }
+    }
+    render() {
+        return(
+            <div className="slider" id="slider">
+                <Menu onClick={this.handleClick.bind(this)} style={{ width: "100%" }} defaultSelectedKeys={this.state.defaultSelectedKeys} defaultOpenKeys={this.state.defaultOpenKeys} mode="inline">
+                    {this.renderItem(this.state.menuList)}
+                </Menu>
+            </div>
+        )
+    }
+    renderItem(data){  // 动态渲染侧边导航栏
+        let result = data.map((item,index)=>{
+            if(item.children){
+                return(
+                    <SubMenu title={<span>{item.name}</span>} key={item.key}>
+                        {this.renderItem(item.children)}
+                    </SubMenu>
+                )
+            }else{
+                return(
+                    <Menu.Item key={item.key}>
+                        <Link to={item.path}>
+                            <span>{item.name}</span>
+                        </Link>
+                    </Menu.Item>
+                )
+            }
+        })
+        return result
+    }
+    componentDidMount () {
+        let menuList = [
+            {
+                key: '1', name: '企业采购', children: [
+                    {key: '1-1', name: '采购计划', path: '/app/procurementPlan'},
+                    {key: '1-2', name: '采购任务', path: '/app/purchasingTask'},
+                    {key: '1-3', name: '采购质检单', path: '/app/qualityOrder'},
+                    {key: '1-4', name: '采购订单', path: '/app/purchaseOrder'}
+                ]
+            }
+        ];
+        this.setState({
+            menuList
+        })
+    }
+    componentWillMount() {  // 此方法里面做的刷新页面导航栏保持高亮显示
+        let items = sessionStorage.getItem("menuKey");
+        if(items) {
+            let str = null;
+            if(items.indexOf('-') !== -1) {
+                str = items.split('-')[0]
+            }
+            let defaultSelectedKeys = [items];
+            let defaultOpenKeys = [str];
+            this.setState({
+                defaultSelectedKeys,
+                defaultOpenKeys
+            })
+        }
+    }
+
+    handleClick({item, key}) {
+        sessionStorage.setItem("menuKey", key);
+    }
+}
+export default withRouter(Slider);

@@ -1,0 +1,492 @@
+import React,{Component} from 'react';
+import {Input, Table, Space, message, Pagination, Button, Modal, Cascader, Select, Checkbox, Upload, Radio, DatePicker, TreeSelect} from 'antd';
+import moment from 'moment';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { UploadOutlined } from '@ant-design/icons';
+import 'moment/locale/zh-cn';
+import locale from 'antd/es/date-picker/locale/zh_CN';
+
+import Axios from 'axios';
+import './userBu.scss'
+const {Column} =  Table;
+const {Option} =  Select;
+const { confirm } = Modal;
+class UserBu extends Component{
+    constructor(props) {
+        super(props);
+        this.msg = "";
+        this.id = "";
+        this.state = {
+            name: '',
+            code: '',
+            dataSource: [],
+            treeList: [],
+            currentPage: 1,
+            pageSize: 10,
+            pageTotle: 0,
+            visible: false,
+            flag: 0,
+            nameModal: '',
+            codeModal: '',
+            phoneModal: '',
+            options: [],
+            roleList: [],   roleId: '',
+            responsible: false,
+            imgs: '',
+            optionsArea: [],
+            radioValue: 1,
+            deptId: '',
+            areaId: '',
+            entryTime: undefined,
+            fileList: '',
+            imghost: '',
+            avatar: ''
+        }
+    }
+    render() {
+        return(
+            <div id="userBu">
+                <div className="userBu">
+                    <div className="userBuRight">
+                        <div className="innerRight">
+                            <div className="placeSearch">
+                                <span>姓名</span>
+                                <Input className="input1" allowClear onChange={this.nameChange.bind(this)}/>
+                                <span style={{marginLeft: '40px'}}>工号</span>
+                                <Input className="input1" allowClear onChange={this.codeChange.bind(this)}/>
+                                <button className="searchs" onClick={this.searchMethods.bind(this)}>查询</button>
+                            </div>
+                            <div className="bg">
+                                <button className="searchs" onClick={this.add.bind(this)}>新增</button>
+                            </div>
+                            <div className="placeTable">
+                                <Table pagination={false} dataSource={this.state.dataSource}>
+                                    <Column title="序号" align="center" width="100px" render={(text, record, index)=>(
+                                        <span>{index + (this.state.currentPage-1)*this.state.pageSize+1}</span>
+                                    )}/>
+                                    <Column title="头像" dataIndex="value" key="value" align="center" render={(text, record)=>(
+                                        <img className={"img2"} style={record.avatar == undefined ? {display: "none"} : {display: "block"}} src={this.state.imghost + record.avatar} />
+                                    )}/>
+                                    <Column title="姓名" dataIndex="realname" key="realname" align="center"/>
+                                    <Column title="手机号码" dataIndex="phone" key="phone" align="center"/>
+                                    <Column title="部门" dataIndex="deptName" key="deptName" align="center"/>
+                                    <Column title="角色" dataIndex="roleName" key="roleName" align="center"/>
+                                    <Column title="主管" align="center" render={(text, record)=>(
+                                        <span>{record.isManager==1?'是':'不是'}</span>
+                                    )}/>
+                                    <Column title="性别" align="center" render={(text, record)=>(
+                                        <span>{record.gender==1?'男':'女'}</span>
+                                    )}/>
+                                    <Column title="工号" dataIndex="empno" key="empno" align="center"/>
+                                    <Column title="地区" align="center" render={(text, record)=>(
+                                        <span>{record.provinceName}{record.cityName}{record.districtName}</span>
+                                    )}/>
+                                    <Column title="入职时间" dataIndex="entryTime" key="entryTime" align="center"/>
+                                    <Column title="操作" align="center" width="200px"
+                                        render={(text, record, index) => (
+                                            <Space size="large">
+                                                <span onClick={this.changes.bind(this, record)} className="changes">编辑</span>
+                                                <span onClick={this.deletes.bind(this, record)} className="deletes">删除</span>
+                                            </Space>
+                                        )}
+                                    />
+                                </Table>
+                            </div>
+                            <div className="placePagination">
+                                <Pagination showTotal={()=>`共 ${this.state.pageTotle} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotle} />
+                            </div>
+                        </div>
+                    </div>
+                    <Modal title={this.msg} footer={null} getContainer={false} width={"50%"} closable={false}  visible={this.state.visible} centered={true}>
+                        <div className="modal1">
+                            <ul className={"ul1"}>
+                                <li className={"li1"}>
+                                    <div className={"div3"}>
+                                        <span className={"span1"}>*姓名</span>
+                                        <Input allowClear id="input" onChange={(e)=>{this.setState({nameModal: e.target.value})}} value={this.state.nameModal} className={"input3"}/>
+                                    </div>
+                                    <div className={"div3"}>
+                                        <span className={"span1"}>*工号</span>
+                                        <Input allowClear id="input" onChange={(e)=>{this.setState({codeModal: e.target.value})}} value={this.state.codeModal} className={"input3"}/>
+                                    </div>
+                                </li>
+                                <li className={"li1 li2"}>
+                                    <div className={"div3"}>
+                                        <span className={"span1"}>*手机</span>
+                                        <Input allowClear id="input" onChange={(e)=>{this.setState({phoneModal: e.target.value})}} value={this.state.phoneModal} className={"input3"}/>
+                                    </div>
+                                    <div className={"div3"}>
+                                        <span className={"span1"}>*部门</span>
+                                        <TreeSelect showSearch className={"input3"} value={this.state.deptId}
+                                                    dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                                                    placeholder=""  allowClear treeDefaultExpandAll onChange={(val)=>{this.setState({deptId: val})}}
+                                                    treeData={this.state.options}>
+                                        </TreeSelect>
+                                    </div>
+                                </li>
+                                <li className={"li1 li2"}>
+                                    <div className={"div3"}>
+                                        <span className={"span1"}>*角色</span>
+                                        <Select onChange={(value)=>{this.setState({roleId: value})}} value={this.state.roleId} allowClear className={"input3"}>
+                                            {
+                                                this.state.roleList.map((item, index)=>{
+                                                    return(
+                                                        <Option key={item.value}>{item.label}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </div>
+                                </li>
+                                <li className={"li1 li2"}>
+                                    <div className={"div3"}>
+                                        <span className={"span1 span2"}>*主管</span>
+                                        <Checkbox onChange={(e)=>{this.setState({responsible: e.target.checked})}} checked={this.state.responsible}>是否主管</Checkbox>
+                                    </div>
+                                </li>
+                                <li className={"li1 li2"} style={this.state.flag == 1 ? {display: 'block'} : {display: 'none'}}>
+                                    <div className={"div3 div4"}>
+                                        <span className={"span1"}> 头像</span>
+                                        <img className={"img1"} style={this.state.avatar == undefined || this.state.avatar == '' ? {display: 'none'} : {display: "block"}} src={this.state.imghost + this.state.avatar}/>
+                                        <Upload beforeUpload={this.beforeUpload.bind(this)} action={""} showUploadList={false}>
+                                            <Button>
+                                                <UploadOutlined /> 点击上传
+                                            </Button>
+                                        </Upload>
+                                    </div>
+                                </li>
+                                <li className={"li1 li2"}>
+                                    <div className={"div3 div4"}>
+                                        <span className={"span1 span2"}> 性别</span>
+                                        <Radio.Group onChange={(e)=>{this.setState({radioValue: e.target.value})}} value={this.state.radioValue}>
+                                            <Radio value={1}>男</Radio>
+                                            <Radio value={0}>女</Radio>
+                                        </Radio.Group>
+                                    </div>
+                                </li>
+                                <li className={"li1 li2"}>
+                                    <div className={"div3 div4"}>
+                                        <span className={"span1"}> 地区</span>
+                                        <Cascader options={this.state.optionsArea} value={this.state.areaId} onChange={(val)=>{this.setState({areaId: val})}} placeholder={""} className={"input3"}/>
+                                    </div>
+                                </li>
+                                <li className={"li1 li2"}>
+                                    <div className={"div3 div4"}>
+                                        <span className={"span1"}> 入职</span>
+                                        <DatePicker onChange={(time, timeStr)=>{this.setState({entryTime: timeStr})}} value={this.state.entryTime==''?"":moment(this.state.entryTime, 'YYYY-MM-DD')} locale={locale} placeholder={""} className={"input3"}/>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div style={{textAlign: "center", paddingTop: '20px'}}>
+                            <Button type="danger" style={{marginRight: '10%'}} onClick={this.handleCancel.bind(this)}>取消</Button>
+                            <Button type="primary" style={{marginLeft: '10%'}} onClick={this.handleOk.bind(this)}>确定</Button>
+                        </div>
+                    </Modal>
+                </div>
+            </div>
+        )
+    }
+    nameChange(e) {
+        this.setState({
+            name: e.target.value
+        })
+    }
+    codeChange(e) {
+        this.setState({
+            code: e.target.value
+        })
+    }
+    searchMethods() {
+        this.initData(1);
+        this.setState({
+            currentPage: 1
+        })
+    }
+    beforeUpload(file) {
+        let imgName = '';
+        if(file.name.lastIndexOf('.') != -1) {
+            imgName = file.name.split('.')[file.name.split.length-1]
+        }
+        if(!(imgName == 'jpg' || imgName == 'png' || imgName == 'gif' || imgName == 'jpeg')) {
+            message.warning("请选择图片上传");
+            return false;
+        }
+        const configs = {
+            headers: { "Content-Type": "multipart/form-data" }
+        };
+        let formData = new FormData();
+        formData.append("file", file);
+        formData.append("userId", this.id);
+        Axios.post('/self/erp/user/uploadAvatar', formData, configs).then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    avatar: res.data.data.avatar
+                });
+                message.success("上传成功");
+                this.initData(this.state.currentPage);
+            }else{
+                message.warning(res.data.message);
+            }
+        })
+    }
+    add() {
+        this.setState({
+            visible: true,
+            flag: 0,
+            nameModal: '',
+            codeModal: '',
+            phoneModal: '',
+            deptId: '',
+            roleId: '',
+            responsible: false,
+            radioValue: null,
+            areaId: '',
+            entryTime: '',
+            fileList: ''
+        });
+        this.msg = "新增";
+    }
+    changes(row) {
+        Axios.post('/self/erp/user/queryUserById', {userId: row.id}).then((res)=>{
+            console.log(res.data);
+            if(res.data.success) {
+                this.setState({
+                    deptId: res.data.data.user.deptId
+                })
+            }else{
+                this.setState({
+                    deptId: []
+                })
+            }
+        })
+        this.id = row.id;
+        this.setState({
+            visible: true,
+            flag: 1,
+            nameModal: row.realname,
+            codeModal: row.empno,
+            phoneModal: row.phone,
+            roleId: ''+row.roleId,
+            responsible: row.isManager == 1 ? true : false,
+            radioValue: Number(row.gender),
+            avatar: row.avatar,
+            areaId: [row.provinceCode, row.cityCode, row.districtCode],
+            entryTime: row.entryTime == undefined?'':row.entryTime
+        });
+        this.msg = "修改";
+    }
+    deletes(row) {
+        let that = this;
+        confirm({
+            title: '你确定要删除吗?',
+            icon: <ExclamationCircleOutlined />,
+            content: '',
+            onOk() {
+                let params = {
+                    userId: row.id
+                };
+                Axios.post('/self/erp/user/deleteUser', params).then((res)=>{
+                    if(res.data.success) {
+                        message.success("删除成功");
+                        that.initData(that.state.currentPage);
+                    }else{
+                        message.warning(res.data.message);
+                    }
+                })
+            },
+            onCancel() {},
+        });
+    }
+    initData(currentPage) {
+        let params = {
+            pageSize: this.state.pageSize,
+            currentPage,
+            realname: this.state.name,
+            empno: this.state.code
+        };
+        Axios.post('/self/erp/user/queryUser', params).then((res)=>{
+            if(res.data.success) {
+                res.data.data.userList.users.forEach((item)=>{
+                    item.key = item.id;
+                });
+                this.setState({
+                    dataSource: res.data.data.userList.users,
+                    pageTotle: res.data.data.userList.num
+                });
+            }else{
+                message.warning(res.data.message);
+                this.setState({
+                    dataSource: [],
+                    pageTotle: 0
+                });
+            }
+        })
+    }
+    changePages(val) {
+        this.setState({
+            currentPage: val
+        });
+        this.initData(val);
+    }
+    handleCancel() {
+        this.setState({
+            visible: false
+        })
+    }
+    handleOk() {
+        if(!this.state.nameModal || !this.state.codeModal || this.state.deptId == undefined || !this.state.deptId || !this.state.roleId || this.state.roleId == undefined) {
+            message.warning('填写数据不完整');
+            return false;
+        }
+        if(!(/^1(3|4|5|6|7|8|9)\d{9}$/.test(this.state.phoneModal))){
+            message.warning('手机号有误');
+            return false;
+        }
+        let params = {
+            realname: this.state.nameModal,
+            empno: this.state.codeModal,
+            phone: this.state.phoneModal,
+            deptId: this.state.deptId,
+            roleId: this.state.roleId,
+            isManager: this.state.responsible ? 1 : 0,
+            gender: this.state.radioValue,
+            provinceCode: this.state.areaId && this.state.areaId.length ? this.state.areaId[0] : '',
+            cityCode: this.state.areaId && this.state.areaId.length ? this.state.areaId[1] : '',
+            districtCode: this.state.areaId && this.state.areaId.length ? this.state.areaId[2] : '',
+            entryTime: this.state.entryTime
+        };
+        if(this.state.flag==0) {  // 新增
+            Axios.post('/self/erp/user/addUser', params).then((res)=>{
+                if(res.data.success) {
+                    message.success('新增成功');
+                    this.initData(this.state.currentPage);
+                    this.setState({
+                        visible: false
+                    })
+                }else{
+                    message.warning(res.data.message);
+                }
+            })
+        }else{
+            params.userId = this.id;
+            Axios.post("/self/erp/user/updateUserForAdmin", params).then((res)=>{
+                if(res.data.success) {
+                    message.success("修改成功");
+                    this.initData(this.state.currentPage);
+                    this.setState({
+                        visible: false
+                    })
+                }else{
+                    message.warning(res.data.message);
+                }
+            })
+        }
+    }
+    // 部门下拉框
+    departmentList() {
+        Axios.post('/self/erp/dept/queryDept').then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                this.deptAgin(res.data.data.deptList);
+            }else{
+                this.setState({
+                    options: []
+                })
+            }
+        })
+    }
+    // 递归部门级联狂
+    deptAgin(arr) {
+         if(arr && arr.length) {
+             arr.forEach((item, index)=>{
+                 item.title = item.deptName;
+                 item.value = item.deptId;
+                 delete item.deptName;
+                 delete item.deptId;
+                 if(item.children && item.children.length) {
+                     this.deptAgin(item.children);
+                 }
+             })
+         }
+         this.setState({
+             options: arr
+         })
+    }
+    // 角色列表
+    rolelist() {
+        Axios.post('/self/erp/role/queryRoles').then((res)=>{
+            if(res.data.success) {
+                let arr = [];
+                if(res.data.data.roleList && res.data.data.roleList.length) {
+                    res.data.data.roleList.forEach((item)=>{
+                        arr.push({label: item.name, value: item.id});
+                        this.setState({
+                            roleList: arr
+                        })
+                    })
+                }else{
+                    this.setState({
+                        roleList: []
+                    })
+                }
+            }else{
+                this.setState({
+                    roleList: []
+                })
+            }
+        })
+    }
+    // 省市区列表
+    areaDtail() {
+        Axios.post('/self/erp/user/queryDistrict').then((res)=>{
+            if(res.data.success) {
+                if(res.data.data.districtList && res.data.data.districtList.length) {
+                    res.data.data.districtList.forEach((outItem)=>{
+                        outItem.label = outItem.provinceName;
+                        outItem.value = outItem.provinceCode;
+                        outItem.children = outItem.cities;
+                        delete outItem.provinceName;
+                        delete outItem.provinceCode;
+                        delete outItem.cities;
+                        if(outItem.children && outItem.children.length) {
+                            outItem.children.forEach((middleItem)=>{
+                                middleItem.label = middleItem.cityName;
+                                middleItem.value = middleItem.cityCode;
+                                middleItem.children = middleItem.districts;
+                                delete middleItem.cityName;
+                                delete middleItem.cityCode;
+                                delete middleItem.districts;
+                                if(middleItem.children && middleItem.children.length) {
+                                    middleItem.children.forEach((innerItem)=>{
+                                        innerItem.label = innerItem.districtName;
+                                        innerItem.value = innerItem.districtCode;
+                                        delete innerItem.districtName;
+                                        delete innerItem.districtCode;
+                                    })
+                                }
+                            })
+                        }
+                    })
+                }
+                this.setState({
+                    optionsArea: res.data.data.districtList
+                })
+            }else{
+                this.setState({
+                    optionsArea: []
+                })
+            }
+        })
+    }
+    componentDidMount() {
+        this.setState({
+            imghost: JSON.parse(sessionStorage.getItem("userInfo")).host
+        });
+        this.initData(this.state.currentPage);
+        this.departmentList();
+        this.rolelist();
+        this.areaDtail();
+    }
+}
+export default UserBu;

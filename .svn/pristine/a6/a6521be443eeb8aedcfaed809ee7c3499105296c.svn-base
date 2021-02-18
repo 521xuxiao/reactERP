@@ -1,0 +1,56 @@
+import React, {Component} from 'react';
+import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
+import App from '../App.js';
+
+import ProcurementPlan from '../components/procurementPlan/procurementPlan.js'
+import PurchasingTask from '../components/purchasingTask/purchasingTask.js'
+import QualityOrder from '../components/qualityOrder/qualityOrder.js'
+import PurchaseOrder from '../components/purchaseOrder/purchaseOrder.js'
+import Dictionary0peration from '../components/dictionary0peration/dictionary0peration.js'
+import Journalizing from '../components/journalizing/journalizing.js'
+import UserBu from '../components/userBu/userBu.js'
+import Branch from '../components/branch/branch.js'
+import Provider from '../components/provider/provider.js'
+import RoleList from '../components/roleList/roleList.js'
+import StoreManagement from '../components/storeManagement/storeManagement.js'
+import Distributor from '../components/distributor/distributor.js'
+import InList from '../components/inList/inList.js'
+import Login from '../components/login/login.js'
+
+import {PrivateRoute} from "./PrivateRoute"
+class MyRouter extends Component{
+    render() {
+        return(
+            <Router>
+                <Switch>
+                    <Redirect exact from="/" to="/app"></Redirect>
+                    <Route path='/login' component={Login} />
+                    <Route path="/app" render={() => {
+                        return (
+                            <App>
+                                <Switch>
+                                    {/*<Redirect exact from="/" to="/app/home"></Redirect>*/}
+                                    <PrivateRoute path="/app/procurementPlan" component={ProcurementPlan}></PrivateRoute>
+                                    <PrivateRoute path="/app/purchasingTask" component={PurchasingTask}></PrivateRoute>
+                                    <PrivateRoute path="/app/qualityOrder" component={QualityOrder}></PrivateRoute>
+                                    <PrivateRoute path="/app/purchaseOrder" component={PurchaseOrder}></PrivateRoute>
+                                    <PrivateRoute path="/app/dictionary0peration" component={Dictionary0peration}></PrivateRoute>
+                                    <PrivateRoute path="/app/journalizing" component={Journalizing}></PrivateRoute>
+                                    <PrivateRoute path="/app/userBu" component={UserBu}></PrivateRoute>
+                                    <PrivateRoute path="/app/branch" component={Branch}></PrivateRoute>
+                                    <PrivateRoute path="/app/roleList" component={RoleList}></PrivateRoute>
+                                    <PrivateRoute path="/app/provider" component={Provider}></PrivateRoute>
+                                    <PrivateRoute path="/app/distributor" component={Distributor}></PrivateRoute>
+                                    <PrivateRoute path="/app/storeManagement" component={StoreManagement}></PrivateRoute>
+                                    <PrivateRoute path="/app/inList" component={InList}></PrivateRoute>
+                                </Switch>
+                            </App>
+                        )
+                    }}/>
+                    <Route path="/" component={Login}/>
+                </Switch>
+            </Router>
+        )
+    }
+}
+export default MyRouter;

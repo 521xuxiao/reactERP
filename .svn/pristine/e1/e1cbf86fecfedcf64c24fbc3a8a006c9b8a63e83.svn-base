@@ -1,0 +1,16 @@
+#slider.slider{
+  height: 100%;
+  .el-menu{
+    height: 100%;
+    .el-submenu{
+        .el-submenu__title{
+            span{
+              font-size: 16px;
+            }
+        }
+    }
+  }
+  .el-menu-vertical-demo{
+    background: #E4E8F1;
+  }
+}

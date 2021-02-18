@@ -1,0 +1,157 @@
+import React, {Component} from 'react'
+import Axios from 'axios';
+import {Pagination, Table, message, Input, Button, Modal} from "antd";
+import './misreading.scss'
+const {Column} = Table;
+class Misreading extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            dataSource: [],
+            pageTotal: 0,
+            currentPage: 1,
+            pageSize: 10,
+            dataList: [],
+            visible: false,
+            modalData: [],
+            loading: false
+        }
+    }
+    render() {
+        return(
+            <div id="misreading">
+                <div className="misreading">
+                    <div className="bg">
+                        <button className="searchs" onClick={this.add.bind(this)}>异常处理</button>
+                    </div>
+                    <div className="placeTable">
+                        <Table pagination={false} dataSource={this.state.dataSource} rowSelection={{
+                            onChange: this.onSelectChange.bind(this),
+                            selectedRowKeys: this.state.dataList
+                        }} locale={{emptyText: '暂无数据'}} loading={this.state.loading}>
+                            <Column title="入库单名称" dataIndex="sheetName" key="sheetName" align="center"/>
+                            {/*<Column title="质检单编码" dataIndex="qualityCheckSheetCode" key="qualityCheckSheetCode" align="center"/>*/}
+
+                            <Column title="仓库" dataIndex="realname" key="realname" align="center" render={(text, record)=>(
+                                <span>{record.warehouseAreaName}{record.warehouseName}</span>
+                            )}/>
+                            <Column title="入库类型" dataIndex="inboundType" key="inboundType" align="center" render={(text)=>(
+                                <span>{text==1?'采购入库':text==2?'生产剩余入库':'移库入库'}</span>
+                            )}/>
+                            <Column title="状态" dataIndex="statusIntro" key="statusIntro" align="center"/>
+                            <Column title="桶编码" dataIndex="bucketCode" key="bucketCode" align="center"/>
+                            <Column title="入库时间" dataIndex="warehousingTime" key="warehousingTime" align="center"/>
+                            <Column title="重量" dataIndex="realWeight" key="realWeight" align="center"/>
+                        </Table>
+                    </div>
+                    <div className="placePagination">
+                        <Pagination showTotal={()=>`共 ${this.state.pageTotal} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotal} showSizeChanger={false}/>
+                    </div>
+
+                    <Modal title="处理异常" width="70%" footer={null} getContainer={false} closable={false}  visible={this.state.visible} centered={true}>
+                        <div className="modal1">
+                            <div className="div3">
+                                <ul className="ul1">
+                                    {
+                                        this.state.modalData.map((item)=>{
+                                            return(
+                                                <li className="li11" key={item.id}>
+                                                    <span className="span11">{item.sheetName}:</span>
+                                                    <span className="span12">{item.warehouseAreaName}{item.warehouseName}</span>
+                                                </li>
+                                            )
+                                        })
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <div className="div4">
+                            <li className="li4">
+                                <Button className="btn4" type="danger" onClick={()=>{this.setState({visible: false})}}>取消</Button>
+                            </li>
+                            <li className="li4">
+                                <Button className="btn4" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
+                            </li>
+                        </div>
+                    </Modal>
+                </div>
+            </div>
+        )
+    }
+    initData(currentPage) {
+        let params = {
+            currentPage,
+            pageSize: this.state.pageSize
+        };
+        Axios.post('/self/erp/warehousing/queryUninboundWarehousingSheet', params).then((res)=>{
+            if(res.data.success) {
+                res.data.data.uncheckedWarehousingSheets.forEach((item)=>{
+                    item.key = item.id;
+                });
+                this.setState({
+                    dataSource: res.data.data.uncheckedWarehousingSheets,
+                    pageTotal: res.data.data.num
+                })
+            }else{
+                this.setState({
+                    dataSource: [],
+                    pageTotal: 0
+                })
+            }
+        })
+    }
+    onSelectChange(selectKeys, selectInfos) {
+        this.setState({
+            dataList: [...selectKeys]
+        })
+    }
+    changePages(val) {
+        this.initData(val);
+        this.setState({
+            currentPage: val
+        })
+    }
+    add() {
+        if(this.state.dataList.length == 0) {
+            message.warning("选择再异常处理");
+            return false;
+        }
+        this.setState({
+            loading: true
+        })
+        Axios.post('/self/erp/warehousing/queryReferenceWarehousingInformation', {ids: this.state.dataList}).then((res)=>{
+            console.log(res.data);
+            if(res.data.success) {
+                this.setState({
+                    modalData: res.data.data.referenceWarehousingInformation,
+                    visible: true,
+                    loading: false
+                })
+            }else{
+                this.setState({
+                    modalData: [],
+                    loading: false
+                })
+            }
+        })
+    }
+    handleOk() {
+        let params = {
+            warehousingSheets: this.state.modalData
+        };
+        Axios.post('/self/erp/warehousing/handleUninboundWarehousingSheet', params).then((res)=>{
+            if(res.data.success) {
+                message.success("成功");
+                this.setState({
+                    visible: false
+                })
+            }else{
+                message.warning(res.data.message);
+            }
+        })
+    }
+    componentDidMount() {
+        this.initData(this.state.currentPage);
+    }
+}
+export default Misreading

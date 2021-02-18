@@ -1,0 +1,127 @@
+#roleList{
+  .roleList{
+    .placeSearch{
+      height: 66px;
+      background: #fff;
+      padding-left: 40px;
+      padding-top: 18px;
+      span{
+        color: #282828;
+      }
+      .input1{
+        width: 200px;
+        margin-left: 20px;
+      }
+      .searchs{
+        margin-left: 40px;
+        width: 65px;
+        height: 32px;
+        outline: 0;
+        border: 0;
+        background: #2E71FE;
+        color: #fff;
+        border-radius: 3px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+    }
+    .bg{
+      background: #FAFAFA;
+      height: 62px;
+      padding-top: 16px;
+      padding-right: 18px;
+      text-align: right;
+      .searchs{
+        margin-left: 40px;
+        width: 68px;
+        height: 30px;
+        outline: 0;
+        border: 0;
+        background: #2E71FE;
+        color: #fff;
+        border-radius: 3px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+      .deletesClass{
+        background: #F0625D;
+      }
+    }
+    .placeTable{
+      .ant-table-thead{
+        tr > th{
+          background: #fff;
+        }
+      }
+      .changes{
+        color: #2E71FE;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+      .deletes{
+        color: #F0625D;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+      .jurisdiction{
+        color: #27BA62;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+      }
+    }
+    .placePagination{
+      text-align: right;
+      padding-top: 20px;
+    }
+    .modal1{
+      .div3{
+        display: flex;
+        .span1{
+          display: block;
+          width: 80px;
+          padding: 4px 4px 0 0;
+        }
+        .input3{
+          flex: 1;
+        }
+      }
+      .div4{
+        margin-top: 20px;
+      }
+    }
+    .modal2{
+      .modlaLeft{
+        .ul3{
+          .li3{
+            margin-top: 20px;
+            .p3{
+              margin-bottom: 10px;
+            }
+            .placeChecked{
+              padding-left: 20px;
+              margin-top: -6px;
+            }
+          }
+          .li3:first-child{
+            margin-top: 0px;
+          }
+        }
+      }
+    }
+  }
+}

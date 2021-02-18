@@ -1,0 +1,191 @@
+import React, {Component} from 'react';
+import { Table, Button, Space, Input, Modal, message, Pagination, Select} from 'antd';
+import Axios from 'axios';
+import './provider.scss'
+const {Column} =  Table;  const { confirm } = Modal;
+const {Option} = Select;
+class Provider extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            currentIndex: 0,
+            treeList: [{name: '代办', key: 1}, {name: '冷库', key: 2}, {name: '果园', key: 3}],
+            providerStr: '',
+            dataSource: [],
+            pageTotle: 0,  currentPage: 1, pageSize: 10,
+            msg: '',
+            visible: false
+        }
+    }
+    render() {
+        return(
+            <div id="provider">
+                <div className="provider">
+                    <div className="dictionaryLeft">
+                        <div className="innerDiv">
+                            <div className="dictType">供应商类型</div>
+                            <ul className="ul1">
+                                {
+                                    this.state.treeList.map((item, index)=>{
+                                        return(
+                                            <li className={index==this.state.currentIndex?'active li1':'li1'} key={item.key} onClick={this.handleClick.bind(this, item, index)}>{item.name}</li>
+                                        )
+                                    })
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div className="dictionaryRight">
+                        <div className="innerRight">
+                            <div className="placeSearch">
+                                <span>供应商</span>
+                                <Input className="input1" allowClear onChange={(e)=>{this.setState({providerStr: e.target.value})}}/>
+                                <button className="searchs" onClick={this.searchMethods.bind(this)}>查询</button>
+                            </div>
+                            <div className="bg">
+                                <button className="searchs" onClick={this.add.bind(this)}>新增</button>
+                            </div>
+                            <div className="placeTable">
+                                <Table pagination={false} dataSource={this.state.dataSource}>
+                                    <Column title="序号" align="center" width="100px" render={(text, record, index)=>(
+                                        <span>{(this.state.currentPage-1)*this.state.pageSize+index+1}</span>
+                                    )}/>
+                                    <Column title="供应商名称" dataIndex="supplierName" key="supplierName" align="center"/>
+                                    <Column title="供应商编码" dataIndex="supplierCode" key="supplierCode" align="center"/>
+                                    <Column title="供应商类型" dataIndex="supplierType" key="supplierType" align="center"/>
+                                    <Column title="联系方式" dataIndex="phone" key="phone" align="center"/>
+                                    <Column title="住址" dataIndex="address" key="address" align="center"/>
+                                    <Column title="业务员" dataIndex="realname" key="realname" align="center"/>
+                                    <Column title="操作" align="center"
+                                            render={(text, record) => (
+                                                <Space size="large">
+                                                    <span onClick={this.changes.bind(this, record)} className="changes">编辑</span>
+                                                    <span onClick={this.deletes.bind(this, record)} className="deletes">删除</span>
+                                                </Space>
+                                            )}
+                                    />
+                                </Table>
+                            </div>
+                            <div className="placePagination">
+                                <Pagination showTotal={()=>`共 ${this.state.pageTotle} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotle} />
+                            </div>
+                        </div>
+                    </div>
+                    <Modal title={this.state.msg} width="60%" footer={null} getContainer={false} closable={false}  visible={this.state.visible} centered={true}>
+                        <div className="modal1">
+                            <div className="div3">
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">*任务编码</span>
+                                        <Input allowClear disabled value={this.state.code} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">*计划编码</span>
+                                        <Select  className={"input3"} disabled={this.state.flag==1?false:true} allowClear onChange={this.plancodeMethods.bind(this)} value={this.state.plancode}>
+                                            {
+                                                this.state.plancodeList.map((item, index)=>{
+                                                    return(
+                                                        <Option value={item.id} key={index}>{item.planCode}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </li>
+                                </ul>
+                                {/*<ul className="ul1">*/}
+                                    {/*<li className="li1">*/}
+                                        {/*<span className="span1">*木桶</span>*/}
+                                        {/*<InputNumber allowClear min={0} onChange={(e)=>{this.setState({bowie: e})}} value={this.state.bowie} className={"input3"}/>*/}
+                                    {/*</li>*/}
+                                    {/*<li className="li1 li2">*/}
+                                        {/*<span className="span1">*铁通</span>*/}
+                                        {/*<InputNumber allowClear min={0} onChange={(e)=>{this.setState({tietong: e})}} value={this.state.tietong} className={"input3"}/>*/}
+                                    {/*</li>*/}
+                                {/*</ul>*/}
+                                {/*<ul className="ul1">*/}
+                                    {/*<li className="li1">*/}
+                                        {/*<span className="span1">*代办人</span>*/}
+                                        {/*<Select disabled={this.state.flag==1?false:true} className={"input3"} allowClear onChange={(e)=>{this.setState({makeNameId: e})}} value={this.state.makeNameId}>*/}
+                                            {/*{*/}
+                                                {/*this.state.makeNameIdList.map((item, index)=>{*/}
+                                                    {/*return(*/}
+                                                        {/*<Option value={item.id} key={index}>{item.supplierName}</Option>*/}
+                                                    {/*)*/}
+                                                {/*})*/}
+                                            {/*}*/}
+                                        {/*</Select>*/}
+                                    {/*</li>*/}
+                                {/*</ul>*/}
+                            </div>
+                        </div>
+                        <div className="div4">
+                            <li className="li4">
+                                <Button className="btn4" type="danger" onClick={()=>{this.setState({visible: false})}}>取消</Button>
+                            </li>
+                            <li className="li4">
+                                <Button className="btn4" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
+                            </li>
+                        </div>
+                    </Modal>
+                </div>
+            </div>
+        )
+    }
+    initData(currentPage, ifNulls) {
+        let params = {
+            currentPage,
+            pageSize: this.state.pageSize,
+            supplierType: ifNulls == undefined ? 1 : ifNulls,
+            supplierName: this.state.providerStr
+        };
+        Axios.post('/self/erp/baseinfo/querySupplier', params).then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                this.setState({
+                    pageTotle: res.data.data.num,
+                    dataSource: res.data.data.suppliers
+                })
+            }else{
+                this.setState({
+                    pageTotle: 0,
+                    dataSource: []
+                })
+            }
+        })
+    }
+    handleClick(item, index) {
+        this.setState({
+            currentIndex: index
+        });
+        this.initData(1, item.key);
+    }
+    searchMethods() {
+
+    }
+    add() {
+        this.setState({
+            msg: '新增',
+            visible: true
+        })
+    }
+    changes(row) {
+        console.log(row);
+        this.setState({
+            msg: '修改',
+            visible: true
+        })
+    }
+    deletes(row) {
+        console.log(row);
+    }
+    changePages(val) {
+
+    }
+    handleOk() {
+
+    }
+    componentDidMount() {
+        this.initData(this.state.currentPage);
+    }
+}
+export default Provider;

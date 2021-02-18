@@ -1,0 +1,43 @@
+import React, {Component} from 'react';
+import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
+import App from '../App.js';
+import ProcurementPlan from '../components/procurementPlan/procurementPlan.js'
+import PurchasingTask from '../components/purchasingTask/purchasingTask.js'
+import QualityOrder from '../components/qualityOrder/qualityOrder.js'
+import PurchaseOrder from '../components/purchaseOrder/purchaseOrder.js'
+import Dictionary0peration from '../components/dictionary0peration/dictionary0peration.js'
+import Journalizing from '../components/journalizing/journalizing.js'
+import UserBu from '../components/userBu/userBu.js'
+import Branch from '../components/branch/branch.js'
+import Login from '../components/login/login.js'
+class MyRouter extends Component{
+    render() {
+        return(
+            <Router>
+                <Switch>
+                    <Redirect exact from="/" to="/app"></Redirect>
+                    <Route path="/app" render={() => {
+                        return (
+                            <App>
+                                <Switch>
+                                    {/*<Redirect exact from="/" to="/app/home"></Redirect>*/}
+                                    <Route path="/app/procurementPlan" component={ProcurementPlan}></Route>
+                                    <Route path="/app/purchasingTask" component={PurchasingTask}></Route>
+                                    <Route path="/app/qualityOrder" component={QualityOrder}></Route>
+                                    <Route path="/app/purchaseOrder" component={PurchaseOrder}></Route>
+                                    <Route path="/app/dictionary0peration" component={Dictionary0peration}></Route>
+                                    <Route path="/app/journalizing" component={Journalizing}></Route>
+                                    <Route path="/app/userBu" component={UserBu}></Route>
+                                    <Route path="/app/branch" component={Branch}></Route>
+                                </Switch>
+                            </App>
+                        )
+                    }}/>
+                    <Route path='/login' component={Login} />
+                    <Route path="/" component={App}/>
+                </Switch>
+            </Router>
+        )
+    }
+}
+export default MyRouter;

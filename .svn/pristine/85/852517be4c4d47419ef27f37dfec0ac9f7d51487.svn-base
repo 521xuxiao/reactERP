@@ -1,0 +1,563 @@
+import React, {Component} from 'react';
+import Axios from 'axios';
+import {Input, Table, Space, Pagination, Modal, Select, Button, InputNumber, message, Upload} from 'antd';
+import { ExclamationCircleOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
+import './productManagement.scss';
+const {Column} = Table;
+const {TextArea} = Input;
+const {Option} = Select;  const {confirm} = Modal;
+class ProductManagement extends Component{
+    constructor(props){
+        super(props);
+        this.addBtn = "";   this.changeBtn = "";   this.deleteBtn = "";
+        this.testId = '';
+        this.testName = '';
+        this.imgList = [];
+        this.state = {
+            treeList: [],
+            currentIndex: 0,
+            name: '',
+            dataSource: [],
+            pageTotle: 0,
+            currentPage: 1,
+            pageSize: 10,
+            valueId: '',
+            msg: '', flag: 1,  visible: false,
+            finishProductName: '',
+            finishProductClassify: '',
+            finishProductGrade: '',
+            formMeasurement: '',
+            weight: null,
+            referencePrice: null,
+            Materials: '',   RawMaterialGrade: '',
+            coefficientLosses: null,
+            finishProductClassifyList: [],
+            finishProductGradeList: [],
+            formMeasurementList: [],
+            MaterialsList: [],
+            RawMaterialGradeList: [],
+            mark1: '',
+            id: '',
+            fileList: [],
+            previewVisible: false,
+            previewImage: '',
+            previewTitle: '',
+            host:"",
+            uploadImgList: []
+        }
+    }
+    render() {
+        const { previewVisible, previewImage, fileList, previewTitle } = this.state;
+        const uploadButton = (
+            <div>
+                <PlusOutlined />
+                <div className="ant-upload-text">Upload</div>
+            </div>
+        );
+        return(
+            <div id="productManagement">
+                <div className="productManagement">
+                    <div className="dictionaryLeft">
+                        <div className="innerDiv">
+                            <div className="dictType">成品类型</div>
+                            <ul className="ul1">
+                                {
+                                    this.state.treeList.map((item, index)=>{
+                                        return(
+                                            <li className={index==this.state.currentIndex?'active li1':'li1'} key={item.valueId} onClick={this.handleClick.bind(this, index, item)}>{item.value}</li>
+                                        )
+                                    })
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div className="dictionaryRight">
+                        <div className="innerRight">
+                            <div className="placeSearch">
+                                <span>名称</span>
+                                <Input className="input1" allowClear value={this.state.name} onChange={(e)=>{this.setState({name: e.target.value})}}/>
+                                <button className="searchs" onClick={this.searchMethods.bind(this)}>查询</button>
+                            </div>
+                            <div className="bg">
+                                <button className="searchs" onClick={this.add.bind(this)}
+                                    style={this.addBtn == 1 ? {display: 'inlineBlock'} : {display: "none"}}
+                                >新增</button>
+                            </div>
+                            <div className="placeTable">
+                                <Table pagination={false} dataSource={this.state.dataSource}>
+                                    <Column title="序号" align="center" width="100px" render={(text, record, index)=>(
+                                        <span>{(this.state.currentPage-1)*this.state.pageSize + index+1}</span>
+                                    )}/>
+                                    {/*<Column title="编码" dataIndex="value" key="value" align="center"/>*/}
+                                    <Column title="名称" dataIndex="productName" key="productName" align="center"/>
+                                    <Column title="分类" dataIndex="productCategory" key="productCategory" align="center"/>
+                                    <Column title="等级" dataIndex="productLevel" key="productLevel" align="center"/>
+                                    <Column title="计量单位" dataIndex="measurement" key="measurement" align="center"/>
+                                    <Column title="参考价格" dataIndex="referencePrice" key="referencePrice" align="center" render={(text)=>(
+                                        <span>{Number(text) / 100}</span>
+                                    )}/>
+                                    <Column title="操作" align="center"
+                                        render={(text, record) => (
+                                            <Space size="large">
+                                                <span onClick={this.changes.bind(this, record)} className="changes"
+                                                    style={this.changeBtn == 1 ? {display: 'inlineBlock'} : {display: "none"}}
+                                                >编辑</span>
+                                                <span onClick={this.deletes.bind(this, record)} className="deletes"
+                                                      style={this.deleteBtn == 1 ? {display: 'inlineBlock'} : {display: "none"}}
+                                                >删除</span>
+                                            </Space>
+                                        )}
+                                    />
+                                </Table>
+                            </div>
+                            <div className="placePagination">
+                                <Pagination showTotal={()=>`共 ${this.state.pageTotle} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotle} />
+                            </div>
+
+                            <Modal title={this.state.msg} width="60%" footer={null} getContainer={false} closable={false}  visible={this.state.visible} centered={true}>
+                                <div className="modal1">
+                                    <div className="div3">
+                                        <p className="p1">基础信息</p>
+                                        <ul className="ul1">
+                                            <li className="li1">
+                                                <span className="span1">*成品名称</span>
+                                                <Input allowClear onChange={(e)=>{this.setState({finishProductName: e.target.value})}} value={this.state.finishProductName} className={"input3"}/>
+                                            </li>
+                                            <li className="li1 li2">
+                                                <span className="span1">*参考价格</span>
+                                                <InputNumber allowClear onChange={(e)=>{this.setState({referencePrice: e})}} value={this.state.referencePrice} className={"input3"}/>
+                                            </li>
+                                        </ul>
+                                        <ul className="ul1 ul2">
+                                            <li className="li1">
+                                                <span className="span1">*成品等级</span>
+                                                <Select  className={"input3"} allowClear onChange={(e)=>{this.setState({finishProductGrade: e})}} value={this.state.finishProductGrade}>
+                                                    {
+                                                        this.state.finishProductGradeList.map((item, index)=>{
+                                                            return(
+                                                                <Option value={item.valueId} key={index}>{item.value}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            </li>
+                                            <li className="li1 li2">
+                                                <span className="span1">*重量</span>
+                                                <InputNumber allowClear onChange={(e)=>{this.setState({weight: e})}} value={this.state.weight} className={"input3"}/>
+                                            </li>
+                                        </ul>
+                                        <ul className="ul1 ul2">
+                                            <li className="li1">
+                                                <span className="span1">*计量方式</span>
+                                                <Select className={"input3"} allowClear onChange={(e)=>{this.setState({formMeasurement: e})}} value={this.state.formMeasurement}>
+                                                    {
+                                                        this.state.formMeasurementList.map((item, index)=>{
+                                                            return(
+                                                                <Option value={item.valueId} key={index}>{item.value}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            </li>
+                                        </ul>
+                                        <ul className="ul1 ul2">
+                                            <li className="li1 li3">
+                                                <span className="span1">*上传图片</span>
+                                                <div className="input3 input4">
+                                                    <div className="innerDivs">
+                                                        {
+                                                            this.state.uploadImgList.map((item, index)=>{
+                                                                return(
+                                                                    <img key={index} src={this.state.host+item} className="img1"/>
+                                                                )
+                                                            })
+                                                        }
+                                                    </div>
+                                                    {
+                                                        this.domShow()
+                                                    }
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <p className="p1">成产boom</p>
+                                        <ul className="ul1 ul2">
+                                            <li className="li1">
+                                                <span className="span1">*原料规格</span>
+                                                <Select className={"input3"} allowClear onChange={(e)=>{this.setState({Materials: e})}} value={this.state.Materials}>
+                                                    {
+                                                        this.state.MaterialsList.map((item, index)=>{
+                                                            return(
+                                                                <Option value={item.valueId} key={index}>{item.value}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            </li>
+                                            <li className="li1 li2">
+                                                <span className="span1">*原料等级</span>
+                                                <Select className={"input3"} allowClear onChange={(e)=>{this.setState({RawMaterialGrade: e})}} value={this.state.RawMaterialGrade}>
+                                                    {
+                                                        this.state.RawMaterialGradeList.map((item, index)=>{
+                                                            return(
+                                                                <Option value={item.valueId} key={index}>{item.value}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            </li>
+                                        </ul>
+                                        <ul className="ul1 ul2">
+                                            <li className="li1">
+                                                <span className="span1">*耗损率</span>
+                                                <InputNumber allowClear onChange={(e)=>{this.setState({coefficientLosses: e})}} value={this.state.coefficientLosses} className={"input3"}/>%
+                                            </li>
+                                        </ul>
+                                        <ul className="ul1 ul2">
+                                            <li className="li1 li3">
+                                                <span className="span1">*备注</span>
+                                                <TextArea rows={4} className="input4" onChange={(e)=>{this.setState({mark1: e.target.value})}} value={this.state.mark1}/>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div className="div4">
+                                    <li className="li4">
+                                        <Button className="btn4" type="danger" onClick={()=>{this.setState({visible: false})}}>取消</Button>
+                                    </li>
+                                    <li className="li4">
+                                        <Button className="btn4" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
+                                    </li>
+                                </div>
+                            </Modal>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+    domShow(){
+        if(this.state.uploadImgList.length >= 3) {
+            return(
+                <div></div>
+            )
+        }else{
+            return(
+                <Upload action = {this.beforeUpload.bind(this)} fileList={false} className="upload">
+                    <Button icon={<PlusOutlined />}></Button>
+                </Upload>
+            )
+        }
+    }
+    componentWillMount() {
+        let buttonList = JSON.parse(sessionStorage.getItem("buttonList"));
+        console.log(buttonList);
+        if(buttonList && buttonList.length) {
+            buttonList.forEach((item)=>{
+                if(item.localIndex == "2-4-1") {
+                    this.addBtn = item.flag;
+                }
+                if(item.localIndex == "2-4-2") {
+                    this.changeBtn = item.flag;
+                }
+                if(item.localIndex == "2-4-3") {
+                    this.deleteBtn = item.flag;
+                }
+            })
+        }
+    }
+
+    handleClick(index, item) {
+        this.setState({
+            currentIndex: index,
+            name: ''
+        });
+        this.testId= item.valueId;
+        this.testName = item.value;
+        this.initData(1);
+    }
+    // 左面导航列表
+    treelist() {
+        Axios.post('/self/erp/baseinfo/queryProductInfoCategory').then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    treeList: res.data.data.productCategory
+                });
+                this.testId = res.data.data.productCategory[0].valueId;
+                this.testName = res.data.data.productCategory[0].value;
+                this.initData(this.state.currentPage);
+            }else{
+                this.setState({
+                    treeList: []
+                })
+            }
+        })
+    }
+    initData(currentPage) {
+        let params = {
+            currentPage,
+            pageSize: this.state.pageSize,
+            productName: this.state.name,
+            productCategoryId: this.testId
+        };
+        Axios.post('/self/erp/baseinfo/queryProductInfo', params).then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                res.data.data.productInfos.forEach((item)=>{
+                    item.key = item.id;
+                });
+                this.setState({
+                    dataSource: res.data.data.productInfos,
+                    pageTotle: res.data.data.num
+                })
+            }else{
+                this.setState({
+                    dataSource: [],
+                    pageTotle: 0
+                })
+            }
+        })
+    }
+    searchMethods() {
+        this.initData(1);
+        this.setState({
+            currentPage: 1
+        })
+    }
+    add() {
+        this.setState({
+            msg: '新增',
+            flag: 1,
+            visible: true,
+            finishProductName: '',
+            referencePrice: '',
+            finishProductGrade: '',
+            formMeasurement: '',
+            weight: '',
+            mark1: '',
+            Materials: '',
+            RawMaterialGrade: '',
+            coefficientLosses: '',
+            fileList: [],
+            uploadImgList: []
+        });
+    }
+    changes(row) {
+        this.setState({
+            msg: '修改',
+            flag: 0,
+            visible: true,
+            id: row.id,
+            finishProductName: row.productName,
+            referencePrice: Number(row.referencePrice) / 100,
+            finishProductGrade: row.productLevelId,
+            formMeasurement: row.measurementId,
+            weight: row.productWeight,
+            mark1: row.note,
+            Materials: row.rawMaterialStandardId,
+            RawMaterialGrade: row.rawMaterialLevelId,
+            coefficientLosses: row.wasteRate
+        });
+        // 获取图片作为回显
+        Axios.post('/self/erp/baseinfo/queryProductInfoById', {id: row.id}).then((res)=>{
+            if(res.data.success) {
+                // fileList  res.data.data.productInfo  picture1
+                console.log(res.data.data.productInfo.picture1);
+                let uploadImgList= [];
+                if(res.data.data.productInfo.picture1 != undefined) {
+                    uploadImgList.push(res.data.data.productInfo.picture1);
+                }
+                if(res.data.data.productInfo.picture2 != undefined) {
+                    uploadImgList.push(res.data.data.productInfo.picture2);
+                }
+                if(res.data.data.productInfo.picture3 != undefined) {
+                    uploadImgList.push(res.data.data.productInfo.picture3);
+                }
+                this.setState({
+                    uploadImgList: uploadImgList
+                })
+            }else{
+                this.setState({
+                    uploadImgList: []
+                })
+            }
+        })
+    }
+    deletes(row) {
+        let that = this;
+        confirm({
+            title: '你确定要删除吗?',
+            icon: <ExclamationCircleOutlined />,
+            content: '',
+            onOk() {
+                let params = {
+                    id: row.id
+                };
+                Axios.post('/self/erp/baseinfo/deleteProductInfo', params).then((res)=>{
+                    if(res.data.success) {
+                        message.success("删除成功");
+                        that.initData(that.state.currentPage);
+                    }else{
+                        message.warning(res.data.message);
+                    }
+                })
+            },
+            onCancel() {},
+        });
+    }
+    changePages(val) {
+        this.initData(val);
+        this.setState({
+            currentPage: val
+        })
+    }
+    removes() {
+        return false;
+    }
+    handleOk() {
+        let picture1 = '', picture2 = '', picture3 = '';
+        console.log(this.imgList.length);
+        if(this.imgList && this.imgList.length) {
+            switch (this.imgList.length) {
+                case 1:
+                    picture1 = this.imgList[0];
+                    break;
+                case 2:
+                    picture1 = this.imgList[0];
+                    picture2 = this.imgList[1];
+                    break;
+                case 3:
+                    picture1 = this.imgList[0];
+                    picture2 = this.imgList[1];
+                    picture3 = this.imgList[2];
+                    break;
+            }
+        }
+        let params = {
+            productName: this.state.finishProductName,  // 成品名称
+            referencePrice: Number(this.state.referencePrice) * 100,
+            productCategory: this.testName,
+            productCategoryId: this.testId,
+            productLevelId: this.state.finishProductGrade,
+            measurementId: this.state.formMeasurement,
+            productWeight: this.state.weight,
+            note: this.state.mark1,
+            rawMaterialStandardId: this.state.Materials,
+            rawMaterialLevelId: this.state.RawMaterialGrade,
+            wasteRate: this.state.coefficientLosses,
+            picture1,
+            picture2,
+            picture3,
+        };
+        if(this.state.flag === 1) {  // 新增
+            Axios.post('/self/erp/baseinfo/addProductInfo', params).then((res)=>{
+                if(res.data.success) {
+                    message.success('新增成功');
+                    this.initData(this.state.currentPage);
+                    this.setState({
+                        visible: false
+                    })
+                }else{
+                    message.warning(res.data.message);
+                }
+            })
+        }else{
+            params.id = this.state.id;
+            Axios.post('/self/erp/baseinfo/updateProductInfo', params).then((res)=>{
+                if(res.data.success) {
+                    message.success('修改成功');
+                    this.initData(this.state.currentPage);
+                    this.setState({
+                        visible: false
+                    })
+                }else{
+                    message.warning(res.data.message);
+                }
+            })
+        }
+    }
+    // 下拉框数据
+    selectList() {
+        Axios.post('self/erp/baseinfo/queryDictTypeAndValue').then((res)=>{
+            // console.log(res.data);
+            if(res.data.success) {
+                this.setState({
+                    finishProductClassifyList: res.data.data.productCategory,  //成品分类
+                    finishProductGradeList: res.data.data.productLevel,
+                    formMeasurementList: res.data.data.productMeasurement,
+                    MaterialsList: res.data.data.rawMaterialStandard,
+                    RawMaterialGradeList: res.data.data.rawMaterialLevel
+                })
+            }else{
+                this.setState({
+                    finishProductClassifyList: [],  //成品分类
+                    finishProductGradeList: [],
+                    formMeasurementList: [],
+                    MaterialsList: [],
+                    RawMaterialGradeList: []
+                })
+            }
+        })
+    }
+
+    //图片预览功能
+    handlePreview = async file => {
+        if (!file.url && !file.preview) {
+            file.preview = await this.getBase64(file.originFileObj);
+        }
+        this.setState({
+            previewImage: file.url || file.preview,
+            previewVisible: true,
+            // previewTitle: file.name || file.url.substring(file.url.lastIndexOf('/') + 1),
+        });
+    };
+    handleCancel = () => this.setState({ previewVisible: false });
+    handleChange = ({ fileList }) =>{
+        this.setState({ fileList })
+    };
+    getBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    }
+    beforeUpload(file) {
+        if(file.name.indexOf('.') != -1) {
+            let postfix = file.name.split('.')[file.name.split.length-1];
+            if(postfix == 'png' || postfix == 'jpg' || postfix == 'jif' || postfix == 'bmp' || postfix == 'jpeg') {}else{
+                message.warning("只能上传图片");
+                return false;
+            }
+            let formdata = new FormData();
+            formdata.append("file",file);
+            const config = {
+                headers: { "Content-Type": "multipart/form-data" }
+            };
+            Axios.post('/self/erp/baseinfo/uploadProductPicture', formdata, config).then((res)=>{
+                if(res.data.success) {
+                    message.success("上传成功");
+                    let imgPath = res.data.data.picture;
+                    this.imgList.push(imgPath);
+                    // if(this.imgList.length > 3) {
+                    //     message.warning("最多上传三张图片");
+                    //     return false;
+                    // };
+                    this.setState({
+                        uploadImgList: this.imgList
+                    })
+                }else{
+                    message.warning(res.data.message);
+                }
+            })
+        }
+    }
+    componentDidMount() {
+        this.setState({
+            host: JSON.parse(sessionStorage.getItem("userInfo")).host
+        });
+        this.treelist();
+        this.selectList();
+    }
+}
+export default ProductManagement;

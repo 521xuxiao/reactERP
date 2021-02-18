@@ -1,0 +1,20 @@
+import React, {Component} from 'react';
+import './branch.scss'
+class Branch extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+
+        }
+    }
+    render() {
+        return(
+            <div id="branch">
+                <div className="Branch">
+                    Branch
+                </div>
+            </div>
+        )
+    }
+}
+export default Branch;

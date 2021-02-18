@@ -1,0 +1,253 @@
+#home1{
+    height: 100%;
+    .home1{
+        height: 100%;
+        box-sizing: border-box;
+        padding: 0 1rem 1rem 1rem;
+        .home1_top{
+            height: 40%;
+            margin-bottom: 0;
+            padding-bottom: .5rem;
+            box-sizing: border-box;
+            overflow: hidden;
+            .home1_top_left{
+                float: left;
+                width: 33.33%;
+                padding-right: .5rem;
+                box-sizing: border-box;
+                height: 100%;
+                .home1_top_left_inner{
+                    background: url("../../common/img/zu.png") no-repeat 0 0;
+                    background-size: 100% 100%;
+                    height: 100%;
+                    .home1_top_left_inner_top{
+                        height: 50%;
+                        overflow: hidden;
+                        .home1_top_left_inner_top_left{
+                            float: left;
+                            width: 50%;
+                            height: 100%;
+                            padding: 1rem 0 0 1rem;
+                            box-sizing: border-box;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                            align-items: center;
+                            .home1_top_left_inner_top_left_title{
+                                color: #fff;
+                                font-size: 2rem;
+                            }
+                            .home1_top_left_inner_top_left_content{
+                                .home1_top_left_inner_top_left_content_a{
+                                    display: inline-block;
+                                    font-size: 4.8rem;
+                                    font-family: UniDreamLED;
+                                    color: #FFE535;
+                                }
+                                .home1_top_left_inner_top_left_content_b{
+                                    display: inline-block;
+                                    color: #fff;
+                                    font-size: 1.8rem;
+                                    margin-left: 1rem;
+                                }
+                            }
+                        }
+                        .home1_top_left_inner_top_right{
+                            float: left;
+                            width: 50%;
+                            height: 100%;
+                            padding: 1rem 1rem 0 0;
+                            box-sizing: border-box;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            .home1_top_left_inner_top_left_title{
+                                font-size: 3rem;
+                                color: #F03F3F;
+
+                            }
+                            .home1_top_left_inner_top_left_title_another{
+                                font-size: 3rem;
+                                color: #4FE364;
+
+                            }
+                            .home1_top_left_inner_top_left_content{
+                                background: url("../../common/img/xiangshang.png") no-repeat 0 0;
+                                background-size: 100% 100%;
+                                width: 3.5rem;
+                                height: 4.4rem;
+                                margin-left: 1.8rem;
+                            }
+                            .home1_top_left_inner_top_left_content_another{
+                                background: url("../../common/img/xiajiang.png") no-repeat 0 0;
+                                background-size: 100% 100%;
+                                width: 3.5rem;
+                                height: 4.4rem;
+                                margin-left: 1.8rem;
+                            }
+                        }
+                    }
+                    .home1_top_left_inner_bottom{
+                        height: 50%;
+                    }
+                }
+            }
+            .home1_top_middle{
+                float: left;
+                width: 33.33%;
+                padding: 0 .5rem;
+                box-sizing: border-box;
+                height: 100%;
+                .home1_top_middle_inner{
+                    height: 100%;
+                    background: url("../../common/img/zu.png") no-repeat 0 0;
+                    background-size: 100% 100%;
+                }
+            }
+            .home1_top_right{
+                float: left;
+                width: 33.33%;
+                padding-left: .5rem;
+                box-sizing: border-box;
+                height: 100%;
+                .home1_top_right_inner{
+                    height: 100%;
+                    background: url("../../common/img/zu.png") no-repeat 0 0;
+                    background-size: 100% 100%;
+                    position: relative;
+                    .home1_top_right_inner_left{
+                        position: absolute;
+                        width: 50%;
+                        height: 50%;
+                        color: #fff;
+                        font-size: 2rem;
+                        left: 0%;
+                        top: 0%;
+                        padding: 1rem 0 0 1rem;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        .home1_top_right_inner_top_left_title{
+
+                        }
+                        .home1_top_left_inner_top_left_content{
+
+                            .home1_top_left_inner_top_left_content_a{
+                                display: inline-block;
+                                font-size: 4.8rem;
+                                font-family: UniDreamLED;
+                                color: transparent;
+                            }
+                            .home1_top_left_inner_top_left_content_b{
+                                display: inline-block;
+                                color: transparent;
+                            }
+                        }
+                    }
+                    .placeEcharts{
+                        height: 100%;
+                        padding: 1rem;
+                        box-sizing: border-box;
+                        z-index: 1000;
+                    }
+                }
+            }
+        }
+        .home1_bottom{
+            height: 60%;
+            margin-bottom: 0;
+            padding-top: .5rem;
+            box-sizing: border-box;
+            overflow: hidden;
+            .home1_bottom_left{
+                float: left;
+                width: 60%;
+                height: 100%;
+                padding-right: .5rem;
+                box-sizing: border-box;
+                .home1_bottom_left_inner{
+                    height: 100%;
+                    overflow: hidden;
+                    background: url("../../common/img/wai.png") no-repeat 0 0;
+                    background-size: 100% 100%;
+                    position: relative;
+                    .home1_bottom_left_inner_title{
+                        position: absolute;
+                        color: #fff;
+                        font-size: 2rem;
+                        padding: 4rem 0 0 8rem;
+                    }
+                    .home1_bottom_left_inner_left{
+                        float: left;
+                        width: 50%;
+                        height: 100%;
+                        padding: 1rem;
+                        box-sizing: border-box;
+                    }
+                    .home1_bottom_left_inner_right{
+                        float: left;
+                        width: 50%;
+                        height: 100%;
+                        padding: 1rem;
+                        box-sizing: border-box;
+                    }
+                }
+            }
+            .home1_bottom_right{
+                float: left;
+                width: 40%;
+                height: 100%;
+                padding-left: .5rem;
+                box-sizing: border-box;
+                .home1_bottom_right_inner{
+                    height: 100%;
+                    background: url("../../common/img/wai.png") no-repeat 0 0;
+                    background-size: 100% 100%;
+                    position: relative;
+                    .home1_bottom_right_inner_title{
+                        position: absolute;
+                        color: #fff;
+                        font-size: 2rem;
+                        padding: 4rem 0 0 8rem;
+                    }
+                    .home1_bottom_right_inner_content{
+                        padding-top: 9rem;
+                        .home1_bottom_right_inner_content_h3{
+                            overflow: hidden;
+                            .home1_bottom_right_inner_content_h3_li1{
+                                float: left;
+                                width: 33.33%;
+                                text-align: center;
+                                color: #36DDE9;
+                                font-size: 1.6rem;
+
+                            }
+                        }
+                        .placeLi{
+                            color: #22eaf5;
+                            font-size: 12px;
+                            overflow: hidden;
+                            .ul7{
+                                ol{
+                                    overflow: hidden;
+                                    margin: 5px 0;
+                                    li{
+                                        text-align: center;
+                                        width: 33.33%;
+                                        display: block;
+                                        float: left;
+                                        color: #fff;
+                                        overflow: hidden;
+                                        text-overflow:ellipsis;
+                                        white-space: nowrap;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

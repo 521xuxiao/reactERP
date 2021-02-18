@@ -1,0 +1,192 @@
+import React, {Component} from 'react';
+import { withRouter, Link } from 'react-router-dom'
+import { Menu ,Button} from 'antd';
+import './slider.scss';
+import ciagou from '../../common/img/ciagou.png'
+import systems from '../../common/img/system.png'
+import cangku from '../../common/img/cangku.png'
+import jichu from '../../common/img/jichu.png'
+import mai from  '../../common/img/mai.png';
+import {
+    createFromIconfontCN,
+    DiffOutlined
+} from '@ant-design/icons';
+const IconFont = createFromIconfontCN({
+    scriptUrl: [
+        '//at.alicdn.com/t/font_1788044_0dwu4guekcwr.js', // icon-javascript, icon-java, icon-shoppingcart (overrided)
+        '//at.alicdn.com/t/font_1788592_a5xf2bdic3u.js', // icon-shoppingcart, icon-python
+    ],
+});
+const { SubMenu } = Menu;
+class Slider extends Component {
+    constructor(props) {
+        super(props);
+        this.light = this.props.giveSliderData;
+        this.state = {
+            defaultActive: '',
+            defaultSelectedKeys: this.props.giveSliderData,  // 默认高亮
+            defaultOpenKeys: ['1'],   // 默认打开
+            openKeys: [],
+            menuList: [],
+            tabsArr: []
+        }
+    }
+    render() {
+        this.light = this.props.giveSliderData;
+        return(
+            <div className="slider" id="slider">
+                <Menu theme="dark" onClick={this.handleClick.bind(this)} style={{ width: "100%" }} defaultSelectedKeys={[this.state.defaultSelectedKeys]}
+                      defaultOpenKeys={this.state.defaultOpenKeys} mode="inline" selectedKeys={[this.light]}>
+                    {this.renderItem(this.state.menuList)}
+                </Menu>
+            </div>
+        )
+    }
+    renderItem(data){  // 动态渲染侧边导航栏
+        let result = data.map((item,index)=>{
+            if(item.children){
+                return(
+                    <SubMenu title={<span><img src={item.icon} className="img1"/>{item.name}</span>} key={item.key}>
+                        {this.renderItem(item.children)}
+                    </SubMenu>
+                )
+            }else{
+                return(
+                    <Menu.Item key={item.key}>
+                        <Link to={item.path}>
+                            <span>{item.name}</span>
+                        </Link>
+                    </Menu.Item>
+                )
+            }
+        })
+        return result
+    }
+    componentDidMount () {
+        let menuList = [
+            {
+                key: '1', name: '企业采购',icon: ciagou, children: [
+                    {key: '1-1', name: '采购计划', path: '/app/procurementPlan'},
+                    {key: '1-2', name: '采购任务', path: '/app/purchasingTask'},
+                    {key: '1-3', name: '采购质检单', path: '/app/qualityOrder'},
+                    {key: '1-4', name: '采购订单', path: '/app/purchaseOrder'}
+                ]
+            },
+            {
+                key: '2', name: '基础资料',icon: jichu, children: [
+                    {key: '2-1', name: '供应商管理', path: '/app/provider'},
+                    {key: '2-2', name: '果园管理', path: '/app/distributor'},
+                    {key: '2-3', name: '仓库管理', path: '/app/storeManagement'},
+                    {key: '2-4', name: '产品资料管理', path: '/app/productManagement'},
+                    {key: '2-5', name: '车间管理', path: '/app/shopManagement'},
+                    {key: '2-6', name: '客户分组', path: '/app/customerGroups'},
+                    {key: '2-7', name: '客户管理', path: '/app/client'}
+                ]
+            },
+            {
+                key: '3', name: '仓库管理',icon: cangku, children: [
+                    {key: '3-1', name: '入库单', path: '/app/inList'},
+                    {key: '3-2', name: '出库单', path: '/app/outboundDeliveryOrder'},
+                ]
+            },
+            {
+                key: '4', name: '销售管理',icon: mai, children: [
+                    {key: '4-1', name: '销售订单', path: '/app/salesOrder'},
+                ]
+            },
+            {
+                key: '8', name: '系统设置',icon: systems, children: [
+                    {key: '8-1', name: '字典管理', path: '/app/dictionary0peration'},
+                    {key: '8-2', name: '日志操作', path: '/app/journalizing'},
+                    {key: '8-4', name: '部门设置', path: '/app/branch'},
+                    {key: '8-3', name: '用户设置', path: '/app/userBu'},
+                    {key: '8-5', name: '角色设置', path: '/app/roleList'}
+                ]
+            }
+        ];
+        this.setState({
+            menuList
+        })
+    }
+    componentWillMount() {  // 此方法里面做的刷新页面导航栏保持高亮显示
+        let items = sessionStorage.getItem("menuKey");
+        if(items) {
+            let str = null;
+            if(items.indexOf('-') !== -1) {
+                str = items.split('-')[0]
+            }
+            let defaultSelectedKeys = [items];
+            let defaultOpenKeys = [str];
+            this.setState({
+                defaultSelectedKeys,
+                defaultOpenKeys
+            })
+            this.light = items;
+        }
+    }
+
+    handleClick({item, key}) {
+        sessionStorage.setItem("menuKey", key);
+        switch(key) {
+            case '1-1':
+                this.state.tabsArr.push({title: '采购计划', key: '1-1'});
+                break;
+            case '1-2':
+                this.state.tabsArr.push({title: '采购任务', key: '1-2'});
+                break;
+            case '1-3':
+                this.state.tabsArr.push({title: '采购质量单', key: '1-3'});
+                break;
+            case '1-4':
+                this.state.tabsArr.push({title: '采购订单', key: '1-4'});
+                break;
+            case '2-1':
+                this.state.tabsArr.push({title: '供应商管理', key: '2-1'});
+                break;
+            case '2-2':
+                this.state.tabsArr.push({title: '果园管理', key: '2-2'});
+                break;
+            case '2-3':
+                this.state.tabsArr.push({title: '仓库管理', key: '2-3'});
+                break;
+            case '2-4':
+                this.state.tabsArr.push({title: '产品资料管理', key: '2-4'});
+                break;
+            case '2-5':
+                this.state.tabsArr.push({title: '车间管理', key: '2-5'});
+                break;
+            case '2-6':
+                this.state.tabsArr.push({title: '客户分组', key: '2-6'});
+                break;
+            case '2-7':
+                this.state.tabsArr.push({title: '客户管理', key: '2-7'});
+                break;
+            case '3-1':
+                this.state.tabsArr.push({title: '入库单', key: '3-1'});
+                break;
+            case '3-2':
+                this.state.tabsArr.push({title: '出库单', key: '3-2'});
+                break;
+            case '4-1':
+                this.state.tabsArr.push({title: '销售订单', key: '4-1'});
+                break;
+            case '8-1':
+                this.state.tabsArr.push({title: '字典管理', key: '8-1'});
+                break;
+            case '8-2':
+                this.state.tabsArr.push({title: '日志操作', key: '8-2'});
+                break;
+            case '8-3':
+                this.state.tabsArr.push({title: '用户设置', key: '8-3'});
+                break;
+            case '8-4':
+                this.state.tabsArr.push({title: '部门设置', key: '8-4'});
+                break;
+            case '8-5':
+                this.state.tabsArr.push({title: '角色设置', key: '8-5'});
+                break;
+        }
+        this.props.giveAppData({items: this.state.tabsArr, currentItems: key});
+    }
+}
+export default withRouter(Slider);

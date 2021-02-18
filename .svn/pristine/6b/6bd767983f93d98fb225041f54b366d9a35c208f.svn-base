@@ -1,0 +1,263 @@
+import React, {Component} from 'react';
+import {Button, Table, Space, Pagination, Modal, Input, message,Select,Cascader,InputNumber} from 'antd';
+import Axios from 'axios';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import './weighManeger.scss';
+const {Column} = Table;
+const {TextArea} = Input;
+const {confirm} = Modal;
+const {Option} = Select;
+class WeighManeger extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            dataSource: [],
+            currentPage: 1, pageSize: 10, pageTotal: 0,
+            msg: '', flag: 1,
+            visible: false,
+
+            name: '',  nameList: [],  styleId: '',   styleList: [],   breedList: [],   breedId: '', weight: '',
+            id: ''
+        }
+    }
+    render() {
+        return(
+            <div id="weighManeger">
+                <div className="weighManeger">
+                    <div className="bg">
+                        <button className="searchs" onClick={this.add.bind(this)}>新增</button>
+                    </div>
+                    <div className="placeTable">
+                        <Table pagination={false} dataSource={this.state.dataSource}>
+                            <Column title="序号" align="center" id="index" dataIndex="index" width="100px" render={(text, record, index)=>(
+                                <span>{(this.state.currentPage-1)*this.state.pageSize + index+1}</span>
+                            )}/>
+                            <Column title="桶名称" dataIndex="bucketName" id="bucketName" align="center"/>
+                            <Column title="原料规格" dataIndex="standard" id="standard" align="center"/>
+                            <Column title="原料品种" dataIndex="variety" id="variety" align="center"/>
+                            <Column title="承载重量" dataIndex="carryingWeight" id="carryingWeight" align="center"/>
+                            <Column title="操作" align="center" id="records" dataIndex="records"
+                                render={(text, record) => (
+                                    <Space size="large">
+                                        <span key={"changes"} onClick={this.changes.bind(this, record)} className="changes">编辑</span>
+                                        <span key={"deletes"} onClick={this.deletes.bind(this, record)} className="deletes">删除</span>
+                                        <span key={"details"} onClick={this.details.bind(this, record)} className="details span11">详情</span>
+                                    </Space>
+                                )}
+                            />
+                        </Table>
+                    </div>
+                    <div className="placePagination">
+                        <Pagination showTotal={()=>`共 ${this.state.pageTotal} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotal} />
+                    </div>
+
+                    <Modal title={this.state.msg} width="60%" footer={null} getContainer={false} closable={false}  visible={this.state.visible} centered={true}>
+                        <div className="modal1">
+                            <div className="div3">
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">*名称</span>
+                                        <Select  className="input3" allowClear onChange={(e)=>{this.setState({name: e})}} value={this.state.name}
+                                                 disabled={this.state.flag==3?true:false}>
+                                            {
+                                                this.state.nameList.map((item, index)=>{
+                                                    return(
+                                                        <Option value={item.id} key={index}>{item.bucketName}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">*规格</span>
+                                        <Select  className="input3" allowClear onChange={(e)=>{this.setState({styleId: e})}} value={this.state.styleId}
+                                                 disabled={this.state.flag==3?true:false}>
+                                            {
+                                                this.state.styleList.map((item, index)=>{
+                                                    return(
+                                                        <Option value={item.valueId} key={index}>{item.value}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </li>
+                                </ul>
+                                <ul className="ul1 ul2">
+                                    <li className="li1">
+                                        <span className="span1">*品种</span>
+                                        <Select  className="input3" allowClear onChange={(e)=>{this.setState({breedId: e})}} value={this.state.breedId}
+                                                 disabled={this.state.flag==3?true:false}>
+                                            {
+                                                this.state.breedList.map((item, index)=>{
+                                                    return(
+                                                        <Option value={item.valueId} key={index}>{item.value}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">*重量</span>
+                                        <InputNumber allowClear onChange={(e)=>{this.setState({weight: e})}} value={this.state.weight} className={"input3"}
+                                                     disabled={this.state.flag==3?true:false}/>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div className="div4">
+                            <li className="li4">
+                                <Button className="btn4" type="danger" onClick={()=>{this.setState({visible: false})}}>取消</Button>
+                            </li>
+                            <li className="li4" style={this.state.flag==3?{display: 'none'}:{display: 'block'}}>
+                                <Button className="btn4" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
+                            </li>
+                        </div>
+                    </Modal>
+                </div>
+            </div>
+        )
+    }
+    initData(currentPage) {
+        let params = {
+            currentPage,
+            pageSize: this.state.pageSize
+        };
+        Axios.post('/self/erp/baseinfo/queryWeighing', params).then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    dataSource: res.data.data.weighings,
+                    pageTotal: res.data.data.num
+                })
+            }else{
+                this.setState({
+                    dataSource: [],
+                    pageTotal: 0
+                })
+            }
+        })
+    }
+    add() {
+        this.setState({
+            visible: true,
+            msg: '新增',
+            flag: 1,
+            name: '',   styleId: '',   breedId: '', weight: ''
+        })
+    }
+    changePages(val) {
+        this.initData(val);
+        this.setState({
+            currentPage: val
+        })
+    }
+    changes(row) {
+        this.setState({
+            visible: true,
+            msg: '修改',
+            flag: 0,
+            id: row.id,
+
+            name: row.bucketId,   styleId: row.standardId,   breedId: row.varietyId, weight: row.carryingWeight
+        })
+    }
+    details(row) {
+        this.setState({
+            visible: true,
+            msg: '详情',
+            flag: 3,
+            id: row.id,
+
+            name: row.bucketId,   styleId: row.standardId,   breedId: row.varietyId, weight: row.carryingWeight
+        })
+    }
+    deletes(row) {
+        let that = this;
+        confirm({
+            title: '你确定要删除吗?',
+            icon: <ExclamationCircleOutlined />,
+            content: '',
+            onOk() {
+                let params = {
+                    id: row.id
+                };
+                Axios.post('/self/erp/rfidCheck/deleteWeighing', params).then((res)=>{
+                    if(res.data.success) {
+                        message.success("删除成功");
+                        that.initData(that.state.currentPage);
+                    }else{
+                        message.warning(res.data.message);
+                    }
+                })
+            },
+            onCancel() {},
+        });
+    }
+    handleOk() {
+        let params = {
+            standardId: this.state.styleId,
+            varietyId: this.state.breedId,
+            bucketId: this.state.name,
+            carryingWeight: this.state.weight
+        };
+        if(this.state.flag == 1) {
+            Axios.post('/self/erp/baseinfo/addWeighing', params).then((res)=>{
+                if(res.data.success) {
+                    this.initData(this.state.currentPage);
+                    this.setState({
+                        visible: false
+                    });
+                    message.success("成功");
+                }else{
+                    message.warning(res.data.message);
+                }
+            })
+        }else{
+            params.id = this.state.id;
+            Axios.post('/self/erp/baseinfo/updateWeighing', params).then((res)=>{
+                if(res.data.success) {
+                    this.initData(this.state.currentPage);
+                    this.setState({
+                        visible: false
+                    });
+                    message.success("成功");
+                }else{
+                    message.warning(res.data.message);
+                }
+            })
+        }
+    }
+    componentDidMount() {
+        this.initData(this.state.currentPage);
+        this.initList();
+    }
+    /**
+     * 名称规格品种的下拉框
+     * */
+    initList() {
+        Axios.post('/self/erp/baseinfo/queryBucketIdAndName', {}).then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    nameList: res.data.data.buckets
+                })
+            }else{
+                this.setState({
+                    nameList: []
+                })
+            }
+        });
+        Axios.post('/self/erp/baseinfo/queryDictTypeAndValue').then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    styleList: res.data.data.rawMaterialStandard,
+                    breedList: res.data.data.rawMaterialVariety
+                })
+            }else{
+                this.setState({
+                    styleList: [],
+                    breedList: []
+                })
+            }
+        })
+    }
+}
+export default WeighManeger;

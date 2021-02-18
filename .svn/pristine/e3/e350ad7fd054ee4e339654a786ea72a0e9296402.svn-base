@@ -1,0 +1,228 @@
+import React, {Component} from 'react';
+import { Tree, Input, Select, Checkbox, Button, message } from 'antd';
+import Axios from 'axios';
+import { DownOutlined } from '@ant-design/icons';
+import './storeManagement.scss';
+const {Option} = Select;
+class StoreManagement extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            currentIndex: 0,
+            treeData: [],
+            storeCode: '',
+            stroeName: '',
+            personId: '',   personIdList: [],
+            phone: '',
+            checkedValue: true,
+            treeNodes: '',
+            parentInfo: {}
+        }
+    }
+    render() {
+        return(
+            <div id="storeManagement">
+                <div className="storeManagement">
+                    <div className="dictionaryLeft">
+                        <div className="innerDiv">
+                            <div className="dictType">仓库列表</div>
+                            <Tree showLine switcherIcon={<DownOutlined />} defaultExpandedKeys={[]} onSelect={this.onSelect.bind(this)} treeData={this.state.treeData}/>
+                        </div>
+                    </div>
+                    <div className="dictionaryRight">
+                        <div className="innerRight">
+                            <ul className="ul1">
+                                <li className="li1">
+                                    <span className="span1">仓库编号</span>
+                                    <Input className="input1" allowClear value={this.state.storeCode} onChange={(e)=>{this.setState({storeCode: e.target.value})}}/>
+                                </li>
+                                <li className="li1">
+                                    <span className="span1">仓库名称</span>
+                                    <Input className="input1" allowClear value={this.state.stroeName} onChange={(e)=>{this.setState({stroeName: e.target.value})}}/>
+                                </li>
+                            </ul>
+                            <ul className="ul1">
+                                <li className="li1">
+                                    <span className="span1">负责人</span>
+                                    <Select className="input1" allowClear onChange={(e)=>{this.setState({personId: e})}} value={this.state.personId}>
+                                        {
+                                            this.state.personIdList.map((item, index)=>{
+                                                return(
+                                                    <Option value={item.empno} key={index}>{item.realname}</Option>
+                                                )
+                                            })
+                                        }
+                                    </Select>
+                                </li>
+                                <li className="li1">
+                                    <span className="span1">联系方式</span>
+                                    <Input className="input1" allowClear value={this.state.phone} onChange={(e)=>{this.setState({phone: e.target.value})}}/>
+                                </li>
+                            </ul>
+                            <ol className="ol1">
+                                <li className="li1">
+                                    <span className="span1 span2">使用状态</span>
+                                    <Checkbox className="input2" checked={this.state.checkedValue} onChange={(e)=>{this.setState({checkedValue: e.target.checked})}}></Checkbox>
+                                </li>
+                            </ol>
+                            <div className="div4">
+                                <li className="li4">
+                                    <Button className="btn4" type="primary" onClick={this.handleOk.bind(this)}>修改</Button>
+                                </li>
+                                <li className="li4">
+                                    <Button className="btn4" type="primary" onClick={this.add.bind(this)}>新增</Button>
+                                </li>
+                                <li className="li4">
+                                    <Button className="btn4" type="danger" onClick={this.deletes.bind(this)}>删除</Button>
+                                </li>
+                                <li className="li4">
+                                    <Button className="btn4" type="danger" onClick={this.cancle.bind(this)}>重置</Button>
+                                </li>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+    storeTreeList() {
+        Axios.post('/self/erp/baseinfo/queryWarehouse').then((res)=>{
+            if(res.data.success) {
+                if(res.data.data.warehouses && res.data.data.warehouses.length) {
+                    res.data.data.warehouses.forEach((item)=>{
+                        item.title = item.name;
+                        item.key = item.id;
+                        if(item.children && item.children.length) {
+                            item.children.forEach((innerItem)=>{
+                                innerItem.title = innerItem.name;
+                                innerItem.key = innerItem.id;
+                            })
+                        }else{
+                            item.children = [];
+                        }
+                    })
+                }
+                this.setState({
+                    treeData: res.data.data.warehouses
+                })
+            }else{
+                this.setState({
+                    treeData: []
+                })
+            }
+        })
+    }
+    onSelect(selectedKeys, info) {
+        this.setState({
+            treeNodes: selectedKeys[0],
+            parentInfo: info
+        });
+        Axios.post('/self/erp/baseinfo/queryWarehouseById', {id: selectedKeys[0]}).then((res)=>{
+            if(res.data.success) {
+                let obj = res.data.data.warehouse;
+                this.setState({
+                    storeCode: obj.warehouseCode,
+                    stroeName: obj.name,
+                    personId: obj.keeperId,
+                    phone: obj.phone,
+                    checkedValue: obj.isUsing == 1 ? true : false
+                })
+            }else{
+                this.setState({
+                    storeCode: '',
+                    stroeName: '',
+                    personId: '',
+                    phone: '',
+                    checkedValue: false
+                })
+            }
+        })
+    }
+    personList() { // 负责人下拉框列表
+        Axios.post('/self/erp/baseinfo/queryUser').then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    personIdList: res.data.data.users
+                })
+            }else{
+                this.setState({
+                    personIdList: []
+                })
+            }
+        })
+    }
+    add() {
+        if(this.state.parentInfo.node == undefined) {
+            message.warning("请选择仓库列表再新增");
+            return false;
+        }
+        if(!this.state.parentInfo.node.parent) {
+            message.warning("请选择仓库没有父");
+            return false;
+        }
+        let paramms = {
+            name: this.state.stroeName,
+            parent: this.state.parentInfo.node.parent,
+            keeperId: this.state.personId,
+            phone: this.state.phone,
+            checkedValue: this.state.checkedValue ? 1 : 0
+        };
+        Axios.post('/self/erp/baseinfo/addWarehouse', paramms).then((res)=>{
+            if(res.data.success) {
+                message.success("新增成功");
+                this.storeTreeList();
+            }else{
+                message.warning(res.data.message);
+            }
+        })
+    }
+    cancle() {
+        this.setState({
+            storeCode: '',
+            stroeName: '',
+            personId: '',
+            phone: '',
+            checkedValue: false
+        })
+    }
+    handleOk() {  // 修改
+        if(this.state.parentInfo.node == undefined) {
+            message.warning("请选择仓库列表再修改");
+            return false;
+        }
+        let params = {
+            id: this.state.treeNodes,
+            name: this.state.stroeName,
+            parent: this.state.parentInfo.node.parent,
+            isUsing: this.state.checkedValue ? 1 : 0,
+            keeperId: this.state.personId
+        };
+        Axios.post('/self/erp/baseinfo/updateWarehouse', params).then((res)=>{
+            if(res.data.success) {
+                message.success("修改成功");
+                this.storeTreeList();
+            }else{
+                message.warning(res.data.message);
+            }
+        })
+    }
+    deletes() {
+        if(this.state.parentInfo.node == undefined) {
+            message.warning("请选择仓库列表再删除");
+            return false;
+        }
+        Axios.post('/self/erp/baseinfo/deleteWarehouse', {id: this.state.treeNodes}).then((res)=>{
+            if(res.data.success) {
+                message.success("删除成功");
+                this.storeTreeList();
+            }else{
+                message.warning(res.data.message);
+            }
+        })
+    }
+    componentDidMount() {
+        this.storeTreeList();
+        this.personList();
+    }
+}
+export default StoreManagement;

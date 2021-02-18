@@ -1,0 +1,13 @@
+#menuConfig{
+  .menuConfig{
+    .placeTree{
+      display: flex;
+      .innerLeft{
+        width: 200px;
+      }
+      .innerRight{
+        flex: 1;
+      }
+    }
+  }
+}

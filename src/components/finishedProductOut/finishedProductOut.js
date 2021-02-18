@@ -1,0 +1,111 @@
+import React, {Component} from 'react';
+import {Input, Select, DatePicker, Table, Pagination} from 'antd';
+import Axios from 'axios';
+import locale from 'antd/es/date-picker/locale/zh_CN';
+import 'moment/locale/zh-cn';
+import './finishedProductOut.scss';
+const {Option} = Select;
+const {RangePicker } =  DatePicker;
+const {Column} =  Table;
+class FinishedProductOut extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            code: '',   sheetName: '',  startTime: '',   endTime: '',
+            dataSource: [],
+            currentPage: 1, pageSize: 10, pageTotal: 0
+        }
+    }
+    render() {
+        return(
+            <div id="finishedProductOut">
+                <div className="finishedProductOut">
+                    <div className="placeSearch">
+                        <div className="left1">
+                            <span className="span1">单号</span>
+                            <Input onChange={(e)=>{this.setState({code: e.target.value})}} className="input1" allowClear/>
+                        </div>
+                        <div className="left1">
+                            <span className="span1">名称</span>
+                            <Input onChange={(e)=>{this.setState({sheetName: e.target.value})}} className="input1" allowClear/>
+                        </div>
+                        <div className="left1 left2">
+                            <span className="span1">时间</span>
+                            <RangePicker renderExtraFooter={() => 'extra footer'} className="input1 input2" showTime locale={locale} onChange={this.timePick.bind(this)}/>
+                        </div>
+                        <div className="btn">
+                            <button className="searchs" onClick={this.searchMethods.bind(this)}>查询</button>
+                        </div>
+                    </div>
+                    <div className="placeTable">
+                        <Table pagination={false} dataSource={this.state.dataSource} locale={{emptyText: '暂无数据'}}>
+                            <Column title="名称" dataIndex="sheetName" key="sheetName" align="center"/>
+                            <Column title="仓库名" dataIndex="qualityCheckSheetCode" key="qualityCheckSheetCode" align="center" render={(text, record)=>(
+                                <span>{record.warehouseAreaName+record.warehouseName}</span>
+                            )}/>
+                            <Column title="车间名" dataIndex="workroomName" key="workroomName" align="center" />
+                            <Column title="出库数量" dataIndex="outboundNum" key="outboundNum" align="center"/>
+                            <Column title="出库时间" dataIndex="modifiedTime" key="modifiedTime" align="center"/>
+                        </Table>
+                    </div>
+                    <div className="placePagination">
+                        <Pagination showTotal={()=>`共 ${this.state.pageTotal} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotal} showSizeChanger={false}/>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+    initData(currentPage) {
+        let params = {
+            currentPage,
+            pageSize: this.state.pageSize,
+            sheetCode: this.state.code,
+            sheetName: this.state.sheetName,
+            startTime: this.state.startTime,
+            endTime: this.state.endTime
+        };
+        Axios.post('/self/erp/ProductWarehouse/queryProductOutboundSheet', params).then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    dataSource: res.data.data.productOutboundSheets,
+                    pageTotal: res.data.data.num
+                })
+            }else{
+                this.setState({
+                    dataSource: [],
+                    pageTotal: 0
+                })
+            }
+        })
+    }
+    searchMethods() {
+        this.initData(1);
+        this.setState({
+            currentPage: 1
+        })
+    }
+    changePages(val) {
+        this.initData(val);
+        this.setState({
+            currentPage: val
+        })
+    }
+    componentDidMount() {
+        this.initData(this.state.currentPage);
+    }
+
+    timePick(dates, pickys) {
+        if(pickys[0]) {
+            this.setState({
+                startTime: pickys[0],
+                endTime: pickys[1]
+            })
+        }else{
+            this.setState({
+                startTime: "",
+                endTime: ""
+            })
+        }
+    }
+}
+export default FinishedProductOut;

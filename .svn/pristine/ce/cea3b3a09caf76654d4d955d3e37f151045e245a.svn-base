@@ -1,0 +1,920 @@
+import React, {Component} from 'react';
+import {Input, Table, Space, Pagination, Modal, Select, Button, InputNumber, message, DatePicker} from 'antd';
+import Axios from 'axios';
+import 'moment/locale/zh-cn';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import moment from 'moment';
+// import locale from 'antd/es/locale/zh_CN';
+import locale from 'antd/es/date-picker/locale/zh_CN';
+import './procurementSampling.scss';
+const {Column} = Table;
+const {Option} = Select;
+const {confirm} = Modal;
+const {TextArea} = Input;
+class ProcurementSampling extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            dataSource: [],
+            currentPage: 1, pageSize: 10, pageTotal: 0,
+            msg: '', flag: 1, visible: false,
+
+            code: '', name: '',  person: '',   carNum: '',  pinl: '',   breedList: [],   breedId: '',  standerdList: [], standerd: '',  place: '', soldier: '',
+            conclusion: '',   personIdList: [], personId: '',    info: '',
+            singleAmount: '', vag: '',  gitTotalNum: '',  totalNum: '',   totalLv: '',   noPass: '',
+
+            modalSource: [],
+
+            totalBruiseNum :'', totalBruiseRate:'',  totalBumpNum :'',  totalBumpRate:'',
+            totalSugarBackNum :'',  totalSugarBackRate:'',   totalDiseaseFruitNum:'',    totalDiseaseFruitRate:'',
+            totalWormFruitNum:'',   totalWormFruitRate:'',   totalColorDifferenceNum:'',   totalColorDifferenceRate:'',
+            totalStandardMixNum  :'', totalStandardMixRate:'',   totalSunburnNum:'',   totalSunburnRate:'',
+            totalHailInjuryNum  :'',  totalHailInjuryRate:'',   totalFruitRustNum:'',   totalFruitRustRate:'',
+            totalBranchInjuryNum :'',  totalBranchInjuryRate:'',   totalDeformityNum:'',   totalDeformityRate:'',
+            totalDrugHarmNum :'',  totalDrugHarmRate:'',   totalDehydrationNum:'',   totalDehydrationRate:'',
+            totalWaterCrackNum :'',  totalWaterCrackRate:'',   totalCrackedFruitNum:'',    totalCrackedFruitRate:'',
+            totalRotNum :'',  totalRotRate:'',
+
+            modalData1: [],
+            object: {},
+            varietyIdList: [],
+            standardIdList: [],
+            levelIdList: [],
+            msg1: '',
+            visible1: false,
+            flag1: 1,
+            supplierIdList: [], supplierId: '',
+            batchNumbers: '',registrationCodes: '',
+            dates: '',
+            supplierName1: '',  searchTimes: '',
+            numbers: ''
+        }
+    }
+    render() {
+        const columns = [
+            {
+                title: '序号',
+                align: 'center',
+                width: 80,
+                render: (text, record, index)=>(
+                    <span>{(this.state.currentPage - 1)*this.state.pageSize+index+1}</span>
+                ),
+                fixed: 'left'
+            },
+            {
+                title: '抽检单名称',
+                dataIndex: 'sheetName',
+                key: 'sheetName',
+                align: 'center',
+                width: 300
+            },
+            {
+                title: '车号',
+                dataIndex: 'carNo',
+                key: 'carNo',
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '代办',
+                dataIndex: 'supplierName',
+                key: 'supplierName',
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '果园号',
+                dataIndex: 'registrationCode',
+                key: 'registrationCode',
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '批次号',
+                dataIndex: 'batchNumber',
+                key: 'batchNumber',
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '制单人',
+                dataIndex: 'createdName',
+                key: 'createdName',
+                align: 'center',
+                width: 100
+            },
+            {
+                title: '修改时间',
+                dataIndex: 'modifiedTime',
+                key: 'modifiedTime',
+                width: 160,
+                align: 'center'
+            },
+            {
+                title: '操作',
+                dataIndex: 'address',
+                key: 'address',
+                align: 'center',
+                width: 200,
+                fixed: "right",
+                render: (text, record)=>(
+                    <Space size="large">
+                        <span key={"deletes"} onClick={this.deletes.bind(this, record)} className="deletes">删除</span>
+                        <span key={"deletes"} onClick={this.adds.bind(this, record)} className="changes">抽检项</span>
+                        <span key={"details"} onClick={this.details.bind(this, record)} className="details">详情</span>
+                    </Space>
+                )
+            }
+        ];
+        return(
+            <div id="procurementSampling">
+                <div className="procurementSampling">
+                    <div className="placeSearch">
+                        <span className="span1">代办</span>
+                        <Input className="input1" allowClear onChange={(e)=>{this.setState({supplierName1: e.target.value})}}/>
+                        <span className="span1 span111">创建时间</span>
+                        <DatePicker onChange={(e, time)=>{
+                            this.setState({
+                                searchTimes: time
+                            })
+                        }} className="input1" placeholder="" value={this.state.searchTimes==''?"": moment(this.state.searchTimes, 'YYYY-MM-DD')} locale={locale}/>
+                        <button className="searchs" onClick={this.searchMethods.bind(this)}>查询</button>
+                    </div>
+                    <div className="bg">
+                        <button className="searchs" onClick={this.add.bind(this)}>新增</button>
+                    </div>
+                    <div className="placeTable">
+                        <Table pagination={false} dataSource={this.state.dataSource} locale={{emptyText: "暂无数据"}} columns={columns}></Table>
+                    </div>
+                    <div className="placePagination">
+                        <Pagination showTotal={()=>`共 ${this.state.pageTotal} 条`} current={this.state.currentPage} onChange={this.changePages.bind(this)} pageSize={this.state.pageSize} total={this.state.pageTotal} showSizeChanger={false}/>
+                    </div>
+
+                    {/*新增*/}
+                    <Modal title={this.state.msg} width="90%" footer={null} getContainer={false} closable={false}  visible={this.state.visible} centered={true}>
+                        <div className="modal11">
+                            <div className="div3">
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">代办</span>
+                                        <Select allowClear className={"input3"} value={this.state.supplierId} onChange={(e)=>{
+                                            this.setState({supplierId:e});
+                                            this.queryRegistrationCodeAndBatchNumberBySupplierId(e);
+                                        }} disabled={this.state.flag==3?true:false} filterOption={(input, option) =>
+                                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                        } showSearch>
+                                            {
+                                                this.state.supplierIdList.map((item)=>{
+                                                    return(
+                                                        <Option value={item.id}>{item.supplierName}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">车号</span>
+                                        <Input disabled={this.state.flag==3?true:false} allowClear value={this.state.carNo} className={"input3"} onChange={(e)=>{this.setState({carNo:e.target.value})}}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1 ul2">
+                                    <li className="li1">
+                                        <span className="span1">果园注册号</span>
+                                        <Input allowClear disabled value={this.state.registrationCodes} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">批次号</span>
+                                        <Input allowClear disabled value={this.state.batchNumbers} className={"input3"}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1 ul2">
+                                    <li className="li1">
+                                        <span className="span1">时间</span>
+                                        <DatePicker disabled={this.state.flag==3?true:false} onChange={(e, time)=>{
+                                            this.setState({
+                                                dates: time
+                                            })
+                                        }} className="input3" placeholder="" value={this.state.dates==''?"": moment(this.state.dates, 'YYYY-MM-DD')} locale={locale}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">件数</span>
+                                        <InputNumber allowClear value={this.state.numbers} className={"input3"} onChange={(e)=>{
+                                            this.setState({
+                                                numbers: e
+                                            })
+                                        }}/>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div className="rawMaterial">
+                                <div className="placeBtn" style={this.state.flag==3?{display: 'none'}:{display: 'block'}}>
+                                    <Button size="middle" onClick={this.addLiao.bind(this)}>增加抽检项+</Button>
+                                </div>
+                                <div className="placeChangeTable">
+                                    <Table pagination={false} dataSource={this.state.modalData1} locale={{"emptyText": '暂无数据'}}>
+                                        <Column title="品种" dataIndex="varietyId" key="varietyId" align="center" render={(text, record)=>(
+                                            <Select style={{width: '100%'}} value={record.varietyId} onChange={(e)=>{
+                                                if(this.state.modalData1 && this.state.modalData1.length) {
+                                                    this.state.modalData1.forEach((item)=>{
+                                                        if(item.key == record.key) {
+                                                            item.varietyId = Number(e);
+                                                            this.setState({
+                                                                varietyId: Number(e)
+                                                            })
+                                                        }
+                                                    })
+                                                }
+                                            }} disabled={this.state.flag==3?true:false}>
+                                                {
+                                                    this.state.varietyIdList.map((item)=>{
+                                                        return(
+                                                            <Option key={item.valueId} value={item.valueId}>{item.value}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        )} width={150}/>
+
+                                        <Column title="规格" dataIndex="standardId" key="standardId" align="center" render={(text, record)=>(
+                                            <Select style={{width: '100%'}} value={record.standardId} onChange={(e)=>{
+                                                if(this.state.modalData1 && this.state.modalData1.length) {
+                                                    this.state.modalData1.forEach((item)=>{
+                                                        if(item.key == record.key) {
+                                                            item.standardId = Number(e);
+                                                            this.setState({
+                                                                standardId: Number(e)
+                                                            })
+                                                        }
+                                                    })
+                                                }
+                                            }} disabled={this.state.flag==3?true:false}>
+                                                {
+                                                    this.state.standardIdList.map((item)=>{
+                                                        return(
+                                                            <Option key={item.valueId} value={item.valueId}>{item.value}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        )} width={150}/>
+
+                                        <Column title="等级" dataIndex="levelId" key="levelId" align="center" render={(text, record)=>(
+                                            <Select style={{width: '100%'}} value={record.levelId} onChange={(e)=>{
+                                                if(this.state.modalData1 && this.state.modalData1.length) {
+                                                    this.state.modalData1.forEach((item)=>{
+                                                        if(item.key == record.key) {
+                                                            item.levelId = Number(e);
+                                                            this.setState({
+                                                                levelId: Number(e)
+                                                            })
+                                                        }
+                                                    })
+                                                }
+                                            }} disabled={this.state.flag==3?true:false}>
+                                                {
+                                                    this.state.levelIdList.map((item)=>{
+                                                        return(
+                                                            <Option key={item.valueId} value={item.valueId}>{item.value}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        )} width={150}/>
+
+                                        <Column title="单桶量(kg)" dataIndex="netWeight" key="netWeight" align="center" render={(text, record)=>(
+                                            <div>
+                                                <InputNumber min={0} style={{width: '60%'}} value={text} onChange={(e)=>{
+                                                    if(this.state.modalData1 && this.state.modalData1.length) {
+                                                        this.state.modalData1.forEach((item)=>{
+                                                            if(item.key == record.key) {
+                                                                item.netWeight = e;
+                                                                this.setState({
+                                                                    netWeight: e
+                                                                })
+                                                            }
+                                                        })
+                                                    }
+                                                }} disabled={this.state.flag==3?true:false}/>
+                                            </div>
+                                        )} width={200}/>
+
+                                        <Column title="件数" dataIndex="number" key="number" align="center" render={(text, record)=>(
+                                            <div>
+                                                <InputNumber min={0} style={{width: '60%'}} value={text} onChange={(e)=>{
+                                                    if(this.state.modalData1 && this.state.modalData1.length) {
+                                                        this.state.modalData1.forEach((item)=>{
+                                                            if(item.key == record.key) {
+                                                                item.number = e;
+                                                                this.setState({
+                                                                    number: e
+                                                                })
+                                                            }
+                                                        })
+                                                    }
+                                                }} disabled={this.state.flag==3?true:false}/>
+                                            </div>
+                                        )} width={200}/>
+
+                                        <Column title="单价" dataIndex="unitPrice" key="unitPrice" align="center" render={(text, record)=>(
+                                            <div>
+                                                <InputNumber min={0} style={{width: '60%'}} value={text} onChange={(e)=>{
+                                                    if(this.state.modalData1 && this.state.modalData1.length) {
+                                                        this.state.modalData1.forEach((item)=>{
+                                                            if(item.key == record.key) {
+                                                                item.unitPrice = e;
+                                                                this.setState({
+                                                                    unitPrice: e
+                                                                })
+                                                            }
+                                                        })
+                                                    }
+                                                }} disabled={this.state.flag==3?true:false}/>
+                                            </div>
+                                        )} width={200}/>
+
+                                        <Column title="结论" dataIndex="conclusion" key="conclusion" align="center" render={(text, record)=>(
+                                            <div>
+                                                <Input min={0} style={{width: '60%'}} value={text} onChange={(e)=>{
+                                                    if(this.state.modalData1 && this.state.modalData1.length) {
+                                                        this.state.modalData1.forEach((item)=>{
+                                                            if(item.key == record.key) {
+                                                                item.conclusion = e.target.value;
+                                                                this.setState({
+                                                                    conclusion: e.target.value
+                                                                })
+                                                            }
+                                                        })
+                                                    }
+                                                }} disabled={this.state.flag==3?true:false}/>
+                                            </div>
+                                        )} width={200}/>
+
+                                        <Column title="操作" align="center" key="numbers1" dataIndex="numbers1" width={200}
+                                            render={(text, record, index) => (
+                                                <Space size="large">
+                                                    <span key={"changes"} className="madleDeletes" onClick={this.deletesModal.bind(this, index)}
+                                                    style={this.state.flag==3?{display: 'none'}:{display: 'block'}}>删除</span>
+                                                </Space>
+                                            )}
+                                        />
+                                    </Table>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="div4">
+                            <li className="li4">
+                                <Button className="btn4" type="danger" onClick={()=>{this.setState({visible: false})}}>取消</Button>
+                            </li>
+                            <li className="li4" style={this.state.flag==3?{display: 'none'}:{display: 'block'}}>
+                                <Button className="btn4" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
+                            </li>
+                        </div>
+                    </Modal>
+
+                    <Modal title={this.state.msg1} width="90%" footer={null} getContainer={false} closable={false}  visible={this.state.visible1} centered={true}>
+                        <div className="modal1">
+                            <div className="div3">
+                                <ul className="ul1">
+                                    <li className="li1">
+                                        <span className="span1">代办1</span>
+                                        <Select disabled allowClear className={"input3"} value={this.state.supplierId} onChange={(e)=>{
+                                            this.setState({supplierId:e});
+                                            this.queryRegistrationCodeAndBatchNumberBySupplierId(e);
+                                        }}>
+                                            {
+                                                this.state.supplierIdList.map((item)=>{
+                                                    return(
+                                                        <Option value={item.id}>{item.supplierName}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">车号</span>
+                                        <Input value={this.state.carNo} className={"input3"} onChange={(e)=>{this.setState({carNo:e.target.value})}}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1 ul2">
+                                    <li className="li1">
+                                        <span className="span1">果园注册号</span>
+                                        <Input allowClear disabled value={this.state.registrationCodes} className={"input3"}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">批次号</span>
+                                        <Input allowClear disabled value={this.state.batchNumbers} className={"input3"}/>
+                                    </li>
+                                </ul>
+                                <ul className="ul1 ul2">
+                                    <li className="li1">
+                                        <span className="span1">时间</span>
+                                        <DatePicker onChange={(e, time)=>{
+                                            this.setState({
+                                                dates: time
+                                            })
+                                        }} className="input3" placeholder="" value={this.state.dates==''?"": moment(this.state.dates, 'YYYY-MM-DD')} locale={locale}/>
+                                    </li>
+                                    <li className="li1 li2">
+                                        <span className="span1">件数</span>
+                                        <InputNumber allowClear value={this.state.numbers} className={"input3"} onChange={(e)=>{
+                                            this.setState({
+                                                numbers: e
+                                            })
+                                        }}/>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div className="rawMaterial">
+                                <div className="placeBtn" style={this.state.flag1==3?{display: 'none'}:{display: 'block'}}>
+                                    <Button size="middle" onClick={this.addLiao.bind(this)}>增加抽检项+</Button>
+                                </div>
+                                <div className="placeChangeTable">
+                                    <Table pagination={false} dataSource={this.state.modalData1} locale={{"emptyText": '暂无数据'}}>
+                                        <Column title="品种" dataIndex="varietyId" key="varietyId" align="center" render={(text, record)=>(
+                                            <Select style={{width: '100%'}} value={record.varietyId} onChange={(e)=>{
+                                                if(this.state.modalData1 && this.state.modalData1.length) {
+                                                    this.state.modalData1.forEach((item)=>{
+                                                        if(item.key == record.key) {
+                                                            item.varietyId = Number(e);
+                                                            this.setState({
+                                                                varietyId: Number(e)
+                                                            })
+                                                        }
+                                                    })
+                                                }
+                                            }} disabled={this.state.flag1==3?true:false}>
+                                                {
+                                                    this.state.varietyIdList.map((item)=>{
+                                                        return(
+                                                            <Option key={item.valueId} value={item.valueId}>{item.value}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        )} width={150}/>
+
+                                        <Column title="规格" dataIndex="standardId" key="standardId" align="center" render={(text, record)=>(
+                                            <Select style={{width: '100%'}} value={record.standardId} onChange={(e)=>{
+                                                if(this.state.modalData1 && this.state.modalData1.length) {
+                                                    this.state.modalData1.forEach((item)=>{
+                                                        if(item.key == record.key) {
+                                                            item.standardId = Number(e);
+                                                            this.setState({
+                                                                standardId: Number(e)
+                                                            })
+                                                        }
+                                                    })
+                                                }
+                                            }} disabled={this.state.flag1==3?true:false}>
+                                                {
+                                                    this.state.standardIdList.map((item)=>{
+                                                        return(
+                                                            <Option key={item.valueId} value={item.valueId}>{item.value}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        )} width={150}/>
+
+                                        <Column title="等级" dataIndex="levelId" key="levelId" align="center" render={(text, record)=>(
+                                            <Select style={{width: '100%'}} value={record.levelId} onChange={(e)=>{
+                                                if(this.state.modalData1 && this.state.modalData1.length) {
+                                                    this.state.modalData1.forEach((item)=>{
+                                                        if(item.key == record.key) {
+                                                            item.levelId = Number(e);
+                                                            this.setState({
+                                                                levelId: Number(e)
+                                                            })
+                                                        }
+                                                    })
+                                                }
+                                            }} disabled={this.state.flag1==3?true:false}>
+                                                {
+                                                    this.state.levelIdList.map((item)=>{
+                                                        return(
+                                                            <Option key={item.valueId} value={item.valueId}>{item.value}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        )} width={150}/>
+
+                                        <Column title="单桶量(kg)" dataIndex="netWeight" key="netWeight" align="center" render={(text, record)=>(
+                                            <div>
+                                                <InputNumber min={0} style={{width: '60%'}} value={text} onChange={(e)=>{
+                                                    if(this.state.modalData1 && this.state.modalData1.length) {
+                                                        this.state.modalData1.forEach((item)=>{
+                                                            if(item.key == record.key) {
+                                                                item.netWeight = e;
+                                                                this.setState({
+                                                                    netWeight: e
+                                                                })
+                                                            }
+                                                        })
+                                                    }
+                                                }} disabled={this.state.flag1==3?true:false}/>
+                                            </div>
+                                        )} width={200}/>
+
+                                        <Column title="件数" dataIndex="number" key="number" align="center" render={(text, record)=>(
+                                            <div>
+                                                <InputNumber min={0} style={{width: '60%'}} value={text} onChange={(e)=>{
+                                                    if(this.state.modalData1 && this.state.modalData1.length) {
+                                                        this.state.modalData1.forEach((item)=>{
+                                                            if(item.key == record.key) {
+                                                                item.number = e;
+                                                                this.setState({
+                                                                    number: e
+                                                                })
+                                                            }
+                                                        })
+                                                    }
+                                                }} disabled={this.state.flag1==3?true:false}/>
+                                            </div>
+                                        )} width={200}/>
+
+                                        <Column title="单价" dataIndex="unitPrice" key="unitPrice" align="center" render={(text, record)=>(
+                                            <div>
+                                                <InputNumber min={0} style={{width: '60%'}} value={text} onChange={(e)=>{
+                                                    if(this.state.modalData1 && this.state.modalData1.length) {
+                                                        this.state.modalData1.forEach((item)=>{
+                                                            if(item.key == record.key) {
+                                                                item.unitPrice = e;
+                                                                this.setState({
+                                                                    unitPrice: e
+                                                                })
+                                                            }
+                                                        })
+                                                    }
+                                                }} disabled={this.state.flag1==3?true:false}/>
+                                            </div>
+                                        )} width={200}/>
+
+                                        <Column title="结论" dataIndex="conclusion" key="conclusion" align="center" render={(text, record)=>(
+                                            <div>
+                                                <Input min={0} style={{width: '60%'}} value={text} onChange={(e)=>{
+                                                    if(this.state.modalData1 && this.state.modalData1.length) {
+                                                        this.state.modalData1.forEach((item)=>{
+                                                            if(item.key == record.key) {
+                                                                item.conclusion = e.target.value;
+                                                                this.setState({
+                                                                    conclusion: e.target.value
+                                                                })
+                                                            }
+                                                        })
+                                                    }
+                                                }} disabled={this.state.flag1==3?true:false}/>
+                                            </div>
+                                        )} width={200}/>
+
+                                        <Column title="操作" align="center" key="numbers1" dataIndex="numbers1" width={200}
+                                                render={(text, record, index) => (
+                                                    <Space size="large">
+                                                    <span key={"changes"} className="madleDeletes" onClick={this.deletesModal.bind(this, index)}
+                                                          style={this.state.flag1==3?{display: 'none'}:{display: 'block'}}>删除</span>
+                                                    </Space>
+                                                )}
+                                        />
+                                    </Table>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="div4">
+                            <li className="li4">
+                                <Button className="btn4" type="danger" onClick={()=>{this.setState({visible1: false})}}>取消</Button>
+                            </li>
+                            <li className="li4">
+                                <Button className="btn4" type="primary" onClick={this.handleOk1.bind(this)}>确定</Button>
+                            </li>
+                        </div>
+                    </Modal>
+                </div>
+            </div>
+        )
+    }
+    initData(currentPage){
+        let params = {
+            currentPage,
+            pageSize: this.state.pageSize,
+            supplierName: this.state.supplierName1,
+            createdTime: this.state.searchTimes
+        };
+        Axios.post('/self/erp/randomCheck/queryAllRandomCheckSheet', params).then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    dataSource: res.data.data.randomCheckSheets,
+                    pageTotal: res.data.data.num
+                })
+            }else{
+                this.setState({
+                    dataSource: [],
+                    pageTotal: 0
+                })
+            }
+        })
+    }
+    searchMethods() {
+        this.initData(1);
+        this.setState({
+            currentPage: 1
+        })
+    }
+    add() {
+        this.setState({
+            visible: true,
+            msg: '新增',
+            flag: 1,
+            supplierId: '',
+            carNo: '',
+            registrationCodes: '',
+            batchNumbers: '',
+            dates: '',
+            modalData1: []
+        })
+    }
+    /**
+     * 列表根据id查详情的数据
+     *
+     */
+    detailData(id) {
+        Axios.post('/self/erp/randomCheck/queryRandomCheckSheetById', {id}).then((res)=>{
+            if(res.data.success) {
+                let object = res.data.data.randomCheckSheet;
+                if(object.samplingItems && object.samplingItems.length) {
+                    object.samplingItems.forEach((item)=>{
+                        item.key = item.id;
+                    })
+                }
+                if(object.samplingItems && object.samplingItems.length) {
+                    object.samplingItems.forEach((item)=>{
+                        item.unitPrice = item.unitPrice / 100
+                    })
+                }
+                this.setState({
+                    object,
+                    modalData1: object.samplingItems,
+                    supplierId: object.supplierId,
+                    carNo: object.carNo,
+                    registrationCodes: object.registrationCode,
+                    batchNumbers: object.batchNumber,
+                    dates: object.createdTime,
+                    numbers: object.number
+                });
+            }else{
+                this.setState({
+                    object: {}
+                })
+            }
+        })
+    }
+    changePages(val) {
+        this.initData(val);
+        this.setState({
+            currentPage: val
+        })
+    }
+
+
+    /**
+     * 新增
+     * @param row
+     */
+    adds(row) {
+        this.setState({
+            visible1: true,
+            flag1: 1,
+            msg1: '抽检项'
+        });
+        this.detailData(row.id);
+    }
+
+    /**
+     * 删除抽检项
+     */
+    deletes(row) {
+        let that = this;
+        confirm({
+            title: '你确定要删除吗?',
+            icon: <ExclamationCircleOutlined />,
+            content: '',
+            onOk() {
+                let params = {
+                    id: row.id
+                };
+                Axios.post('/self/erp/randomCheck/deleteRandomCheckSheet', params).then((res)=>{
+                    if(res.data.success) {
+                        message.success("删除成功");
+                        that.initData(that.state.currentPage);
+                    }else{
+                        message.warning(res.data.message);
+                    }
+                })
+            },
+            onCancel() {},
+        });
+    }
+    /**
+     * 增加抽检项
+     */
+    addLiao() {
+        let pump = [...this.state.modalData1];
+        let uuid = this.getUUID();
+        let varietyId = null;
+        let standardId = null;
+        let levelId = null;
+        // if(this.state.varietyIdList && this.state.varietyIdList.length) {
+        //     varietyId = this.state.varietyIdList[0].valueId;
+        // }
+        // if(this.state.standardIdList && this.state.standardIdList.length) {
+        //     standardId = this.state.standardIdList[0].valueId;
+        // }
+        // if(this.state.levelIdList && this.state.levelIdList.length) {
+        //     levelId = this.state.levelIdList[0].valueId;
+        // }
+        pump.push({
+            key: uuid,
+            varietyId,
+            standardId,
+            levelId,
+            number: null,
+            netWeight: null,
+            unitPrice: null,
+            conclusion: '合格'
+        });
+        this.setState({
+            modalData1: pump
+        });
+        console.log(pump);
+    }
+
+    /**
+     * 删除抽检项
+     */
+    deletesModal(index) {
+        const dataList = [...this.state.modalData1];
+        dataList.splice(index, 1);
+        this.setState({
+            modalData1: dataList
+        });
+    }
+    /**
+     * 详情
+     * @param row
+     */
+    details(row) {
+        this.detailData(row.id);
+        this.setState({
+            flag: 3,
+            visible: true,
+            msg: '详情'
+        })
+    }
+
+    /**
+     * 修改功能,(待做)
+     * @param row
+     */
+    changes(row) {
+        this.detailData(row.id);
+        this.setState({
+            flag: 0,
+            visible: true,
+            msg: '修改'
+        })
+    }
+    handleOk() {
+        this.state.modalData1.forEach((item)=>{
+            item.unitPrice = item.unitPrice * 100
+        })
+        let params = {
+            samplingItems: this.state.modalData1,
+            supplierId: this.state.supplierId,
+            carNo: this.state.carNo,
+            registrationCode: this.state.registrationCodes,
+            batchNumber: this.state.batchNumbers,
+            createdTime: this.state.dates,
+            number: this.state.numbers
+        };
+        if(this.state.flag ==1) {
+            // 新增
+            Axios.post('/self/erp/randomCheck/pcAddRandomCheckSheet', params).then((res)=>{
+                if(res.data.success) {
+                    message.success("成功");
+                    this.setState({
+                        visible: false
+                    });
+                    this.initData(this.state.currentPage);
+                }else{
+                    message.warning(res.data.message);
+                }
+            })
+        }
+    }
+    handleOk1() {
+        this.state.modalData1.forEach((item)=>{
+            item.unitPrice = item.unitPrice * 100
+        })
+        let params = {
+            randomCheckSheetId: this.state.object.id,
+            samplingItems: this.state.modalData1,
+            number: this.state.numbers
+        };
+        Axios.post('/self/erp/randomCheck/compeleteRandomCheckSheet', params).then((res)=>{
+            if(res.data.success){
+                message.success("成功");
+                this.setState({
+                    visible1: false
+                });
+                this.initData(this.state.currentPage);
+            }else{
+                message.warning(res.data.message);
+            }
+        })
+    }
+    componentDidMount() {
+        this.initData(this.state.currentPage);
+        this.initSelect();
+        this.supplierFun();
+    }
+    /**
+     * 品种,规格,抽检人的下拉框
+     *
+     */
+    initSelect() {
+        Axios.post('/self/erp/baseinfo/queryDictTypeAndValue').then((res)=>{
+            // console.log(res.data.data);
+            if(res.data.success) {
+                this.setState({
+                    varietyIdList: res.data.data.rawMaterialVariety,
+                    standardIdList: res.data.data.rawMaterialStandard,
+                    levelIdList: res.data.data.rawMaterialLevel
+                })
+            }else{
+                this.setState({
+                    varietyIdList: [],
+                    standardIdList: [],
+                    levelIdList: [],
+                })
+            }
+        });
+        Axios.post('/self/erp/baseinfo/queryUser').then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    personIdList: res.data.data.users
+                })
+            }else{
+                this.setState({
+                    personIdList: res.data.data.users
+                })
+            }
+        })
+    }
+
+    /**
+     * 查询供应商的下拉框
+     * @returns {string}
+     */
+    supplierFun() {
+        let params = {
+            supplierName: ''
+        };
+        Axios.post('/self/erp/randomCheck/querySupplier', params).then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    supplierIdList: res.data.data.suppliers
+                })
+            }else{
+                this.setState({
+                    supplierIdList: []
+                })
+            }
+        })
+    }
+
+    /**
+     * 根据代办的id查询注册号和批次号
+     * @returns {string}
+     */
+    queryRegistrationCodeAndBatchNumberBySupplierId(id) {
+        Axios.post('/self/erp/randomCheck/queryRegistrationCodeAndBatchNumberBySupplierId', {id}).then((res)=>{
+            if(res.data.success) {
+                this.setState({
+                    registrationCodes: res.data.data.supplier.registrationCode,
+                    batchNumbers: res.data.data.supplier.batchNumber
+                })
+            }else{
+                this.setState({
+                    registrationCodes: '',
+                    batchNumbers: ''
+                })
+            }
+        })
+    }
+    getUUID() {
+        return 'xxxx-xxxx-xxxx-xxxx-xxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+}
+export default ProcurementSampling;

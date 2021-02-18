@@ -1,0 +1,43 @@
+import React, {Component} from 'react';
+import './client.scss';
+class Client extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            treeList: [],
+            currentIndex: 0,
+
+        }
+    }
+    render() {
+        return(
+            <div id="client">
+                <div className="client">
+                    <div className="dictionaryLeft">
+                        <div className="innerDiv">
+                            <div className="dictType">客户分组</div>
+                            <ul className="ul1">
+                                {
+                                    this.state.treeList.map((item, index)=>{
+                                        return(
+                                            <li className={index==this.state.currentIndex?'active li1':'li1'} key={item.key} onClick={this.handleClick.bind(this, index, item)}>{item.name}</li>
+                                        )
+                                    })
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div className="dictionaryRight">
+                        <div className="innerRight">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+    handleClick(i, items) {
+
+    }
+}
+export default Client;
