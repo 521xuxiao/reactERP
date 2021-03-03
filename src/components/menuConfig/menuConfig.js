@@ -67,7 +67,8 @@ class MenuConfig extends Component{
                     key: 'name',
                     render(_, row) {
                         return {
-                            children: row.name,
+                            // children: row.name,
+                            children: <span><Input /></span>,
                             props: {
                                 rowSpan: row.rowSpan,
                             }
