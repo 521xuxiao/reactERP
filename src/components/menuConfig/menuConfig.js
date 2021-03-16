@@ -299,7 +299,7 @@ class MenuConfig extends Component{
     componentDidMount() {
     	this.initData();
     	this.initTree();
-
+	this.initTable();
     }
 
     createNewArr=(data)=>{
@@ -320,6 +320,37 @@ class MenuConfig extends Component{
             )
             return result;
         }, [])
+    }
+    
+    initTable() {
+        //  动态表头的里面的数据
+    	let arr = [
+                {name: '张三', age: 28, key: 1, children: [{title: '地址', value: "山东济南1", id: 1}, {title: '工作', value: '工程师1', id: 2}] },
+                {name: '李四', age: 31, key: 2, children: [{title: '地址', value: "山东济2", id: 1}, {title: '工作', value: '工程师2', id: 2}] },
+                {name: '王五', age: 33, key: 3, children: [{title: '地址', value: "山东济3", id: 1}, {title: '工作', value: '工程师3', id: 2}] },
+                {name: '赵柳', age: 22, key: 4, children: [{title: '地址', value: "山东济南4", id: 1}, {title: '工作', value: '工程师4', id: 2}] },
+            ]
+            this.columns = [
+                {title: '姓名',dataIndex: 'name', key: 'name'},
+                {title: '年龄',dataIndex: 'age', key: 'age'}
+            ]
+            arr[0].children.forEach((item, index)=>{
+                this.columns.push({title: item.title, dataIndex: item.id, key: item.id})
+            })
+
+            arr.forEach((item, index)=>{
+                item.children.forEach((innerItem, innerIndex)=>{
+                    item[innerItem.id] = innerItem.value;
+                })
+            })
+            let dataSource = [];
+            arr.forEach((item)=>{
+                delete item.children;
+                dataSource.push(item)
+            })
+            this.setState({
+                dataSource
+            })
     }
 }
 export default MenuConfig;
