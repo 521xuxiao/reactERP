@@ -1,0 +1,19 @@
+父组件传子组件：
+    <children giveChildrenData={this.state.dataList}></children>
+子组件接受：
+  1. 跟着父组件的数据变化而变化
+   componentWillReceiveProps = (nextProps) => {
+          console.log(nextProps.giveChildrenData) 
+    }
+   2.不变化， 直接在componentDidMount里面接受
+    this.props.giveChildrenData
+
+
+
+子组件传值给父组件
+   this.props.parent.giveParentData()
+父组件接值：
+   <children parent={this}></children>
+   giveParentData(data) {
+         console.log(data);
+   }
