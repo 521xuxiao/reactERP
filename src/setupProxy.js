@@ -10,6 +10,14 @@ module.exports = function(app) {
             pathRewrite: {
                 '^/self': '' // 这样处理后，最终得到的接口路径为： http://localhost:8080/self
             }
+        }),
+        createProxyMiddleware('/self2', {
+//             target: 'http://localhost:8083/',
+            target: 'https://www.danjylong.top:8083/',
+            changeOrigin: true,
+            pathRewrite: {
+                '^/self2': '' // 这样处理后，最终得到的接口路径为： http://localhost:8080/self
+            }
         })
     )
 };
