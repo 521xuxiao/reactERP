@@ -8,7 +8,7 @@ module.exports = function(app) {
             // target: 'https://www.danjylong.top:8083/',
             changeOrigin: true,
             pathRewrite: {
-                '^/self': '' // 这样处理后，最终得到的接口路径为： http://localhost:8080/self
+                '^/self': '' // 重写请求路径
             }
         }),
         createProxyMiddleware('/self2', {
@@ -16,7 +16,7 @@ module.exports = function(app) {
             target: 'https://www.danjylong.top:8083/',
             changeOrigin: true,
             pathRewrite: {
-                '^/self2': '' // 这样处理后，最终得到的接口路径为： http://localhost:8080/self
+                '^/self2': '' // 重写请求路径
             }
         })
     )
