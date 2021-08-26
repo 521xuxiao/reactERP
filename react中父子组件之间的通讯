@@ -28,10 +28,14 @@
  消息的发布与订阅 利用（pubsub-js）
  
     接受消息组件里面：
-        pubsub.subscribe("xxx", (res, data)=>{
+        this.token= pubsub.subscribe("xxx", (_, data)=>{
         
         })
         
+        //  页面离开取消消息订阅
+        componentWillUnmount() {
+            PubSub.unsubscribe(this.token);
+        }
         
    发布消息的组件里面：
         pubsub.publish("xxx", data);
