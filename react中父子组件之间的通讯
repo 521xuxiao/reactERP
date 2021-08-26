@@ -28,7 +28,7 @@
  消息的发布与订阅 利用（pubsub-js）
  
     接受消息组件里面：
-        pubsub.subscript("xxx", (res, data)=>{
+        pubsub.subscribe("xxx", (res, data)=>{
         
         })
         
