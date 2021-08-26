@@ -22,5 +22,11 @@
           giveFather(data) {
               console.log(data);
           }
+          
+          
+          
+ 消息的发布与订阅 利用（pubsub-js）
+ 
+    
      
          
