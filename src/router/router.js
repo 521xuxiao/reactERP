@@ -18,7 +18,8 @@ class MyRouter extends Component{
     render() {
         return(
             <Router>
-                <Switch>
+                {/*  Switch标签是匹配到一个路由之后就不再往下找路由了，提高效率  */}
+                <Switch>       
                     <Redirect exact from="/" to="/login"></Redirect>
                     <Route path='/login' component={Login} />
                     <PrivateRoute path="/app"></PrivateRoute>
