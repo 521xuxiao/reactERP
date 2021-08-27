@@ -1,1 +1,29 @@
+路由跳转传参的三种方式
 
+    1、 params:
+    
+        跳转传参：this.props.history.push(`/home/index/${id}/${name}`)
+        
+        路由声明：<Route path='/home/index/:id/:name' component={Home}></Route>
+
+        接参：    
+        
+        
+        
+    2、search：
+    
+        跳转传参：this.props.history.push(`/home/index?id=${id}&name=${name}`)
+        
+        路由声明不需要
+        
+        接参：
+        
+     
+     
+     3、state:
+     
+        路由传参：this.props.history.push({pathname: '/home/index', state: {id: id, name: name}})
+        
+        路由声明不许需要
+        
+        接参: 
