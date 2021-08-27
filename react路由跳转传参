@@ -6,7 +6,7 @@
         
         路由声明：<Route path='/home/index/:id/:name' component={Home}></Route>
 
-        接参：    
+        接参：   this.props.match.params.xxxx 
         
         
         
@@ -16,7 +16,7 @@
         
         路由声明不需要
         
-        接参：
+        接参：  this.props.location.search.xxx
         
      
      
@@ -26,4 +26,4 @@
         
         路由声明不许需要
         
-        接参: 
+        接参:   this.props.location.state.xxx
