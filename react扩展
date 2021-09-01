@@ -1,0 +1,44 @@
+1、  setState  是一个异步的方法，它有第二个回调参数,  setState还可以放一个回调
+
+     1)   this.setState({msg: ''}, ()=>{
+              console.log("更新状态完成之后进来了");
+          })
+     
+     2)   this.setState((state，props)=>{
+              return {msg: ''}
+          })
+     
+     
+     
+2、  lazyLoad  路由懒加载
+     
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
