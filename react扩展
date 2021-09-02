@@ -32,7 +32,7 @@
       
  6、优化组件用的shouldComponentUpdate，减少render，提高渲染的效率
     
-         
+         简化可以用 PureComponent 来代替 component
  
      
      
