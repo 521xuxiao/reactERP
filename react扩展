@@ -36,7 +36,7 @@
          
          
          
- 7、 错误边界
+ 7、 错误边界  （用在父组件， 找子组件的错误， 只能用在打包之后的上线服务器上， 本地起的项目只是短暂的）
       
       static getDerivedStateFromError(error) {
           return {haseError: error}   // 更新到state状态里面
