@@ -26,6 +26,13 @@
       
       
  5、 Context
+      祖孙组件之间的通讯
+      
+      
+      
+ 6、优化组件用的shouldComponentUpdate，减少render，提高渲染的效率
+    
+         
  
      
      
