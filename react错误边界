@@ -1,0 +1,55 @@
+import React, {Component} from "react"
+export default class ErrorOut extends Component {
+    state = {
+        hasErr: ''
+    }
+
+    // 子组件一旦发生错误 直接进来
+    static getDerivedStateFromError(err) {
+        return {
+            hasErr: err   // 给hasErr状态变量赋值， 前提是只有打包上线的项目才能用
+        }
+    }
+
+    render() {
+        const {hasErr} = this.state;
+        return(
+            <div>
+                <h3>我是父组件</h3>
+                {hasErr ? (
+                    <div>子组件发生错误</div>
+                ) : (
+                    <Children/>
+                )}
+            </div>
+        )
+    }
+}
+
+
+class Children extends Component {
+    state = {
+        // personList: [
+        //     {id: 1, name: '张三'},
+        //     {id: 2, name: '李四'},
+        //     {id: 3, name: '王五'}
+        // ]
+        personList: ''
+    }
+
+    render() {
+        const {personList} = this.state;
+        return(
+            <div>
+                <h3>我是子组件</h3>
+                <ul>
+                    {personList.map(item=>{
+                        return(
+                            <li key={item.id}>{item.name}</li>
+                        )
+                    })}
+                </ul>
+            </div>
+        )
+    }
+}
